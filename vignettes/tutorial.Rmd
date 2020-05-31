@@ -30,13 +30,13 @@ Prepare your data:
 To begin with, we have a dataset with many participants, each finishing a same set of questions. Within each question, there are several time points, where participants sample from a set of C options.  
 In this toy dataset, total question number $Q = 5$. The question ID for each sampling time point is stored in qID.
 ```{r}
-subset(sampinfo::raw_data,sID==1)
+subset(sampinfo::raw_data, sID==1)
 ```
 
 Total participant number $S=10$. The participant ID is listed in sID. 
 
 ```{r}
-subset(sampinfo::raw_data,qID==1)
+subset(sampinfo::raw_data, qID==1)
 ```
 
 In each question, there are many time points, where participant sample from different options. Here time points are saved in tNo. There are in total 7 options (cID from 1 to 7).
