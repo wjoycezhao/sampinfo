@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ``` r
 library(sampinfo)
 library(bayesplot)
@@ -17,6 +18,8 @@ library(rstan)
 library(knitr)
 ```
 
+=======
+>>>>>>> b34e568e2a62279d00c6b88a1fa6e051413183cf
 Prepare your data:
 ------------------
 
