@@ -200,11 +200,11 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 <p>And take a look at the code.</p>
 <pre class="text"><code>sampinfo::getStanCode(0)
 &gt; S4 class stanmodel 'mm10d01' coded as follows:
-&gt; 
+&gt;
 &gt; data{
 &gt;   // memory
-&gt;   int deltaM_value; // number of option categories 
-&gt;   int&lt;lower=2&gt; C; // number of option categories 
+&gt;   int deltaM_value; // number of option categories
+&gt;   int&lt;lower=2&gt; C; // number of option categories
 &gt;   int&lt;lower=0&gt; K; // number of features; if 0 then no betas
 &gt;   int&lt;lower=1&gt; N; // number of time points
 &gt;   int&lt;lower=1&gt; S; // number of participants
@@ -214,7 +214,7 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 &gt;   matrix[C,K] X[N]; // feature matrix, for different time points
 &gt;   int&lt;lower=1, upper=C&gt; cID[N]; // response cluster ID, 1-7 for 3-cluster solution
 &gt; }
-&gt; 
+&gt;
 &gt; parameters{
 &gt;   matrix[C-1,Q] alpha_raw; // base rate
 &gt;   vector[K] beta_mu; // group-level mean for beta
@@ -223,22 +223,22 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 &gt;   matrix[K,Q] beta_q_raw; // question-level beta
 &gt;   matrix[K,S] beta_s_raw; // individual-level beta
 &gt; }
-&gt; 
+&gt;
 &gt; transformed parameters {
 &gt;   matrix[C,Q] alpha;
 &gt;   matrix[C,N] theta;
 &gt;   matrix[K,S] beta[Q];
 &gt;   if (K &gt; 0){
 &gt;     for (q in 1:Q){
-&gt;     beta[q] = rep_matrix(beta_mu,S) + 
-&gt;               diag_pre_multiply(beta_s_sd,beta_s_raw) + 
+&gt;     beta[q] = rep_matrix(beta_mu,S) +
+&gt;               diag_pre_multiply(beta_s_sd,beta_s_raw) +
 &gt;               rep_matrix(beta_q_sd .* beta_q_raw[,q],S);
 &gt;     }
 &gt;   }
-&gt; 
+&gt;
 &gt;   alpha[1:(C-1),] = alpha_raw/2;
 &gt;   alpha[C,] = to_row_vector(rep_array(0,Q));
-&gt;   
+&gt;
 &gt;   {
 &gt;     if (K &gt; 0){
 &gt;       for (n in 1:N){
@@ -250,20 +250,20 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 &gt;     }
 &gt;   }
 &gt; }
-&gt; 
+&gt;
 &gt; model{
-&gt;   beta_mu ~ std_normal(); 
-&gt;   beta_q_sd ~ std_normal(); 
-&gt;   beta_s_sd ~ std_normal(); 
-&gt;   to_vector(beta_q_raw) ~ std_normal(); 
-&gt;   to_vector(beta_s_raw) ~ std_normal(); 
-&gt;   to_vector(alpha_raw) ~ std_normal(); 
-&gt;   
+&gt;   beta_mu ~ std_normal();
+&gt;   beta_q_sd ~ std_normal();
+&gt;   beta_s_sd ~ std_normal();
+&gt;   to_vector(beta_q_raw) ~ std_normal();
+&gt;   to_vector(beta_s_raw) ~ std_normal();
+&gt;   to_vector(alpha_raw) ~ std_normal();
+&gt;
 &gt;   for (n in 1:N){
 &gt;     cID[n] ~ categorical_logit(theta[,n]);
 &gt;   }
 &gt; }
-&gt; 
+&gt;
 &gt; generated quantities {
 &gt;   vector[N] log_lik;
 &gt;   real dev_m;
@@ -293,7 +293,7 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 <p>Next let’s add a flexible decay parameter.</p>
 <pre class="text"><code>sampinfo::getStanCode(9)
 &gt; S4 class stanmodel 'mm10d9' coded as follows:
-&gt; 
+&gt;
 &gt; data{
 &gt;   // memory
 &gt;   int&lt;lower=2&gt; C; // number of option categories
@@ -307,7 +307,7 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 &gt;   matrix[C,K] X[N]; // feature matrix, for different time points
 &gt;   int&lt;lower=1, upper=C&gt; cID[N]; // response cluster ID, 1-7 for 3-cluster solution
 &gt; }
-&gt; 
+&gt;
 &gt; parameters{
 &gt;   real&lt;lower=0&gt; deltaM; // decay
 &gt;   matrix[C-1,Q] alpha_raw; // base rate
@@ -317,7 +317,7 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 &gt;   matrix[K,Q] beta_q_raw; // question-level beta
 &gt;   matrix[K,S] beta_s_raw; // individual-level beta
 &gt; }
-&gt; 
+&gt;
 &gt; transformed parameters {
 &gt;   matrix[C,Q] alpha;
 &gt;   matrix[C,N] theta;
@@ -329,10 +329,10 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 &gt;               rep_matrix(beta_q_sd .* beta_q_raw[,q],S);
 &gt;     }
 &gt;   }
-&gt; 
+&gt;
 &gt;   alpha[1:(C-1),] = alpha_raw/2;
 &gt;   alpha[C,] = to_row_vector(rep_array(0,Q));
-&gt; 
+&gt;
 &gt;   {
 &gt;     if (K &gt; 0){
 &gt;       matrix[C,K] X_acc;
@@ -351,7 +351,7 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 &gt;     }
 &gt;   }
 &gt; }
-&gt; 
+&gt;
 &gt; model{
 &gt;   deltaM ~ normal(0.8,0.8)T[0,];
 &gt;   beta_mu ~ std_normal();
@@ -360,12 +360,12 @@ In this toy dataset, total question number <span class="math inline">\(Q = 5\)</
 &gt;   to_vector(beta_q_raw) ~ std_normal();
 &gt;   to_vector(beta_s_raw) ~ std_normal();
 &gt;   to_vector(alpha_raw) ~ std_normal();
-&gt; 
+&gt;
 &gt;   for (n in 1:N){
 &gt;     cID[n] ~ categorical_logit(theta[,n]);
 &gt;   }
 &gt; }
-&gt; 
+&gt;
 &gt; generated quantities {
 &gt;   vector[N] log_lik;
 &gt;   real dev_m;
@@ -408,7 +408,7 @@ If we assume there is no memory at all (i.e., Markov property), then we set</p>
 <p>With the data, and the model specifications, we can now run the following to fit the model.<br />
 To make sure that the samples from the posterior distributions are not biased, we need to make sure the chains converge. Only then are we sampling the stationary distribution of the Marco chain. Because many models take minutes/hours/days/… weeks to run, we need to choose a warm-up number carefully. Try some warmup number, test convergence, and repeat until things look good.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">beta =<span class="st"> </span><span class="kw">c</span>(<span class="st">'sameA'</span>, <span class="st">'dist'</span>)
-stan_data_fit =<span class="st"> </span>sampinfo<span class="op">::</span><span class="kw">getStanFit</span>(<span class="dt">beta=</span> <span class="kw">c</span>(<span class="st">'sameA'</span>, <span class="st">'dist'</span>), <span class="dt">deltaM_value =</span> <span class="dv">9</span>, 
+stan_data_fit =<span class="st"> </span>sampinfo<span class="op">::</span><span class="kw">getStanFit</span>(<span class="dt">beta=</span> <span class="kw">c</span>(<span class="st">'sameA'</span>, <span class="st">'dist'</span>), <span class="dt">deltaM_value =</span> <span class="dv">9</span>,
                            <span class="dt">option_num =</span> <span class="dv">7</span>, <span class="dt">format_data =</span> format_data,
                            <span class="dt">save_model_file =</span> <span class="ot">NULL</span>, <span class="dt">init_values=</span><span class="st">&quot;random&quot;</span>,
                            <span class="dt">iter_num =</span> <span class="dv">1200</span>,<span class="dt">chain_num =</span> <span class="dv">4</span>,<span class="dt">warmup_num =</span> <span class="dv">300</span>, <span class="dt">core_num=</span><span class="dv">4</span>,
@@ -508,7 +508,7 @@ stan_data_fit =<span class="st"> </span>sampinfo<span class="op">::</span><span 
 ## run changeBetaNames to make the parameter names understandable (so that we dont need to deal with matrix index)
 <span class="kw">dimnames</span>(posterior)[[<span class="dv">3</span>]] =<span class="st"> </span>sampinfo<span class="op">::</span><span class="kw">changeBetaNames</span>(<span class="kw">dimnames</span>(posterior)[[<span class="dv">3</span>]],
                             <span class="dt">beta =</span> beta,
-                            <span class="dt">Q =</span> <span class="kw">max</span>(format_data<span class="op">$</span>qID), 
+                            <span class="dt">Q =</span> <span class="kw">max</span>(format_data<span class="op">$</span>qID),
                             <span class="dt">S =</span> <span class="kw">max</span>(format_data<span class="op">$</span>sID))
 
 bayesplot<span class="op">::</span><span class="kw">mcmc_intervals</span>(posterior, <span class="dt">regex_pars =</span> <span class="st">&quot;^beta_dist_qmean&quot;</span>)</code></pre></div>
