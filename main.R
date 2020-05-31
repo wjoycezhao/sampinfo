@@ -10,11 +10,13 @@ import(methods)
 importFrom(rstan,sampling)
 useDynLib(sampinfo)
 
+require(devtools)
+
 pkgbuild::compile_dll(force=TRUE)
 roxygen2::roxygenise(clean=TRUE)
+devtools::install(quick=T)##MUST BE FALSE THE FIRST TIME
+build_vignettes()
 
-
-require(devtools)
 load_all()
 use_package('plyr')
 use_package('dplyr')
@@ -29,9 +31,9 @@ require(dplyr)
 # raw_data = subset(read.csv('exp2_data_C3.csv'),sID<11&qID<6)[,-1]
 # format_data = subset(getDataHier(3,'exp2')$format_data[,-1],sID<11&qID<6)
 # usethis::use_data(raw_data, format_data, overwrite = FALSE)
-devtools::install(quick=F)##MUST BE FALSE THE FIRST TIME
+
 # install.packages("../sampinfo", repos = NULL, type = "source")
 # iter_num = 1000,chain_num = 2,warmup_num = 100, core_num=2
 
 # usethis::use_vignette("tutorial")
-#。。
+# rmarkdown::render("vignettes/tutorial.Rmd", "all")

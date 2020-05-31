@@ -87,21 +87,15 @@ getStanData = function(beta = character(0), deltaM_value = NULL,
     if((format_data$sID[i]==format_data$sID[i-1] & format_data$tNo[i] !=format_data$tNo[i-1] + 1) |
        (format_data$sID[i]!=format_data$sID[i-1] & format_data$tNo[i] != 1)){stop('wrong thought index')}
   }
+
   # feature matrix
   if(length(beta>0)){
-    temp = lapply(beta, function(x) as.matrix(format_data[,paste0(x,'_',1:option_num)]))
-    X = lapply(1:nrow(format_data),function(x){
-      sapply(temp, function(y) as.numeric(y[x,]))})
-    if(deltaM_value == 1){
-      for (i in 1:length(X)){
-        if(format_data$tNo[i]>1){
-          X[[i]] = X[[i-1]] + X[[i]]
-        }
-      }
-    }
+    X = getFeatureMatrices(beta, format_data, deltaM_value,
+                           option_num, print_names = F)
   }else{
     X = replicate(nrow(format_data), matrix(0,option_num,0), simplify = FALSE)
   }
+
   stan_data <- list(deltaM_value = deltaM_value,
                     C = option_num, # cluster numberss for one of the options
                     N = nrow(format_data),
@@ -120,6 +114,36 @@ getStanData = function(beta = character(0), deltaM_value = NULL,
   return(stan_data)
 }
 
+
+#' Title
+#'
+#' @param print_names whether to include column and row namaes; default FALSE
+#' @inheritParams getStanFit
+#'
+#' @export
+
+getFeatureMatrices = function(beta, format_data, deltaM_value,
+                              option_num, print_names = F){
+  temp = lapply(beta, function(x)
+    as.matrix(format_data[,paste0(x,'_',1:option_num)]))
+  X = lapply(1:nrow(format_data),function(x){
+    sapply(temp, function(y) as.numeric(y[x,]))})
+  if(deltaM_value == 1){
+    for (i in 1:length(X)){
+      if(format_data$tNo[i]>1){
+        X[[i]] = X[[i-1]] + X[[i]]
+      }
+    }
+  }
+  if(print_names){
+    X = lapply(X, function(x) {
+      y = x
+      colnames(y) = beta
+      rownames(y) = paste0('Option',1:option_num)
+      return(y)})
+  }
+  return(X)
+}
 
 
 #' Change variable names
