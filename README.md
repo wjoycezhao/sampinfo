@@ -1,26 +1,3 @@
----
-title: "Hierarchical model for sampling"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{my-vignette}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-```{r setup, warning=FALSE, warning=FALSE}
-library(sampinfo)
-library(bayesplot)
-library(rstan)
-library(knitr)
-```
-
 Prepare your data:
 --------
 
