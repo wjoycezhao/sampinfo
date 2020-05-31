@@ -1,6 +1,9 @@
 ---
 title: "Hierarchical model for sampling"
-output: rmarkdown::html_vignette
+# output: rmarkdown::html_vignette
+output:
+  md_document:
+    variant: markdown_github
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}

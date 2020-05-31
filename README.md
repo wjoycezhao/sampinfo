@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ``` r
 library(sampinfo)
 library(bayesplot)
@@ -18,8 +17,6 @@ library(rstan)
 library(knitr)
 ```
 
-=======
->>>>>>> b34e568e2a62279d00c6b88a1fa6e051413183cf
 Prepare your data:
 ------------------
 
@@ -117,14 +114,14 @@ Now how about heterogeneity across paricipants and questions? We need a *hiearch
 
 We first assume there is a grand mean for the feature effects, and denote it as **μ**<sub>**K** **×** **1**</sub><sup>**β**</sup>.
 
-The *S* participants deviate from the grand mean on each of the *K* features. Here the deviation can be written as **δ**<sub>**K** **×** **S**</sub><sup>**β****,** **S**</sup>.
+The *S* participants deviate from the grand mean on each of the *K* features. Here the deviation can be written as **δ**<sub>**K** **×** **S**</sub><sup>**β**,**S**</sup>.
 
-Similarly, the deviations of the *Q* questions on the features can be written as **δ**<sub>**K** **×** **Q**</sub><sup>**β****,** **Q**</sup>.
+Similarly, the deviations of the *Q* questions on the features can be written as **δ**<sub>**K** **×** **Q**</sub><sup>**β**,**Q**</sup>.
 
-Each row of these deviation matrices forllows a centered normal distribution. Therefore, we need scale parameters to quantify these deviations. For participant and question level deviations, the scale parameters are **σ**<sub>**K** **×** **1**</sub><sup>**β****,** **S**</sup> and **σ**<sub>**K** **×** **1**</sub><sup>**β****,** **Q**</sup> respectively.
+Each row of these deviation matrices forllows a centered normal distribution. Therefore, we need scale parameters to quantify these deviations. For participant and question level deviations, the scale parameters are **σ**<sub>**K** **×** **1**</sub><sup>**β**,**S**</sup> and **σ**<sub>**K** **×** **1**</sub><sup>**β**,**Q**</sup> respectively.
 
-Therefore, the parameters we need to fit include: **μ**<sub>**K** **×** **1**</sub><sup>**β**</sup>, **σ**<sub>**K** **×** **1**</sub><sup>**β****,** **S**</sup>, **σ**<sub>**K** **×** **1**</sub><sup>**β****,** **Q**</sup>, **δ**<sub>**K** **×** **S**</sub><sup>**β****,** **S**</sup>, and **δ**<sub>**K** **×** **Q**</sub><sup>**β****,** **Q**</sup>. For participant *s* and question *q*, the predicted samplng choice
-*Y* ∼ *C**a**t*(*s**o**f**t**m**a**x*(**X**<sub>**C** **×** **K**</sub>(**μ**<sub>**K** **×** **1**</sub><sup>**β**</sup> + **δ**<sub>**\*****,** **s**</sub><sup>**β****,** **S**</sup> + **δ**<sub>**\*****,** **q**</sub><sup>**β****,** **Q**</sup>))
+Therefore, the parameters we need to fit include: **μ**<sub>**K** **×** **1**</sub><sup>**β**</sup>, **σ**<sub>**K** **×** **1**</sub><sup>**β**,**S**</sup>, **σ**<sub>**K** **×** **1**</sub><sup>**β**,**Q**</sup>, **δ**<sub>**K** **×** **S**</sub><sup>**β**,**S**</sup>, and **δ**<sub>**K** **×** **Q**</sub><sup>**β**,**Q**</sup>. For participant *s* and question *q*, the predicted samplng choice
+*Y* ∼ *C**a**t*(*s**o**f**t**m**a**x*(**X**<sub>**C** **×** **K**</sub>(**μ**<sub>**K** **×** **1**</sub><sup>**β**</sup> + **δ**<sub>**\***,**s**</sub><sup>**β**,**S**</sup> + **δ**<sub>**\***,**q**</sub><sup>**β**,**Q**</sup>))
 
 Beyond these we can also have decay, and different base rates for different questions.
 
@@ -305,7 +302,7 @@ bayesplot::mcmc_trace(posterior_w, pars = pars0,
                       facet_args = list(nrow = 3))
 ```
 
-<img src="/private/var/folders/fr/yxz4164j33v3xmtf243926gr0000gn/T/RtmpgyVIoW/preview-11122ac34df1.dir/my-vignette_files/figure-markdown_github/unnamed-chunk-11-1.png" width="85%" style="display: block; margin: auto;" />
+<img src="/private/var/folders/fr/yxz4164j33v3xmtf243926gr0000gn/T/RtmpgyVIoW/preview-111271f72193.dir/my-vignette_files/figure-markdown_github/unnamed-chunk-11-1.png" width="85%" style="display: block; margin: auto;" />
 
 Another useful plot, which shows you if the ranks of the samples are mixed well among chains.
 
@@ -313,7 +310,7 @@ Another useful plot, which shows you if the ranks of the samples are mixed well 
 bayesplot::mcmc_rank_overlay(posterior_w, pars = pars0)
 ```
 
-<img src="/private/var/folders/fr/yxz4164j33v3xmtf243926gr0000gn/T/RtmpgyVIoW/preview-11122ac34df1.dir/my-vignette_files/figure-markdown_github/unnamed-chunk-12-1.png" width="85%" style="display: block; margin: auto;" />
+<img src="/private/var/folders/fr/yxz4164j33v3xmtf243926gr0000gn/T/RtmpgyVIoW/preview-111271f72193.dir/my-vignette_files/figure-markdown_github/unnamed-chunk-12-1.png" width="85%" style="display: block; margin: auto;" />
 
 Also check gelman-rubin rhat.
 
@@ -353,7 +350,7 @@ print(model_diag)
 #>      dic_1 dev_mean     pd_1    dic_2  min_dev     pd_2     waic   p_waic
 #> 1 749.5508 696.5161 53.03465 729.3835 663.6487 32.86743 726.0886 27.93877
 #>        lppd p_waic_1 elapsed_time_min elapsed_time_max rhat_max  ess_min
-#> 1 -335.1055 26.30509         21.79493          37.8335 1.006804 1046.775
+#> 1 -335.1055 26.30509         22.59834          39.1816 1.006804 1046.775
 #>   divergent max_tree
 #> 1         0        0
 ```
@@ -468,7 +465,7 @@ dimnames(posterior)[[3]] = sampinfo::changeBetaNames(dimnames(posterior)[[3]],
 bayesplot::mcmc_intervals(posterior, regex_pars = "^beta_dist_qmean")
 ```
 
-<img src="/private/var/folders/fr/yxz4164j33v3xmtf243926gr0000gn/T/RtmpgyVIoW/preview-11122ac34df1.dir/my-vignette_files/figure-markdown_github/unnamed-chunk-20-1.png" width="50%" style="display: block; margin: auto;" />
+<img src="/private/var/folders/fr/yxz4164j33v3xmtf243926gr0000gn/T/RtmpgyVIoW/preview-111271f72193.dir/my-vignette_files/figure-markdown_github/unnamed-chunk-20-1.png" width="50%" style="display: block; margin: auto;" />
 
 Additional diagnostics in Rstan
 -------------------------------
