@@ -22,6 +22,7 @@ use_package('tidyr')
 use_package('rstan')
 use_package('utils')
 use_package('stats')
+use_package('bayesplot')
 
 require(dplyr)
 
