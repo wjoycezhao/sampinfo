@@ -33,3 +33,4 @@ devtools::install(quick=F)##MUST BE FALSE THE FIRST TIME
 # iter_num = 1000,chain_num = 2,warmup_num = 100, core_num=2
 
 usethis::use_vignette("my-vignette-test")
+#。。
