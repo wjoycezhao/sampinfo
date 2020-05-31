@@ -2,16 +2,13 @@
 % Please edit documentation in R/functions.R
 \name{getTime}
 \alias{getTime}
-\title{Title}
+\title{get_elapsed_time}
 \usage{
 getTime(stan_fit)
 }
 \arguments{
-\item{stan_fit}{}
-}
-\value{
-
+\item{stan_fit}{Output of stan}
 }
 \description{
-Title
+get_elapsed_time
 }

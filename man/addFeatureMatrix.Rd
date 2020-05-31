@@ -2,16 +2,21 @@
 % Please edit documentation in R/data_functions.R
 \name{addFeatureMatrix}
 \alias{addFeatureMatrix}
-\title{Title}
+\title{Add feature matrix}
 \usage{
 addFeatureMatrix(feature_mv, data_df, option_num, feature_name, id = NULL)
 }
 \arguments{
-\item{id}{}
-}
-\value{
+\item{feature_mv}{The features to be added}
 
+\item{data_df}{The raw data.frame}
+
+\item{option_num}{Number of options, should be the same as the column number of the  feaature matrix}
+
+\item{feature_name}{Name of feature to appear in formatted data}
+
+\item{id}{Indicating which rows to extract from the feature matrix for each row of the raw data frame}
 }
 \description{
-Title
+Add feature matrix
 }

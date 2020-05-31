@@ -2,16 +2,13 @@
 % Please edit documentation in R/functions.R
 \name{getMode}
 \alias{getMode}
-\title{Title}
+\title{getMode}
 \usage{
 getMode(v)
 }
 \arguments{
 \item{v}{}
 }
-\value{
-
-}
 \description{
-Title
+getMode
 }

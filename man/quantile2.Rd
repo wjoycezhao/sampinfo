@@ -2,16 +2,10 @@
 % Please edit documentation in R/functions.R
 \name{quantile2}
 \alias{quantile2}
-\title{Title}
+\title{Get quantiles}
 \usage{
 quantile2(x)
 }
-\arguments{
-\item{x}{}
-}
-\value{
-
-}
 \description{
-Title
+Get quantiles
 }

@@ -2,16 +2,15 @@
 % Please edit documentation in R/functions.R
 \name{getESS}
 \alias{getESS}
-\title{Title}
+\title{Get ESS}
 \usage{
 getESS(stan_fit, parameters)
 }
 \arguments{
-\item{parameters}{}
-}
-\value{
+\item{stan_fit}{Output of stan}
 
+\item{parameters}{Parameter names to extract}
 }
 \description{
-Title
+Get ESS
 }

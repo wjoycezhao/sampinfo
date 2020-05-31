@@ -12,15 +12,15 @@ getStanData(
 )
 }
 \arguments{
-\item{beta}{variable names to be included in the model, e.g., c('beta','gamma').
-note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
+\item{beta}{Variable names to be included in the model, e.g., c('beta','gamma').
+Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
 
 \item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
 9 for estimating it as a free parameter}
 
-\item{option_num}{number of total options in each choice (C)}
+\item{option_num}{Number of total options in each choice (C)}
 
-\item{format_data}{this should be a formated data.frame. sID: participant IDs. qID: question ID.
+\item{format_data}{This should be a formated data.frame. sID: participant IDs. qID: question ID.
 cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
 terminate: 0 if continue sampling (not necessary)}
 }

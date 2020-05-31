@@ -1,13 +1,15 @@
 
-#' Title
+#' Format data for the thoughtListing project
 #'
-#' @param cluster_num
-#' @param data_folder
+#' Add feature matrix
+#' (decision congruence, semantic congruence and cluster resmapling matrix)
+#' to the thought listing data.
+#' @param cluster_num number of thought cluster for one option. If 3 then option number is 2 * 3 + 1 = 7.
+#' @param exp_name name of the experiment (used in the file name)
+#' @param data_folder the folder in which .csv is saved
 #'
-#' @return
 #' @export
 #'
-#' @examples
 getDataHier = function(cluster_num = NULL, exp_name, data_folder = ''){
 
   ## thought listing data
@@ -58,17 +60,17 @@ getDataHier = function(cluster_num = NULL, exp_name, data_folder = ''){
               base_rates = base_rates))
 }
 
-#' Title
+#' Generate decision congruence matrix
 #'
-#' @param cluster_num
+#' Generate the decision congruence matrix.
 #'
-#' @return
+#' @inheritParams getDataHier
+#'
+#' @return A matrix. 1 for clusters supporting the same decision; 0 otherwise.
 #' @export
 #'
 #' @examples
 getSameA = function(cluster_num = NULL){
-  ## generate the decision congruence matrix
-  ## (1 for clusters supporting the same decision; 0 otherwise)
   sameA_m = diag(cluster_num*2+1)
   temp = matrix(1, ncol = cluster_num,nrow = cluster_num)
   sameA_m[1:cluster_num,1:cluster_num] = temp
@@ -85,18 +87,17 @@ getSameA = function(cluster_num = NULL){
 #   return(feature_df)
 # }
 
-#' Title
+#' Add feature matrix
 #'
-#' @param feature_mv
-#' @param data_df
-#' @param option_num
-#' @param feature_name
-#' @param id
+#' @param feature_mv The features to be added
+#' @param data_df The raw data.frame
+#' @param option_num Number of options, should be the same as the column number of the  feaature matrix
+#' @param feature_name Name of feature to appear in formatted data
+#' @param id Indicating which rows to extract from the feature matrix for each row of the raw data frame
 #'
-#' @return
 #' @export
 #'
-#' @examples
+
 addFeatureMatrix = function(feature_mv, data_df, option_num, feature_name, id=NULL){
   if(nrow(feature_mv) != option_num){
     stop('number of columns of feature matrix should be the same as the option_num')}

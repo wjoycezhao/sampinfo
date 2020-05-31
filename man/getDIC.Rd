@@ -2,16 +2,15 @@
 % Please edit documentation in R/functions.R
 \name{getDIC}
 \alias{getDIC}
-\title{Title}
+\title{Get DIC}
 \usage{
-getDIC(stan_fit, devName = "dev")
+getDIC(stan_fit, devName = "dev_m")
 }
 \arguments{
-\item{devName}{}
-}
-\value{
+\item{stan_fit}{Output of stan}
 
+\item{devName}{Name for deviation in the RCode, should be default 'dev_m'}
 }
 \description{
-Title
+Get DIC
 }

@@ -1,9 +1,9 @@
 ---
 title: "Hierarchical model for sampling"
-# output: rmarkdown::html_vignette
-output:
-  md_document:
-    variant: markdown_github
+output: rmarkdown::html_vignette
+# output:
+#   md_document:
+#     variant: markdown_github
 vignette: >
   %\VignetteIndexEntry{my-vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, warning=FALSE, warning=FALSE}
+```{r setup, warning=FALSE, message=FALSE}
 library(sampinfo)
 library(bayesplot)
 library(rstan)
@@ -27,53 +27,55 @@ library(knitr)
 Prepare your data:
 --------
 
-To begin with, you have a dataset with many participants, each finishing a same set of questions. Within each questions, there are several time points, where they need to sample from a set of C options.  
-In the toy data, total question number $Q = 5$. The question ID for each sampling time point is stored in qID.
+To begin with, we have a dataset with many participants, each finishing a same set of questions. Within each question, there are several time points, where participants sample from a set of C options.  
+In this toy dataset, total question number $Q = 5$. The question ID for each sampling time point is stored in qID.
 ```{r}
 subset(sampinfo::raw_data,sID==1)
 ```
 
-And participant number $S=10$. The participant ID is listed in sID. 
+Total participant number $S=10$. The participant ID is listed in sID. 
 
 ```{r}
 subset(sampinfo::raw_data,qID==1)
 ```
 
-For each question, there are many time points, where participant sample from different options. Here time points are saved in tNo, and option sampled in cID. We have in total 7 different options (cID from 1 to 7).
+In each question, there are many time points, where participant sample from different options. Here time points are saved in tNo. There are in total 7 options (cID from 1 to 7).
 
 Understand the model:
 --------
 
-Our goal is to predict the probabilities of sampling different features at each time point, using several known features of the options. 
+Our goal is to predict the probabilities of sampling different options at each time point, using several known features of the options. 
 
 In this example, we have three features: sameC, sameA and dist. 
 
-* sameC: whether the option is in the same as the one sampled in the previous time point  
+* sameC: whether the option (i.e., thought cluster) is the same as the one sampled in the previous time point  
 * sameA: whether they are decision congruent  
-* dist: the semantic distance between the option and the previously sampled one  
+* dist: the semantic distance between the option and the previously sampled option  
 
-Suppose that we use a single feature, and assume the effect can be captured by a linear multiplier $\beta$. Then for a trial with C options, we write the feature values into a vector \[\boldsymbol{X_{C\times1}} = [X_1, ..., X_C]^T\]
-The predicted choice $Y$ thus follows a categorical distribution. \[Y \sim Cat(softmax(\boldsymbol{X}_{C\times1}\beta))\]. 
+```{r}
+head(sampinfo::format_data,3)
+```
 
-In a case with $K$ features, the effects can be captured by a vector $\boldsymbol{\beta_{K\times1}}$, and the feature matrix is $\boldsymbol{X_{C\times K}}$.\  
-
-The predicted smapling probability \[Y \sim Cat(softmax(\boldsymbol{X_{C\times K}}\boldsymbol{\beta_{K\times1}})\] 
+Suppose that we use a single feature, then for a trial with C options, we write the feature values into a vector \[\boldsymbol{X_{C\times1}} = [X_1, ..., X_C]^T\]
+Now assume the effect can be captured by a linear multiplier $\beta$, and that the predicted choice $Y$ follows a categorical distribution \[Y \sim Cat(softmax(\boldsymbol{X}_{C\times1}\beta))\]
+In a case with $K$ features, the feature values become a matrix, $\boldsymbol{X_{C\times K}}$, and the effects can be captured by a vector $\boldsymbol{\beta_{K\times1}}$. 
+The predicted sampling probability \[Y \sim Cat(softmax(\boldsymbol{X_{C\times K}}\boldsymbol{\beta_{K\times1}})\] 
 
 This is the model for predicting the sampling probability in one time point, of one question, completed by one participant. 
 
-Now how about heterogeneity across paricipants and questions? We need a *hiearchical model* to address that. 
+Now how about heterogeneity across participants and questions? We need a *hiearchical model* to address that. 
 
-We first assume there is a grand mean for the feature effects, and denote it as $\boldsymbol{\mu^{\beta}_{K\times1}}$. 
+We first assume there is a grand mean for each of the feature effects. We denote the mean effects as $\boldsymbol{\mu^{\beta}_{K\times1}}$. 
 
-The $S$ participants deviate from the grand mean on each of the $K$ features. Here the deviation can be written as $\boldsymbol{\delta^{\beta,S}_{K\times S}}$. 
+The $S$ participants deviate from the grand mean on each of the $K$ features. Here the deviation can be written as $\boldsymbol{\eta^{\beta,S}_{K\times S}}$. 
 
-Similarly, the deviations of the $Q$ questions on the features can be written as $\boldsymbol{\delta^{\beta,Q}_{K\times Q}}$. 
+Similarly, the deviations of the $Q$ questions on the features can be written as $\boldsymbol{\eta^{\beta,Q}_{K\times Q}}$. 
 
-Each row of these deviation matrices forllows a centered normal distribution. Therefore, we need scale parameters to quantify these deviations. For participant and question level deviations, the scale parameters are $\boldsymbol{\sigma^{\beta,S}_{K\times 1}}$ and $\boldsymbol{\sigma^{\beta,Q}_{K\times 1}}$ respectively.
+We assume that each row of these deviation matrices follows a centered normal distribution. Under this assumption, we need scale parameters to quantify these deviations. For participant and question level deviations, the scale parameters are $\boldsymbol{\sigma^{\beta,S}_{K\times 1}}$ and $\boldsymbol{\sigma^{\beta,Q}_{K\times 1}}$ respectively.
 
 
-Therefore, the parameters we need to fit include: $\boldsymbol{\mu^{\beta}_{K\times1}}$, $\boldsymbol{\sigma^{\beta,S}_{K\times 1}}$, $\boldsymbol{\sigma^{\beta,Q}_{K\times 1}}$, $\boldsymbol{\delta^{\beta,S}_{K\times S}}$, and $\boldsymbol{\delta^{\beta,Q}_{K\times Q}}$. For participant $s$ and question $q$, the predicted samplng choice 
-\[Y \sim Cat(softmax(\boldsymbol{X_{C\times K}}(\boldsymbol{\mu^{\beta}_{K\times1}} + \boldsymbol{\delta^{\beta,S}_{*,s}} + \boldsymbol{\delta^{\beta,Q}_{*,q}}))\]
+To summarize, the parameters we need to fit include: $\boldsymbol{\mu^{\beta}_{K\times1}}$, $\boldsymbol{\sigma^{\beta,S}_{K\times 1}}$, $\boldsymbol{\sigma^{\beta,Q}_{K\times 1}}$, $\boldsymbol{\eta^{\beta,S}_{K\times S}}$, and $\boldsymbol{\eta^{\beta,Q}_{K\times Q}}$. For participant $s$ and question $q$, the predicted sampling choice 
+\[Y \sim Cat(softmax(\boldsymbol{X_{C\times K}}(\boldsymbol{\mu^{\beta}_{K\times1}} + \boldsymbol{\eta^{\beta,S}_{*,s}} + \boldsymbol{\eta^{\beta,Q}_{*,q}}))\]
  
 Beyond these we can also have decay, and different base rates for different questions.
 
@@ -81,10 +83,14 @@ Now let's take a break from maths...
 
 And take a look at the code.
 
-```{r}
-sampinfo::getStanCode(9)
+```{r, comment = ">", highlight=FALSE}
+sampinfo::getStanCode(0)
 ```
 
+Next let's add a flexible decay parameter.
+```{r, comment = ">", highlight=FALSE}
+sampinfo::getStanCode(9)
+```
 Try fitting your model to the data:
 --------
 
@@ -178,10 +184,10 @@ model_diag = sampinfo::getModelDiag(stan_data_fit = stan_data_fit)
 print(model_diag)
 ```
 
-DIC and WAIC can be used for model comparisons. Lisheng also mentioned bayes factors, LOO-CV. 
+DIC and WAIC can be used for model comparisons. Lisheng also mentioned Bayes factors, LOO-CV. 
 
 Good reference:    
-Gelman, A., Hwang, J., & Vehtari, A. (2014). Understanding predictive information criteria for Bayesian models. Statistics and computing, 24(6), 997-1016. [Link](https://arxiv.org/abs/1307.5928)
+German, A., Hwang, J., & Vehtari, A. (2014). Understanding predictive information criteria for Bayesian models. Statistics and computing, 24(6), 997-1016. [Link](https://arxiv.org/abs/1307.5928)
 
 Summarize and plot parameters
 --------
@@ -245,25 +251,23 @@ Other topics:
 
 Note that there are two ways to parameterize normal distributions (in hierarchical models): 
 
-* Centered parameterization,    
-\[\gamma \sim norml(\gamma_{mu}, \gamma_{sd})\]
- Non-centered parameterization,    
-\[\gamma_{raw} \sim norml(0, 1) \]   
-\[\gamma = \gamma_{mu} + \gamma_{sd} \gamma_{raw} \]
+* Centered parameterization:    
+\[\beta \sim norml(\mu_{beta}, \sigma_{beta})\]
+* Non-centered parameterization:   
+\[\beta_{raw} \sim norml(0, 1) \]
+\[\beta = \mu_{beta} + \sigma_{beta} \beta_{raw} \]
 
 
-If your individual level data are not very informative (and thus the individual parameters, $\gamma$, are influenced by the group level priors $\gamma_{mu}$ and $\gamma_{sd}$ a lot), it is much better to use the non-centered approach.
+If your individual level data are not very informative (and thus the individual parameters, $\beta$, are influenced by the group level priors $\mu_{\beta}$ and $\sigma_{\beta}$ a lot), it is much better to use the non-centered approach.
 Detailed explanations can be found here.  
 
 * RStan manual 22.7 [Link](https://mc-stan.org/docs/2_23/stan-users-guide/reparameterization-section.html)
 * Betancourt, M., & Girolami, M. (2015). Hamiltonian Monte Carlo for hierarchical models.   Current trends in Bayesian methodology with applications, 79(30), 2-4. [Link](https://arxiv.org/abs/1312.0906)
   
-Intuitively, when $\gamma_{sd}$ is smalll, $\gamma$ tends to be very close to gamma_mu. When $\gamma_{sd}$ is large, $\gamma$ varies a lot. That forms a tunnel shape. The stepsize needed for exploring the 'neck' is much much smaller than that required for the 'body'. Hence there's no single stepsize that stan can use to sample efficiently.  
-If we use the non-centered parameterization, then conditional on the data, the actively sampled parameters becomes independent from each other. 
+Intuitively, when $\sigma_{\beta}$ is small, $\beta$ tends to be very close to $\mu_{beta}$. When $\sigma_{\beta}$ is large, $\beta$ varies a lot. That forms a tunnel shape. The stepsize needed for exploring the 'neck' is much much smaller than that required for the 'body'. Hence there's no single stepsize that stan can use to sample efficiently.  
+If we use the non-centered parameterization, then conditional on the data, the actively sampled parameters becomes independent from each other. devtools::install_github(build_vignettes = TRUE)
 
 ### HMC and Nuts
-
-To understand how HMC works, consider reading the following:  
 
 - Hamiltonian Monte Carlo explained. [Link](http://arogozhnikov.github.io/2016/12/19/Markov_chain_monte_carlo.html)
 - Betancourt, M. (2017). A conceptual introduction to Hamiltonian Monte Carlo. arXiv preprint arXiv:1701.02434. [Link](https://arxiv.org/abs/1701.02434)

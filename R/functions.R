@@ -1,48 +1,43 @@
-# Little function to calculate posterior variances from simulation
-#' Title
+#
+#' Little function to calculate posterior variances from simulation
 #'
 #' @param a
 #'
-#' @return
 #' @export
 #'
-#' @examples
-colVars <- function (a){
+.colVars <- function (a){
   diff <- a - matrix (colMeans(a), nrow(a), ncol(a), byrow=TRUE)
   vars <- colMeans (diff^2)*nrow(a)/(nrow(a)-1)
   return (vars)
 }
 
-# The calculation of Waic!  Returns lppd, p_waic_1, p_waic_2, and waic, which we define
-# as 2*(lppd - p_waic_2), as recommmended in BDA
-#' Title
+
+#' Get WAIC
 #'
-#' @param stan_fit
+#' @param stan_fit Output of stan
 #' @param logName
 #'
-#' @return
+#' @return lppd, p_waic_1, p_waic_2, and waic, defined
+#' as 2*(lppd - p_waic_2), as recommmended in BDA
 #' @export
 #'
-#' @examples
 getWAIC <- function (stan_fit, logName = "log_lik"){
   log_lik <- rstan::extract (stan_fit, logName)[[1]]
   lppd <- sum (log (colMeans(exp(log_lik))))
   p_waic_1 <- 2*sum (log(colMeans(exp(log_lik))) - colMeans(log_lik))
-  p_waic_2 <- sum (colVars(log_lik))
+  p_waic_2 <- sum (.colVars(log_lik))
   waic_2 <- -2*lppd + 2*p_waic_2
   return (list (waic=waic_2, p_waic=p_waic_2, lppd=lppd, p_waic_1=p_waic_1))
 }
 
-#' Title
+#' Get DIC
 #'
-#' @param stan_fit
-#' @param devName
+#' @inheritParams getWAIC
+#' @param devName Name for deviation in the RCode, should be default 'dev_m'
 #'
-#' @return
 #' @export
 #'
-#' @examples
-getDIC <- function (stan_fit, devName = "dev"){
+getDIC <- function (stan_fit, devName = "dev_m"){
   dev <- unlist(rstan::extract (stan_fit, devName))
   return (data.frame (dic_1 = mean(dev) + .5 * var(dev),
                       dev_mean = mean(dev),
@@ -52,85 +47,65 @@ getDIC <- function (stan_fit, devName = "dev"){
                       pd_2 = mean(dev) - min(dev)))
 }
 
-#' Title
+#' Get quantiles
 #'
-#' @param x
-#'
-#' @return
 #' @export
-#'
-#' @examples
 quantile1 = function(x){
   quantile1 = c(mean=mean(x), median=median(x), quantile(x, c(0.025,0.05,0.1,0.2,0.25,0.5,0.75,0.8,0.9,0.95,0.975)), sd=sqrt(var(x)));
   return(quantile1)
 }
-#' Title
+
+#' Get quantiles
 #'
 #' @param x
-#'
-#' @return
 #' @export
-#'
-#' @examples
 quantile2 = function(x){
   quantile2 = c(quantile(x, c(0.1,0.3,0.5,0.7,0.9)));
   return(quantile2)
 }
 
 
-#' Title
+#' Get rhat
 #'
-#' @param stan_fit
-#' @param parameters
-#'
-#' @return
+#' @inheritParams getWAIC
+#' @param parameters Parameter names to extract
 #' @export
-#'
-#' @examples
 getRhat = function(stan_fit,parameters){
   return(rstan::summary(stan_fit)$summary[parameters,"Rhat"] )
 }
 
-#' Title
+#' Get ESS
 #'
-#' @param stan_fit
-#' @param parameters
-#'
-#' @return
+#' @inheritParams getWAIC
+#' @inheritParams getRhat
 #' @export
-#'
-#' @examples
 getESS = function(stan_fit,parameters){
   return(rstan::summary(stan_fit)$summary[parameters,"n_eff"] )
 }
 
-#' Title
+#' get_elapsed_time
 #'
-#' @param stan_fit
+#' @inheritParams getWAIC
 #'
-#' @return
 #' @export
 #'
-#' @examples
 getTime = function(stan_fit){
   return(rowSums(rstan::get_elapsed_time(stan_fit)))
 }
 
 
-#' Title
+#' getMode
 #'
 #' @param v
 #'
-#' @return
 #' @export
 #'
-#' @examples
 getMode <- function(v) {
   uniqv <- unique(v)
   return(uniqv[which.max(tabulate(match(v, uniqv)))])
 }
 
-#' Title
+#' summarySE
 #'
 #' @param data
 #' @param measurevar
@@ -139,10 +114,8 @@ getMode <- function(v) {
 #' @param conf.interval
 #' @param .drop
 #'
-#' @return
 #' @export
 #'
-#' @examples
 summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                       conf.interval=.95, .drop=TRUE) {
   library(plyr)

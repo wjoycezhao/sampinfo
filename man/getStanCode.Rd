@@ -2,16 +2,15 @@
 % Please edit documentation in R/model_functions.R
 \name{getStanCode}
 \alias{getStanCode}
-\title{Title}
+\title{Retrieve stan code}
 \usage{
 getStanCode(deltaM_value)
 }
 \arguments{
-\item{deltaM_value}{}
-}
-\value{
-
+\item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
+9 for estimating it as a free parameter}
 }
 \description{
-Title
+There are two Rstan code files. One for flexible delta (deltaM_value=9);
+the other for fixed deltaa (deltaM_value = 0 or deltaM_value = 1)
 }

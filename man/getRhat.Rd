@@ -2,16 +2,15 @@
 % Please edit documentation in R/functions.R
 \name{getRhat}
 \alias{getRhat}
-\title{Title}
+\title{Get rhat}
 \usage{
 getRhat(stan_fit, parameters)
 }
 \arguments{
-\item{parameters}{}
-}
-\value{
+\item{stan_fit}{Output of stan}
 
+\item{parameters}{Parameter names to extract}
 }
 \description{
-Title
+Get rhat
 }

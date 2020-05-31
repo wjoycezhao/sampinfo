@@ -4,24 +4,24 @@
 #' \code{getStanFit} use RStan to fit your information sampling model.
 #' Note that the option number (C) should be the same across all questions.
 #'
-#' @param beta variable names to be included in the model, e.g., c('beta','gamma').
-#' note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified
+#' @param beta Variable names to be included in the model, e.g., c('beta','gamma').
+#' Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified
 #' @param deltaM_value 0 for full decay (marcov property); 1 for no decay;
 #'  9 for estimating it as a free parameter
-#' @param option_num number of total options in each choice (C)
-#' @param format_data this should be a formated data.frame. sID: participant IDs. qID: question ID.
+#' @param option_num Number of total options in each choice (C)
+#' @param format_data This should be a formated data.frame. sID: participant IDs. qID: question ID.
 #' cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
 #' terminate: 0 if continue sampling (not necessary)
-#' @param save_model_file specify a name if you want to save the RStan samples and diagnostics to a csv file
-#' @param init_values default is 'random'; can be specified using a function or a list
-#' @param iter_num iteration number
-#' @param chain_num chain number
-#' @param warmup_num warm-up or burn-in number
-#' @param core_num number of cores to be used. equal or less to chain_num
-#' @param adapt_delta default 0.999
-#' @param stepsize default 0.01
-#' @param max_treedepth default 20
-#' @param refresh default 500
+#' @param save_model_file Specify a name if you want to save the RStan samples and diagnostics to a csv file
+#' @param init_values Default is 'random'; can be specified using a function or a list
+#' @param iter_num Iteration number
+#' @param chain_num Chain number
+#' @param warmup_num Warm-up or burn-in number
+#' @param core_num Number of cores to be used. equal or less to chain_num
+#' @param adapt_delta Default 0.999
+#' @param stepsize Default 0.01
+#' @param max_treedepth Default 20
+#' @param refresh Default 500
 #'
 #' @return Use $stan_fit to access the returned object from Stan;
 #' Use $stan_data to see the input data of the Stan model
@@ -55,14 +55,13 @@ getStanFit = function (beta, deltaM_value, option_num, format_data,
 }
 
 
-#' Title
+#' Retrieve stan code
 #'
-#' @param deltaM_value
-#'
-#' @return
+#' There are two Rstan code files. One for flexible delta (deltaM_value=9);
+#' the other for fixed deltaa (deltaM_value = 0 or deltaM_value = 1)
+#' @inheritParams getStanFit
 #' @export
 #'
-#' @examples
 getStanCode = function(deltaM_value){
   if (deltaM_value == 9){
     stan_code = stanmodels$mm10d9
@@ -123,17 +122,13 @@ getStanData = function(beta = character(0), deltaM_value = NULL,
 
 
 
-#' Title
+#' Change variable names
 #'
-#' @param names
-#' @param beta
-#' @param Q
-#' @param S
-#'
-#' @return
+#' @param names A vector of characters. Variables taken from rstan outputs.
+#' @inheritParams getStanFit
+#' @param Q Number of questions
+#' @param S Number of participants
 #' @export
-#'
-#' @examples
 changeBetaNames = function(names, beta,Q,S){
   for (x in 1:length(beta)){
     names = plyr::mapvalues(names,

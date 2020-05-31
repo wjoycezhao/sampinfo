@@ -2,16 +2,20 @@
 % Please edit documentation in R/model_functions.R
 \name{changeBetaNames}
 \alias{changeBetaNames}
-\title{Title}
+\title{Change variable names}
 \usage{
 changeBetaNames(names, beta, Q, S)
 }
 \arguments{
-\item{S}{}
-}
-\value{
+\item{names}{A vector of characters. Variables taken from rstan outputs.}
 
+\item{beta}{Variable names to be included in the model, e.g., c('beta','gamma').
+Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
+
+\item{Q}{Number of questions}
+
+\item{S}{Number of participants}
 }
 \description{
-Title
+Change variable names
 }

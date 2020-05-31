@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{summarySE}
 \alias{summarySE}
-\title{Title}
+\title{summarySE}
 \usage{
 summarySE(
   data = NULL,
@@ -16,9 +16,6 @@ summarySE(
 \arguments{
 \item{.drop}{}
 }
-\value{
-
-}
 \description{
-Title
+summarySE
 }

@@ -2,16 +2,19 @@
 % Please edit documentation in R/data_functions.R
 \name{getDataHier}
 \alias{getDataHier}
-\title{Title}
+\title{Format data for the thoughtListing project}
 \usage{
 getDataHier(cluster_num = NULL, exp_name, data_folder = "")
 }
 \arguments{
-\item{data_folder}{}
-}
-\value{
+\item{cluster_num}{number of thought cluster for one option. If 3 then option number is 2 * 3 + 1 = 7.}
 
+\item{exp_name}{name of the experiment (used in the file name)}
+
+\item{data_folder}{the folder in which .csv is saved}
 }
 \description{
-Title
+Add feature matrix
+(decision congruence, semantic congruence and cluster resmapling matrix)
+to the thought listing data.
 }
