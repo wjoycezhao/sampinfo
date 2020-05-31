@@ -1,4 +1,4 @@
-## install devtools
+## Install devtools, so that we can run devtools::install_github
 
 if(require("devtools")){
 } else {
@@ -10,19 +10,22 @@ if(require("devtools")){
     }
 }
 
-## install codes for the sampling model
+## Install codes for the sampling model
 install_github('wjoycezhao/sampinfo')
 requre(sampinfo)
 
-## We have included a very small toy dataset. See the first 6 rows of it
+## If the code is installed successfully, you should have a very small toy dataset now.
+## See the first 6 rows of it
 head(format_data,6)
 
-## fit the model
+## Now we can try fitting a model (takes about 5s)
+## if you can see the data but cannot fit the model
+## it is likely that RStan did not install successfully..
 stan_data_fit = getStanFit(beta = c('sameA', 'dist'), deltaM_value = 9, 
                            option_num = 7, format_data = format_data,
                            save_model_file = NULL, init_values="random",
-                           iter_num = 200,chain_num = 4,warmup_num = 100, core_num=4,
+                           iter_num = 200,chain_num = 1,warmup_num = 100, core_num=1,
                            adapt_delta=0.9, stepsize = 0.1, max_treedepth = 10,
                            refresh=1000, save_warmup = TRUE)
 
-## see tutorial.html for other functions
+## see tutorial.html for other functions :)
