@@ -244,9 +244,9 @@ Note that there are two ways to parameterize normal distributions (in hierarchic
 
 * Centered parameterization,    
 \[\gamma \sim norml(\gamma_{mu}, \gamma_{sd})\]
-* Non-centered parameterization,    
+ Non-centered parameterization,    
 \[\gamma_{raw} \sim norml(0, 1) \]   
-\[\gamma = \gamma_{mu} + \gamma_{sd} * \gamma_{raw} \]
+\[\gamma = \gamma_{mu} + \gamma_{sd} \gamma_{raw} \]
 
 
 If your individual level data are not very informative (and thus the individual parameters, $\gamma$, are influenced by the group level priors $\gamma_{mu}$ and $\gamma_{sd}$ a lot), it is much better to use the non-centered approach.
