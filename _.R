@@ -1,20 +1,20 @@
 # install.packages("rstantools")
 # rstantools::rstan_create_package(path = '/Users/joyce/Dropbox/sampinfo',
-                                 # stan_files = c('mm10d01.stan','mm10d9.stan'))
+# stan_files = c('mm10d01.stan','mm10d9.stan'))
 
 # I finally found the solution. It is important to write the
 # following lines of code in the NAMESPACE file, otherwise you will have the error mentioned above.
 #
 import(Rcpp)
 import(methods)
-importFrom(rstan,sampling)
+importFrom(rstan, sampling)
 useDynLib(sampinfo)
 
 require(devtools)
 
-pkgbuild::compile_dll(force=TRUE)
-roxygen2::roxygenise(clean=TRUE)
-devtools::install(quick=T)##MUST BE FALSE THE FIRST TIME
+pkgbuild::compile_dll(force = TRUE)
+roxygen2::roxygenise(clean = TRUE)
+devtools::install(quick = T)##MUST BE FALSE THE FIRST TIME
 build_vignettes()
 
 load_all()
@@ -24,9 +24,11 @@ use_package('tidyr')
 use_package('rstan')
 use_package('utils')
 use_package('stats')
+use_package('truncnorm')
 use_package('bayesplot')
 
 require(dplyr)
+
 
 # raw_data = subset(read.csv('exp2_data_C3.csv'),sID<11&qID<6)[,-1]
 # format_data = subset(getDataHier(3,'exp2')$format_data[,-1],sID<11&qID<6)
@@ -37,3 +39,11 @@ require(dplyr)
 
 # usethis::use_vignette("tutorial")
 # rmarkdown::render("vignettes/tutorial.Rmd", "all")
+
+# feature_data_8 = cbind(read.csv('exp2_dist_C3.csv')[,2],
+#                        do.call(rbind, replicate(8, cbind(diag(7), getSameA(3)),
+#                                                 simplify=FALSE)),
+#                        read.csv('exp2_dist_C3.csv')[,-c(1:2)])
+# colnames(feature_data_8) = c('qID',unlist(lapply(c('sameC_','sameA_','dist_'), function(x) paste0(x,1:7))))
+# head(feature_data_8)
+### usethis::use_data(feature_data_8, overwrite = FALSE)

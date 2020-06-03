@@ -6,7 +6,7 @@ if(require("devtools")){
     if(require("devtools")){
         print("devtools installed and loaded")
     } else {
-        stop("devtools not install lme4")
+        stop("devtools not installed")
     }
 }
 
@@ -28,4 +28,3 @@ stan_data_fit = getStanFit(beta = c('sameA', 'dist'), deltaM_value = 9,
                            adapt_delta=0.9, stepsize = 0.1, max_treedepth = 10,
                            refresh=1000, save_warmup = TRUE)
 
-## see tutorial.html for other functions :)

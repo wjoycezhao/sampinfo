@@ -556,9 +556,9 @@ public:
             }
             // model body
             current_statement_begin__ = 61;
-            lp_accum__.add(normal_log<propto__>(deltaM, 0.8, 0.8));
+            lp_accum__.add(normal_log<propto__>(deltaM, 0.5, 0.8));
             if (deltaM < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-            else lp_accum__.add(-normal_ccdf_log(0, 0.8, 0.8));
+            else lp_accum__.add(-normal_ccdf_log(0, 0.5, 0.8));
             current_statement_begin__ = 62;
             lp_accum__.add(std_normal_log<propto__>(beta_mu));
             current_statement_begin__ = 63;

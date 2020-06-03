@@ -21,7 +21,7 @@ cID: option ID being sampled (can take 1 to C). tNo: thought number in that ques
 terminate: 0 if continue sampling (not necessary)}
 
 \item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
-9 for estimating it as a free parameter}
+9 for estimating it as a free parameter; 99 for estimating participant-specific delta}
 
 \item{option_num}{Number of total options in each choice (C)}
 

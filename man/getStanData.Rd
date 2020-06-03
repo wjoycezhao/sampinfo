@@ -8,7 +8,8 @@ getStanData(
   beta = character(0),
   deltaM_value = NULL,
   option_num = 3 * 2 + 1,
-  format_data
+  format_data,
+  hier_value = 1
 )
 }
 \arguments{
@@ -16,13 +17,15 @@ getStanData(
 Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
 
 \item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
-9 for estimating it as a free parameter}
+9 for estimating it as a free parameter; 99 for estimating participant-specific delta}
 
 \item{option_num}{Number of total options in each choice (C)}
 
 \item{format_data}{This should be a formated data.frame. sID: participant IDs. qID: question ID.
 cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
 terminate: 0 if continue sampling (not necessary)}
+
+\item{hier_value}{Whether use hiearchical model. Default is 1.}
 }
 \description{
 Format data for Stan

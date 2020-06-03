@@ -20,7 +20,8 @@ getStanFit(
   max_treedepth = 20,
   save_warmup = FALSE,
   refresh = 500,
-  init_r = 0.5
+  init_r = 0.5,
+  hier_value = 1
 )
 }
 \arguments{
@@ -28,7 +29,7 @@ getStanFit(
 Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
 
 \item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
-9 for estimating it as a free parameter}
+9 for estimating it as a free parameter; 99 for estimating participant-specific delta}
 
 \item{option_num}{Number of total options in each choice (C)}
 
@@ -55,6 +56,8 @@ terminate: 0 if continue sampling (not necessary)}
 \item{max_treedepth}{Default 20}
 
 \item{refresh}{Default 500}
+
+\item{hier_value}{Whether use hiearchical model. Default is 1.}
 }
 \value{
 Use $stan_fit to access the returned object from Stan;

@@ -58,7 +58,7 @@ transformed parameters {
 }
 
 model{
-  deltaM ~ normal(0.8,0.8)T[0,];
+  deltaM ~ normal(0.5,0.8)T[0,];
   beta_mu ~ std_normal();
   beta_q_sd ~ std_normal();
   beta_s_sd ~ std_normal();
