@@ -1,5 +1,6 @@
 
 
+
 #' Fit the model!
 #'
 #' \code{getStanFit} use RStan to fit your information sampling model.
@@ -99,14 +100,12 @@ getStanFit = function (beta,
 #'
 getStanCode = function(deltaM_value, hier_value = 1) {
   if (hier_value == 0) {
-    stan_code = stanmodels$mm_nh
+    stan_code = stanmodels$mm
   } else if (hier_value == 1) {
-    if (deltaM_value == 9) {
-      stan_code = stanmodels$mm10d9
-    } else if (deltaM_value == 99) {
-      stan_code = stanmodels$mm10d99
-    } else{
-      stan_code = stanmodels$mm10d01
+    if (deltaM_value == 8) {
+      stan_code = stanmodels$hmm_8
+    } else {
+      stan_code = stanmodels$hmm
     }
   }
   return(stan_code)
@@ -195,7 +194,7 @@ getFeatureMatrices = function(beta,
     as.matrix(format_data[, paste0(x, '_', 1:option_num)]))
   X = lapply(1:nrow(format_data), function(x) {
     sapply(temp, function(y)
-      as.numeric(y[x, ]))
+      as.numeric(y[x,]))
   })
   if (deltaM_value == 1) {
     for (i in 1:length(X)) {
@@ -306,12 +305,9 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
   stan_fit = stan_data_fit$stan_fit
   beta = stan_data_fit$beta
   if (stan_data_fit$stan_data$hier_value == 0) {
-    if (stan_data_fit$stan_data$deltaM_value == 9){
-      parameters0 = c('deltaM', 'beta', 'alpha')
-    }else{
-      parameters0 = c('beta', 'alpha')
-    }
-  } else if (stan_data_fit$stan_data$hier_value == 1) {
+    parameters0 = c('deltaM', 'beta', 'alpha')
+  } else if (stan_data_fit$stan_data$hier_value == 1 &
+             stan_data_fit$stan_data$deltaM_value != 8) {
     parameters0 = c(
       'deltaM',
       'beta_mu',
@@ -324,10 +320,28 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
       'alpha',
       'beta'
     )
+  } else if (stan_data_fit$stan_data$hier_value == 1 &
+             stan_data_fit$stan_data$deltaM_value == 8) {
+    parameters0 = c(
+      'deltaM_mu',
+      'deltaM_mu_raw',
+      'deltaM_q_sd',
+      'deltaM_s_sd',
+      'beta_mu',
+      'beta_q_sd',
+      'beta_s_sd',
+      'deltaM_qmean',
+      'deltaM_smean',
+      'beta_qmean',
+      'beta_smean',
+      'beta_qdev',
+      'beta_sdev',
+      'alpha',
+      'beta'
+    )
   }
-  if (stan_data_fit$stan_data$deltaM_value == 99) {
-    parameters0 = c(parameters0, 'deltaM_mu', 'deltaM_sd')
-  }
+
+
   df = t(sapply(as.data.frame(
     rstan::extract(stan_fit, pars = parameters0)
   ), quantile1))
@@ -352,7 +366,7 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
 #' \code{getModelDiag} returns model diagnostics,
 #' and save the results to a .csv file when \code{csv_name} is specified
 #'
-#' @param devName string. name for dev in rstan codes
+#' @param dev_name string. name for dev in rstan codes
 #' @inheritParams getParaSummary
 #'
 #' @return A dataframe indicating DIC, WAIC, model running time,
@@ -362,11 +376,11 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
 
 getModelDiag = function(stan_data_fit,
                         csv_name = NULL,
-                        devName = 'dev_m') {
+                        dev_name = 'dev_m') {
   stan_fit = stan_data_fit$stan_fit
   time = getTime(stan_fit)
   df = cbind.data.frame(
-    getDIC(stan_fit, devName),
+    getDIC(stan_fit, dev_name),
     getWAIC(stan_fit),
     elapsed_time_min = min(time),
     elapsed_time_max = max(time),

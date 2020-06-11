@@ -1,8 +1,8 @@
 
 data{
   // memory
-  int deltaM_value; // number of option categories 
-  int<lower=2> C; // number of option categories 
+  int deltaM_value; // number of option categories
+  int<lower=2> C; // number of option categories
   int<lower=0> K; // number of features; if 0 then no betas
   int<lower=1> N; // number of time points
   int<lower=1> S; // number of participants
@@ -28,15 +28,15 @@ transformed parameters {
   matrix[K,S] beta[Q];
   if (K > 0){
     for (q in 1:Q){
-    beta[q] = rep_matrix(beta_mu,S) + 
-              diag_pre_multiply(beta_s_sd,beta_s_raw) + 
+    beta[q] = rep_matrix(beta_mu,S) +
+              diag_pre_multiply(beta_s_sd,beta_s_raw) +
               rep_matrix(beta_q_sd .* beta_q_raw[,q],S);
     }
   }
 
   alpha[1:(C-1),] = alpha_raw/2;
   alpha[C,] = to_row_vector(rep_array(0,Q));
-  
+
   {
     if (K > 0){
       for (n in 1:N){
@@ -50,13 +50,13 @@ transformed parameters {
 }
 
 model{
-  beta_mu ~ std_normal(); 
-  beta_q_sd ~ std_normal(); 
-  beta_s_sd ~ std_normal(); 
-  to_vector(beta_q_raw) ~ std_normal(); 
-  to_vector(beta_s_raw) ~ std_normal(); 
-  to_vector(alpha_raw) ~ std_normal(); 
-  
+  beta_mu ~ std_normal();
+  beta_q_sd ~ std_normal();
+  beta_s_sd ~ std_normal();
+  to_vector(beta_q_raw) ~ std_normal();
+  to_vector(beta_s_raw) ~ std_normal();
+  to_vector(alpha_raw) ~ std_normal();
+
   for (n in 1:N){
     cID[n] ~ categorical_logit(theta[,n]);
   }

@@ -4,14 +4,14 @@
 \alias{getModelDiag}
 \title{Model diagnostics.}
 \usage{
-getModelDiag(stan_data_fit, csv_name = NULL, devName = "dev_m")
+getModelDiag(stan_data_fit, csv_name = NULL, dev_name = "dev_m")
 }
 \arguments{
 \item{stan_data_fit}{model outputs obtained from getStanFit}
 
 \item{csv_name}{if specified then outputs will be saved in a .csv file starting with this name}
 
-\item{devName}{string. name for dev in rstan codes}
+\item{dev_name}{string. name for dev in rstan codes}
 }
 \value{
 A dataframe indicating DIC, WAIC, model running time,

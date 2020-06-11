@@ -14,8 +14,8 @@ require(devtools)
 
 pkgbuild::compile_dll(force = TRUE)
 roxygen2::roxygenise(clean = TRUE)
-devtools::install(quick = T)##MUST BE FALSE THE FIRST TIME
-build_vignettes()
+devtools::install(quick = F)##MUST BE FALSE THE FIRST TIME
+devtools::build_vignettes()
 
 load_all()
 use_package('plyr')

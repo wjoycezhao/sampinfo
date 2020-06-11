@@ -7,14 +7,15 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-https://mc-stan.org/docs/2_23/functions-reference/index.html
-https://mc-stan.org/docs/2_23/reference-manual/index.html
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+# change prior for delta: beta or gamma
+# https://mc-stan.org/docs/2_23/functions-reference/index.html
+# https://mc-stan.org/docs/2_23/reference-manual/index.html
 ```
 
 ```{r setup, warning=FALSE, message=FALSE}
@@ -147,13 +148,19 @@ And have a look at the code.
 ### Stan codes:
 
 ```{r, comment = ">", highlight=FALSE}
-sampinfo::getStanCode(0)
+sampinfo::getStanCode(deltaM_value = 0)
 ```
 
 Next let's add a flexible decay parameter.
 ```{r, comment = ">", highlight=FALSE}
-sampinfo::getStanCode(9)
+sampinfo::getStanCode(deltaM_value = 9)
 ```
+
+Some tips on how to programming multiple models in a single stan file.
+```{r, comment = ">", highlight=FALSE}
+sampinfo::getStanCode(deltaM_value = 1, hier_value = 0)
+```
+
 Try fitting the model to the data:
 --------
 
@@ -223,7 +230,7 @@ bayesplot::mcmc_rank_overlay(posterior_w, pars = pars0)
 - Also check gelman-rubin rhat.
 ```{r, warning=FALSE}
 rhat = sampinfo::getRhat(stan_data_fit$stan_fit)
-print(rhat[rhat>1.05&!is.na(rhat)])
+print(head(rhat[rhat>1.05&!is.na(rhat)]))
 ```
 
 Run the model:
@@ -346,6 +353,8 @@ If we use the non-centered parameterization, then conditional on the data, the a
 - Hamiltonian Monte Carlo explained. [Link](http://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html)
 - Betancourt, M. (2017). A conceptual introduction to Hamiltonian Monte Carlo. arXiv preprint arXiv:1701.02434. [Link](https://arxiv.org/pdf/1701.02434.pdf)
 - Hoffman, M. D., & Gelman, A. (2014). The No-U-Turn sampler: adaptively setting path lengths in Hamiltonian Monte Carlo. Journal of Machine Learning Research, 15(1), 1593-1623. [Link](http://www.jmlr.org/papers/volume15/hoffman14a/hoffman14a.pdf)
+- Stan manual: [Link1](https://mc-stan.org/docs/2_23/functions-reference/index.html)
+[Link2](https://mc-stan.org/docs/2_23/reference-manual/index.html)
 
 
 
