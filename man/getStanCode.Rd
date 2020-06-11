@@ -4,7 +4,7 @@
 \alias{getStanCode}
 \title{Retrieve stan code}
 \usage{
-getStanCode(deltaM_value, hier_value = 1)
+getStanCode(deltaM_value = 9, hier_value = 1)
 }
 \arguments{
 \item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;

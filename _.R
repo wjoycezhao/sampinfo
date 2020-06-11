@@ -47,3 +47,15 @@ require(dplyr)
 # colnames(feature_data_8) = c('qID',unlist(lapply(c('sameC_','sameA_','dist_'), function(x) paste0(x,1:7))))
 # head(feature_data_8)
 ### usethis::use_data(feature_data_8, overwrite = FALSE)
+stan_data_fit = getStanFit(beta = c('sameA', 'dist'), deltaM_value = 9,
+                           option_num = 7, format_data = format_data,
+                           save_model_file = NULL, init_values="random",
+                           iter_num = 200,chain_num = 1,warmup_num = 100, core_num=1,
+                           adapt_delta=0.9, stepsize = 0.1, max_treedepth = 10,
+                           refresh=1000, save_warmup = TRUE)
+stan_data_fit = getStanFit(beta = c('sameA', 'dist'), deltaM_value = 8,
+                           option_num = 7, format_data = format_data,
+                           save_model_file = NULL, init_values="random",
+                           iter_num = 200,chain_num = 1,warmup_num = 100, core_num=1,
+                           adapt_delta=0.9, stepsize = 0.1, max_treedepth = 10,
+                           refresh=1000, save_warmup = TRUE)

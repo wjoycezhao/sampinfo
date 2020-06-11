@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_hmm");
-    reader.add_event(109, 107, "end", "model_hmm");
+    reader.add_event(139, 137, "end", "model_hmm");
     return reader;
 }
 #include <stan_meta_header.hpp>
@@ -203,26 +203,38 @@ public:
             num_params_r__ = 0U;
             param_ranges_i__.clear();
             current_statement_begin__ = 18;
-            validate_non_negative_index("deltaM", "logical_eq(deltaM_value, 9)", logical_eq(deltaM_value, 9));
-            num_params_r__ += (1 * logical_eq(deltaM_value, 9));
+            validate_non_negative_index("deltaM_mu_raw", "logical_eq(deltaM_value, 8)", logical_eq(deltaM_value, 8));
+            num_params_r__ += (1 * logical_eq(deltaM_value, 8));
             current_statement_begin__ = 19;
+            validate_non_negative_index("deltaM_s_sd", "logical_eq(deltaM_value, 8)", logical_eq(deltaM_value, 8));
+            num_params_r__ += (1 * logical_eq(deltaM_value, 8));
+            current_statement_begin__ = 20;
+            validate_non_negative_index("deltaM_q_sd", "logical_eq(deltaM_value, 8)", logical_eq(deltaM_value, 8));
+            num_params_r__ += (1 * logical_eq(deltaM_value, 8));
+            current_statement_begin__ = 21;
+            validate_non_negative_index("deltaM_s_raw", "(S * logical_eq(deltaM_value, 8))", (S * logical_eq(deltaM_value, 8)));
+            num_params_r__ += (S * logical_eq(deltaM_value, 8));
+            current_statement_begin__ = 22;
+            validate_non_negative_index("deltaM_q_raw", "(Q * logical_eq(deltaM_value, 8))", (Q * logical_eq(deltaM_value, 8)));
+            num_params_r__ += (Q * logical_eq(deltaM_value, 8));
+            current_statement_begin__ = 23;
             validate_non_negative_index("alpha_raw", "(C - 1)", (C - 1));
             validate_non_negative_index("alpha_raw", "Q", Q);
             num_params_r__ += ((C - 1) * Q);
-            current_statement_begin__ = 20;
+            current_statement_begin__ = 24;
             validate_non_negative_index("beta_mu", "K", K);
             num_params_r__ += K;
-            current_statement_begin__ = 21;
+            current_statement_begin__ = 25;
             validate_non_negative_index("beta_s_sd", "K", K);
             num_params_r__ += K;
-            current_statement_begin__ = 22;
+            current_statement_begin__ = 26;
             validate_non_negative_index("beta_q_sd", "K", K);
             num_params_r__ += K;
-            current_statement_begin__ = 23;
+            current_statement_begin__ = 27;
             validate_non_negative_index("beta_q_raw", "K", K);
             validate_non_negative_index("beta_q_raw", "Q", Q);
             num_params_r__ += (K * Q);
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 28;
             validate_non_negative_index("beta_s_raw", "K", K);
             validate_non_negative_index("beta_s_raw", "S", S);
             num_params_r__ += (K * S);
@@ -244,26 +256,100 @@ public:
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
         current_statement_begin__ = 18;
-        if (!(context__.contains_r("deltaM")))
-            stan::lang::rethrow_located(std::runtime_error(std::string("Variable deltaM missing")), current_statement_begin__, prog_reader__());
-        vals_r__ = context__.vals_r("deltaM");
+        if (!(context__.contains_r("deltaM_mu_raw")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable deltaM_mu_raw missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("deltaM_mu_raw");
         pos__ = 0U;
-        validate_non_negative_index("deltaM", "logical_eq(deltaM_value, 9)", logical_eq(deltaM_value, 9));
-        context__.validate_dims("parameter initialization", "deltaM", "double", context__.to_vec(logical_eq(deltaM_value, 9)));
-        std::vector<double> deltaM(logical_eq(deltaM_value, 9), double(0));
-        size_t deltaM_k_0_max__ = logical_eq(deltaM_value, 9);
-        for (size_t k_0__ = 0; k_0__ < deltaM_k_0_max__; ++k_0__) {
-            deltaM[k_0__] = vals_r__[pos__++];
+        validate_non_negative_index("deltaM_mu_raw", "logical_eq(deltaM_value, 8)", logical_eq(deltaM_value, 8));
+        context__.validate_dims("parameter initialization", "deltaM_mu_raw", "double", context__.to_vec(logical_eq(deltaM_value, 8)));
+        std::vector<double> deltaM_mu_raw(logical_eq(deltaM_value, 8), double(0));
+        size_t deltaM_mu_raw_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_mu_raw_k_0_max__; ++k_0__) {
+            deltaM_mu_raw[k_0__] = vals_r__[pos__++];
         }
-        size_t deltaM_i_0_max__ = logical_eq(deltaM_value, 9);
-        for (size_t i_0__ = 0; i_0__ < deltaM_i_0_max__; ++i_0__) {
+        size_t deltaM_mu_raw_i_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t i_0__ = 0; i_0__ < deltaM_mu_raw_i_0_max__; ++i_0__) {
             try {
-                writer__.scalar_lb_unconstrain(0, deltaM[i_0__]);
+                writer__.scalar_unconstrain(deltaM_mu_raw[i_0__]);
             } catch (const std::exception& e) {
-                stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable deltaM: ") + e.what()), current_statement_begin__, prog_reader__());
+                stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable deltaM_mu_raw: ") + e.what()), current_statement_begin__, prog_reader__());
             }
         }
         current_statement_begin__ = 19;
+        if (!(context__.contains_r("deltaM_s_sd")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable deltaM_s_sd missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("deltaM_s_sd");
+        pos__ = 0U;
+        validate_non_negative_index("deltaM_s_sd", "logical_eq(deltaM_value, 8)", logical_eq(deltaM_value, 8));
+        context__.validate_dims("parameter initialization", "deltaM_s_sd", "double", context__.to_vec(logical_eq(deltaM_value, 8)));
+        std::vector<double> deltaM_s_sd(logical_eq(deltaM_value, 8), double(0));
+        size_t deltaM_s_sd_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_s_sd_k_0_max__; ++k_0__) {
+            deltaM_s_sd[k_0__] = vals_r__[pos__++];
+        }
+        size_t deltaM_s_sd_i_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t i_0__ = 0; i_0__ < deltaM_s_sd_i_0_max__; ++i_0__) {
+            try {
+                writer__.scalar_lb_unconstrain(0, deltaM_s_sd[i_0__]);
+            } catch (const std::exception& e) {
+                stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable deltaM_s_sd: ") + e.what()), current_statement_begin__, prog_reader__());
+            }
+        }
+        current_statement_begin__ = 20;
+        if (!(context__.contains_r("deltaM_q_sd")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable deltaM_q_sd missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("deltaM_q_sd");
+        pos__ = 0U;
+        validate_non_negative_index("deltaM_q_sd", "logical_eq(deltaM_value, 8)", logical_eq(deltaM_value, 8));
+        context__.validate_dims("parameter initialization", "deltaM_q_sd", "double", context__.to_vec(logical_eq(deltaM_value, 8)));
+        std::vector<double> deltaM_q_sd(logical_eq(deltaM_value, 8), double(0));
+        size_t deltaM_q_sd_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_q_sd_k_0_max__; ++k_0__) {
+            deltaM_q_sd[k_0__] = vals_r__[pos__++];
+        }
+        size_t deltaM_q_sd_i_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t i_0__ = 0; i_0__ < deltaM_q_sd_i_0_max__; ++i_0__) {
+            try {
+                writer__.scalar_lb_unconstrain(0, deltaM_q_sd[i_0__]);
+            } catch (const std::exception& e) {
+                stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable deltaM_q_sd: ") + e.what()), current_statement_begin__, prog_reader__());
+            }
+        }
+        current_statement_begin__ = 21;
+        if (!(context__.contains_r("deltaM_s_raw")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable deltaM_s_raw missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("deltaM_s_raw");
+        pos__ = 0U;
+        validate_non_negative_index("deltaM_s_raw", "(S * logical_eq(deltaM_value, 8))", (S * logical_eq(deltaM_value, 8)));
+        context__.validate_dims("parameter initialization", "deltaM_s_raw", "vector_d", context__.to_vec((S * logical_eq(deltaM_value, 8))));
+        Eigen::Matrix<double, Eigen::Dynamic, 1> deltaM_s_raw((S * logical_eq(deltaM_value, 8)));
+        size_t deltaM_s_raw_j_1_max__ = (S * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_s_raw_j_1_max__; ++j_1__) {
+            deltaM_s_raw(j_1__) = vals_r__[pos__++];
+        }
+        try {
+            writer__.vector_unconstrain(deltaM_s_raw);
+        } catch (const std::exception& e) {
+            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable deltaM_s_raw: ") + e.what()), current_statement_begin__, prog_reader__());
+        }
+        current_statement_begin__ = 22;
+        if (!(context__.contains_r("deltaM_q_raw")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable deltaM_q_raw missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("deltaM_q_raw");
+        pos__ = 0U;
+        validate_non_negative_index("deltaM_q_raw", "(Q * logical_eq(deltaM_value, 8))", (Q * logical_eq(deltaM_value, 8)));
+        context__.validate_dims("parameter initialization", "deltaM_q_raw", "vector_d", context__.to_vec((Q * logical_eq(deltaM_value, 8))));
+        Eigen::Matrix<double, Eigen::Dynamic, 1> deltaM_q_raw((Q * logical_eq(deltaM_value, 8)));
+        size_t deltaM_q_raw_j_1_max__ = (Q * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_q_raw_j_1_max__; ++j_1__) {
+            deltaM_q_raw(j_1__) = vals_r__[pos__++];
+        }
+        try {
+            writer__.vector_unconstrain(deltaM_q_raw);
+        } catch (const std::exception& e) {
+            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable deltaM_q_raw: ") + e.what()), current_statement_begin__, prog_reader__());
+        }
+        current_statement_begin__ = 23;
         if (!(context__.contains_r("alpha_raw")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable alpha_raw missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("alpha_raw");
@@ -284,7 +370,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable alpha_raw: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 20;
+        current_statement_begin__ = 24;
         if (!(context__.contains_r("beta_mu")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable beta_mu missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("beta_mu");
@@ -301,7 +387,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable beta_mu: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 21;
+        current_statement_begin__ = 25;
         if (!(context__.contains_r("beta_s_sd")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable beta_s_sd missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("beta_s_sd");
@@ -318,7 +404,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable beta_s_sd: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 22;
+        current_statement_begin__ = 26;
         if (!(context__.contains_r("beta_q_sd")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable beta_q_sd missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("beta_q_sd");
@@ -335,7 +421,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable beta_q_sd: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 23;
+        current_statement_begin__ = 27;
         if (!(context__.contains_r("beta_q_raw")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable beta_q_raw missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("beta_q_raw");
@@ -356,7 +442,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable beta_q_raw: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 24;
+        current_statement_begin__ = 28;
         if (!(context__.contains_r("beta_s_raw")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable beta_s_raw missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("beta_s_raw");
@@ -403,51 +489,85 @@ public:
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
             current_statement_begin__ = 18;
-            std::vector<local_scalar_t__> deltaM;
-            size_t deltaM_d_0_max__ = logical_eq(deltaM_value, 9);
-            deltaM.reserve(deltaM_d_0_max__);
-            for (size_t d_0__ = 0; d_0__ < deltaM_d_0_max__; ++d_0__) {
+            std::vector<local_scalar_t__> deltaM_mu_raw;
+            size_t deltaM_mu_raw_d_0_max__ = logical_eq(deltaM_value, 8);
+            deltaM_mu_raw.reserve(deltaM_mu_raw_d_0_max__);
+            for (size_t d_0__ = 0; d_0__ < deltaM_mu_raw_d_0_max__; ++d_0__) {
                 if (jacobian__)
-                    deltaM.push_back(in__.scalar_lb_constrain(0, lp__));
+                    deltaM_mu_raw.push_back(in__.scalar_constrain(lp__));
                 else
-                    deltaM.push_back(in__.scalar_lb_constrain(0));
+                    deltaM_mu_raw.push_back(in__.scalar_constrain());
             }
             current_statement_begin__ = 19;
+            std::vector<local_scalar_t__> deltaM_s_sd;
+            size_t deltaM_s_sd_d_0_max__ = logical_eq(deltaM_value, 8);
+            deltaM_s_sd.reserve(deltaM_s_sd_d_0_max__);
+            for (size_t d_0__ = 0; d_0__ < deltaM_s_sd_d_0_max__; ++d_0__) {
+                if (jacobian__)
+                    deltaM_s_sd.push_back(in__.scalar_lb_constrain(0, lp__));
+                else
+                    deltaM_s_sd.push_back(in__.scalar_lb_constrain(0));
+            }
+            current_statement_begin__ = 20;
+            std::vector<local_scalar_t__> deltaM_q_sd;
+            size_t deltaM_q_sd_d_0_max__ = logical_eq(deltaM_value, 8);
+            deltaM_q_sd.reserve(deltaM_q_sd_d_0_max__);
+            for (size_t d_0__ = 0; d_0__ < deltaM_q_sd_d_0_max__; ++d_0__) {
+                if (jacobian__)
+                    deltaM_q_sd.push_back(in__.scalar_lb_constrain(0, lp__));
+                else
+                    deltaM_q_sd.push_back(in__.scalar_lb_constrain(0));
+            }
+            current_statement_begin__ = 21;
+            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> deltaM_s_raw;
+            (void) deltaM_s_raw;  // dummy to suppress unused var warning
+            if (jacobian__)
+                deltaM_s_raw = in__.vector_constrain((S * logical_eq(deltaM_value, 8)), lp__);
+            else
+                deltaM_s_raw = in__.vector_constrain((S * logical_eq(deltaM_value, 8)));
+            current_statement_begin__ = 22;
+            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> deltaM_q_raw;
+            (void) deltaM_q_raw;  // dummy to suppress unused var warning
+            if (jacobian__)
+                deltaM_q_raw = in__.vector_constrain((Q * logical_eq(deltaM_value, 8)), lp__);
+            else
+                deltaM_q_raw = in__.vector_constrain((Q * logical_eq(deltaM_value, 8)));
+            current_statement_begin__ = 23;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> alpha_raw;
             (void) alpha_raw;  // dummy to suppress unused var warning
             if (jacobian__)
                 alpha_raw = in__.matrix_constrain((C - 1), Q, lp__);
             else
                 alpha_raw = in__.matrix_constrain((C - 1), Q);
-            current_statement_begin__ = 20;
+            current_statement_begin__ = 24;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> beta_mu;
             (void) beta_mu;  // dummy to suppress unused var warning
             if (jacobian__)
                 beta_mu = in__.vector_constrain(K, lp__);
             else
                 beta_mu = in__.vector_constrain(K);
-            current_statement_begin__ = 21;
+            current_statement_begin__ = 25;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> beta_s_sd;
             (void) beta_s_sd;  // dummy to suppress unused var warning
             if (jacobian__)
                 beta_s_sd = in__.vector_lb_constrain(0, K, lp__);
             else
                 beta_s_sd = in__.vector_lb_constrain(0, K);
-            current_statement_begin__ = 22;
+            current_statement_begin__ = 26;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> beta_q_sd;
             (void) beta_q_sd;  // dummy to suppress unused var warning
             if (jacobian__)
                 beta_q_sd = in__.vector_lb_constrain(0, K, lp__);
             else
                 beta_q_sd = in__.vector_lb_constrain(0, K);
-            current_statement_begin__ = 23;
+            current_statement_begin__ = 27;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> beta_q_raw;
             (void) beta_q_raw;  // dummy to suppress unused var warning
             if (jacobian__)
                 beta_q_raw = in__.matrix_constrain(K, Q, lp__);
             else
                 beta_q_raw = in__.matrix_constrain(K, Q);
-            current_statement_begin__ = 24;
+            current_statement_begin__ = 28;
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> beta_s_raw;
             (void) beta_s_raw;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -455,94 +575,125 @@ public:
             else
                 beta_s_raw = in__.matrix_constrain(K, S);
             // transformed parameters
-            current_statement_begin__ = 28;
+            current_statement_begin__ = 32;
+            validate_non_negative_index("deltaM", "S", S);
+            validate_non_negative_index("deltaM", "(Q * logical_eq(deltaM_value, 8))", (Q * logical_eq(deltaM_value, 8)));
+            std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > deltaM((Q * logical_eq(deltaM_value, 8)), Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1>(S));
+            stan::math::initialize(deltaM, DUMMY_VAR__);
+            stan::math::fill(deltaM, DUMMY_VAR__);
+            current_statement_begin__ = 33;
             validate_non_negative_index("alpha", "C", C);
             validate_non_negative_index("alpha", "Q", Q);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> alpha(C, Q);
             stan::math::initialize(alpha, DUMMY_VAR__);
             stan::math::fill(alpha, DUMMY_VAR__);
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 34;
             validate_non_negative_index("theta", "C", C);
             validate_non_negative_index("theta", "N", N);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> theta(C, N);
             stan::math::initialize(theta, DUMMY_VAR__);
             stan::math::fill(theta, DUMMY_VAR__);
-            current_statement_begin__ = 30;
+            current_statement_begin__ = 35;
             validate_non_negative_index("beta", "K", K);
             validate_non_negative_index("beta", "S", S);
             validate_non_negative_index("beta", "Q", Q);
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> > beta(Q, Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic>(K, S));
             stan::math::initialize(beta, DUMMY_VAR__);
             stan::math::fill(beta, DUMMY_VAR__);
-            current_statement_begin__ = 31;
-            validate_non_negative_index("X_acc", "C", C);
-            validate_non_negative_index("X_acc", "(K * logical_eq(deltaM_value, 9))", (K * logical_eq(deltaM_value, 9)));
-            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> X_acc(C, (K * logical_eq(deltaM_value, 9)));
-            stan::math::initialize(X_acc, DUMMY_VAR__);
-            stan::math::fill(X_acc, DUMMY_VAR__);
             // transformed parameters block statements
-            current_statement_begin__ = 33;
-            if (as_bool(logical_gt(K, 0))) {
-                current_statement_begin__ = 34;
+            current_statement_begin__ = 37;
+            if (as_bool(logical_eq(deltaM_value, 8))) {
+                current_statement_begin__ = 38;
                 for (int q = 1; q <= Q; ++q) {
-                    current_statement_begin__ = 35;
+                    current_statement_begin__ = 39;
+                    stan::model::assign(deltaM, 
+                                stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list()), 
+                                stan::math::exp(add(add(get_base1(deltaM_mu_raw, 1, "deltaM_mu_raw", 1), multiply(get_base1(deltaM_s_sd, 1, "deltaM_s_sd", 1), deltaM_s_raw)), (get_base1(deltaM_q_sd, 1, "deltaM_q_sd", 1) * get_base1(deltaM_q_raw, q, "deltaM_q_raw", 1)))), 
+                                "assigning variable deltaM");
+                }
+            }
+            current_statement_begin__ = 45;
+            if (as_bool(logical_gt(K, 0))) {
+                current_statement_begin__ = 46;
+                for (int q = 1; q <= Q; ++q) {
+                    current_statement_begin__ = 47;
                     stan::model::assign(beta, 
                                 stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list()), 
                                 add(add(rep_matrix(beta_mu, S), diag_pre_multiply(beta_s_sd, beta_s_raw)), rep_matrix(elt_multiply(beta_q_sd, stan::model::rvalue(beta_q_raw, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list())), "beta_q_raw")), S)), 
                                 "assigning variable beta");
                 }
             }
-            current_statement_begin__ = 41;
+            current_statement_begin__ = 53;
             stan::model::assign(alpha, 
                         stan::model::cons_list(stan::model::index_min_max(1, (C - 1)), stan::model::cons_list(stan::model::index_omni(), stan::model::nil_index_list())), 
                         divide(alpha_raw, 2), 
                         "assigning variable alpha");
-            current_statement_begin__ = 42;
+            current_statement_begin__ = 54;
             stan::model::assign(alpha, 
                         stan::model::cons_list(stan::model::index_uni(C), stan::model::cons_list(stan::model::index_omni(), stan::model::nil_index_list())), 
                         to_row_vector(rep_array(0, Q)), 
                         "assigning variable alpha");
-            current_statement_begin__ = 45;
-            if (as_bool((primitive_value(logical_gt(K, 0)) && primitive_value(logical_eq(deltaM_value, 9))))) {
-                current_statement_begin__ = 46;
+            current_statement_begin__ = 57;
+            if (as_bool((primitive_value(logical_gt(K, 0)) && primitive_value(logical_eq(deltaM_value, 8))))) {
+                {
+                current_statement_begin__ = 58;
+                validate_non_negative_index("X_acc", "C", C);
+                validate_non_negative_index("X_acc", "K", K);
+                Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> X_acc(C, K);
+                stan::math::initialize(X_acc, DUMMY_VAR__);
+                stan::math::fill(X_acc, DUMMY_VAR__);
+                current_statement_begin__ = 59;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 47;
+                    current_statement_begin__ = 60;
                     if (as_bool(logical_eq(get_base1(tNo, n, "tNo", 1), 1))) {
-                        current_statement_begin__ = 48;
+                        current_statement_begin__ = 61;
                         stan::math::assign(X_acc, to_matrix(rep_array(0, C, K)));
                     } else {
-                        current_statement_begin__ = 50;
-                        stan::math::assign(X_acc, multiply(X_acc, get_base1(deltaM, 1, "deltaM", 1)));
+                        current_statement_begin__ = 63;
+                        stan::math::assign(X_acc, multiply(X_acc, get_base1(get_base1(deltaM, get_base1(qID, n, "qID", 1), "deltaM", 1), get_base1(sID, n, "sID", 1), "deltaM", 2)));
                     }
-                    current_statement_begin__ = 52;
+                    current_statement_begin__ = 65;
                     stan::math::assign(X_acc, add(X_acc, get_base1(X, n, "X", 1)));
-                    current_statement_begin__ = 53;
+                    current_statement_begin__ = 66;
                     stan::model::assign(theta, 
                                 stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                 multiply(X_acc, stan::model::rvalue(beta, stan::model::cons_list(stan::model::index_uni(get_base1(qID, n, "qID", 1)), stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(get_base1(sID, n, "sID", 1)), stan::model::nil_index_list()))), "beta")), 
                                 "assigning variable theta");
                 }
-                current_statement_begin__ = 55;
+                current_statement_begin__ = 68;
                 stan::math::assign(theta, add(theta, stan::model::rvalue(alpha, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_multi(qID), stan::model::nil_index_list())), "alpha")));
+                }
             } else if (as_bool(logical_gt(K, 0))) {
-                current_statement_begin__ = 57;
+                current_statement_begin__ = 70;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 58;
+                    current_statement_begin__ = 71;
                     stan::model::assign(theta, 
                                 stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                 multiply(get_base1(X, n, "X", 1), stan::model::rvalue(beta, stan::model::cons_list(stan::model::index_uni(get_base1(qID, n, "qID", 1)), stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(get_base1(sID, n, "sID", 1)), stan::model::nil_index_list()))), "beta")), 
                                 "assigning variable theta");
                 }
-                current_statement_begin__ = 60;
+                current_statement_begin__ = 73;
                 stan::math::assign(theta, add(theta, stan::model::rvalue(alpha, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_multi(qID), stan::model::nil_index_list())), "alpha")));
             } else {
-                current_statement_begin__ = 62;
+                current_statement_begin__ = 75;
                 stan::math::assign(theta, stan::model::rvalue(alpha, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_multi(qID), stan::model::nil_index_list())), "alpha"));
             }
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 28;
+            current_statement_begin__ = 32;
+            size_t deltaM_k_0_max__ = (Q * logical_eq(deltaM_value, 8));
+            size_t deltaM_j_1_max__ = S;
+            for (size_t k_0__ = 0; k_0__ < deltaM_k_0_max__; ++k_0__) {
+                for (size_t j_1__ = 0; j_1__ < deltaM_j_1_max__; ++j_1__) {
+                    if (stan::math::is_uninitialized(deltaM[k_0__](j_1__))) {
+                        std::stringstream msg__;
+                        msg__ << "Undefined transformed parameter: deltaM" << "[" << k_0__ << "]" << "(" << j_1__ << ")";
+                        stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable deltaM: ") + msg__.str()), current_statement_begin__, prog_reader__());
+                    }
+                }
+            }
+            current_statement_begin__ = 33;
             size_t alpha_j_1_max__ = C;
             size_t alpha_j_2_max__ = Q;
             for (size_t j_1__ = 0; j_1__ < alpha_j_1_max__; ++j_1__) {
@@ -554,7 +705,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 34;
             size_t theta_j_1_max__ = C;
             size_t theta_j_2_max__ = N;
             for (size_t j_1__ = 0; j_1__ < theta_j_1_max__; ++j_1__) {
@@ -566,7 +717,7 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 30;
+            current_statement_begin__ = 35;
             size_t beta_k_0_max__ = Q;
             size_t beta_j_1_max__ = K;
             size_t beta_j_2_max__ = S;
@@ -581,41 +732,39 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 31;
-            size_t X_acc_j_1_max__ = C;
-            size_t X_acc_j_2_max__ = (K * logical_eq(deltaM_value, 9));
-            for (size_t j_1__ = 0; j_1__ < X_acc_j_1_max__; ++j_1__) {
-                for (size_t j_2__ = 0; j_2__ < X_acc_j_2_max__; ++j_2__) {
-                    if (stan::math::is_uninitialized(X_acc(j_1__, j_2__))) {
-                        std::stringstream msg__;
-                        msg__ << "Undefined transformed parameter: X_acc" << "(" << j_1__ << ", " << j_2__ << ")";
-                        stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable X_acc: ") + msg__.str()), current_statement_begin__, prog_reader__());
-                    }
-                }
-            }
             // model body
-            current_statement_begin__ = 68;
-            if (as_bool(logical_eq(deltaM_value, 9))) {
-                current_statement_begin__ = 69;
-                lp_accum__.add(normal_log<propto__>(get_base1(deltaM, 1, "deltaM", 1), 0.5, 0.8));
-                if (get_base1(deltaM, 1, "deltaM", 1) < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-                else lp_accum__.add(-normal_ccdf_log(0, 0.5, 0.8));
+            current_statement_begin__ = 81;
+            if (as_bool(logical_eq(deltaM_value, 8))) {
+                current_statement_begin__ = 82;
+                lp_accum__.add(normal_log<propto__>(get_base1(deltaM_mu_raw, 1, "deltaM_mu_raw", 1), -(0.7), 0.1));
+                current_statement_begin__ = 83;
+                lp_accum__.add(normal_log<propto__>(get_base1(deltaM_s_sd, 1, "deltaM_s_sd", 1), 0, 0.1));
+                if (get_base1(deltaM_s_sd, 1, "deltaM_s_sd", 1) < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
+                else lp_accum__.add(-normal_ccdf_log(0, 0, 0.1));
+                current_statement_begin__ = 84;
+                lp_accum__.add(normal_log<propto__>(get_base1(deltaM_q_sd, 1, "deltaM_q_sd", 1), 0, 0.1));
+                if (get_base1(deltaM_q_sd, 1, "deltaM_q_sd", 1) < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
+                else lp_accum__.add(-normal_ccdf_log(0, 0, 0.1));
+                current_statement_begin__ = 85;
+                lp_accum__.add(std_normal_log<propto__>(deltaM_s_raw));
+                current_statement_begin__ = 86;
+                lp_accum__.add(std_normal_log<propto__>(deltaM_q_raw));
             }
-            current_statement_begin__ = 71;
+            current_statement_begin__ = 88;
             lp_accum__.add(std_normal_log<propto__>(beta_mu));
-            current_statement_begin__ = 72;
+            current_statement_begin__ = 89;
             lp_accum__.add(std_normal_log<propto__>(beta_q_sd));
-            current_statement_begin__ = 73;
+            current_statement_begin__ = 90;
             lp_accum__.add(std_normal_log<propto__>(beta_s_sd));
-            current_statement_begin__ = 74;
+            current_statement_begin__ = 91;
             lp_accum__.add(std_normal_log<propto__>(to_vector(beta_q_raw)));
-            current_statement_begin__ = 75;
+            current_statement_begin__ = 92;
             lp_accum__.add(std_normal_log<propto__>(to_vector(beta_s_raw)));
-            current_statement_begin__ = 76;
+            current_statement_begin__ = 93;
             lp_accum__.add(std_normal_log<propto__>(to_vector(alpha_raw)));
-            current_statement_begin__ = 78;
+            current_statement_begin__ = 95;
             for (int n = 1; n <= N; ++n) {
-                current_statement_begin__ = 79;
+                current_statement_begin__ = 96;
                 lp_accum__.add(categorical_logit_log<propto__>(get_base1(cID, n, "cID", 1), stan::model::rvalue(theta, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), "theta")));
             }
         } catch (const std::exception& e) {
@@ -638,19 +787,26 @@ public:
     }
     void get_param_names(std::vector<std::string>& names__) const {
         names__.resize(0);
-        names__.push_back("deltaM");
+        names__.push_back("deltaM_mu_raw");
+        names__.push_back("deltaM_s_sd");
+        names__.push_back("deltaM_q_sd");
+        names__.push_back("deltaM_s_raw");
+        names__.push_back("deltaM_q_raw");
         names__.push_back("alpha_raw");
         names__.push_back("beta_mu");
         names__.push_back("beta_s_sd");
         names__.push_back("beta_q_sd");
         names__.push_back("beta_q_raw");
         names__.push_back("beta_s_raw");
+        names__.push_back("deltaM");
         names__.push_back("alpha");
         names__.push_back("theta");
         names__.push_back("beta");
-        names__.push_back("X_acc");
         names__.push_back("log_lik");
         names__.push_back("dev_m");
+        names__.push_back("deltaM_mu");
+        names__.push_back("deltaM_smean");
+        names__.push_back("deltaM_qmean");
         names__.push_back("beta_qdev");
         names__.push_back("beta_sdev");
         names__.push_back("beta_q_temp");
@@ -662,7 +818,19 @@ public:
         dimss__.resize(0);
         std::vector<size_t> dims__;
         dims__.resize(0);
-        dims__.push_back(logical_eq(deltaM_value, 9));
+        dims__.push_back(logical_eq(deltaM_value, 8));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(logical_eq(deltaM_value, 8));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(logical_eq(deltaM_value, 8));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back((S * logical_eq(deltaM_value, 8)));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back((Q * logical_eq(deltaM_value, 8)));
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back((C - 1));
@@ -686,6 +854,10 @@ public:
         dims__.push_back(S);
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dims__.push_back((Q * logical_eq(deltaM_value, 8)));
+        dims__.push_back(S);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dims__.push_back(C);
         dims__.push_back(Q);
         dimss__.push_back(dims__);
@@ -699,13 +871,18 @@ public:
         dims__.push_back(S);
         dimss__.push_back(dims__);
         dims__.resize(0);
-        dims__.push_back(C);
-        dims__.push_back((K * logical_eq(deltaM_value, 9)));
-        dimss__.push_back(dims__);
-        dims__.resize(0);
         dims__.push_back(N);
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(logical_eq(deltaM_value, 8));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back((S * logical_eq(deltaM_value, 8)));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back((Q * logical_eq(deltaM_value, 8)));
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(K);
@@ -744,15 +921,45 @@ public:
         static const char* function__ = "model_hmm_namespace::write_array";
         (void) function__;  // dummy to suppress unused var warning
         // read-transform, write parameters
-        std::vector<double> deltaM;
-        size_t deltaM_d_0_max__ = logical_eq(deltaM_value, 9);
-        deltaM.reserve(deltaM_d_0_max__);
-        for (size_t d_0__ = 0; d_0__ < deltaM_d_0_max__; ++d_0__) {
-            deltaM.push_back(in__.scalar_lb_constrain(0));
+        std::vector<double> deltaM_mu_raw;
+        size_t deltaM_mu_raw_d_0_max__ = logical_eq(deltaM_value, 8);
+        deltaM_mu_raw.reserve(deltaM_mu_raw_d_0_max__);
+        for (size_t d_0__ = 0; d_0__ < deltaM_mu_raw_d_0_max__; ++d_0__) {
+            deltaM_mu_raw.push_back(in__.scalar_constrain());
         }
-        size_t deltaM_k_0_max__ = logical_eq(deltaM_value, 9);
-        for (size_t k_0__ = 0; k_0__ < deltaM_k_0_max__; ++k_0__) {
-            vars__.push_back(deltaM[k_0__]);
+        size_t deltaM_mu_raw_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_mu_raw_k_0_max__; ++k_0__) {
+            vars__.push_back(deltaM_mu_raw[k_0__]);
+        }
+        std::vector<double> deltaM_s_sd;
+        size_t deltaM_s_sd_d_0_max__ = logical_eq(deltaM_value, 8);
+        deltaM_s_sd.reserve(deltaM_s_sd_d_0_max__);
+        for (size_t d_0__ = 0; d_0__ < deltaM_s_sd_d_0_max__; ++d_0__) {
+            deltaM_s_sd.push_back(in__.scalar_lb_constrain(0));
+        }
+        size_t deltaM_s_sd_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_s_sd_k_0_max__; ++k_0__) {
+            vars__.push_back(deltaM_s_sd[k_0__]);
+        }
+        std::vector<double> deltaM_q_sd;
+        size_t deltaM_q_sd_d_0_max__ = logical_eq(deltaM_value, 8);
+        deltaM_q_sd.reserve(deltaM_q_sd_d_0_max__);
+        for (size_t d_0__ = 0; d_0__ < deltaM_q_sd_d_0_max__; ++d_0__) {
+            deltaM_q_sd.push_back(in__.scalar_lb_constrain(0));
+        }
+        size_t deltaM_q_sd_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_q_sd_k_0_max__; ++k_0__) {
+            vars__.push_back(deltaM_q_sd[k_0__]);
+        }
+        Eigen::Matrix<double, Eigen::Dynamic, 1> deltaM_s_raw = in__.vector_constrain((S * logical_eq(deltaM_value, 8)));
+        size_t deltaM_s_raw_j_1_max__ = (S * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_s_raw_j_1_max__; ++j_1__) {
+            vars__.push_back(deltaM_s_raw(j_1__));
+        }
+        Eigen::Matrix<double, Eigen::Dynamic, 1> deltaM_q_raw = in__.vector_constrain((Q * logical_eq(deltaM_value, 8)));
+        size_t deltaM_q_raw_j_1_max__ = (Q * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_q_raw_j_1_max__; ++j_1__) {
+            vars__.push_back(deltaM_q_raw(j_1__));
         }
         Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> alpha_raw = in__.matrix_constrain((C - 1), Q);
         size_t alpha_raw_j_2_max__ = Q;
@@ -801,88 +1008,107 @@ public:
         if (!include_tparams__ && !include_gqs__) return;
         try {
             // declare and define transformed parameters
-            current_statement_begin__ = 28;
+            current_statement_begin__ = 32;
+            validate_non_negative_index("deltaM", "S", S);
+            validate_non_negative_index("deltaM", "(Q * logical_eq(deltaM_value, 8))", (Q * logical_eq(deltaM_value, 8)));
+            std::vector<Eigen::Matrix<double, Eigen::Dynamic, 1> > deltaM((Q * logical_eq(deltaM_value, 8)), Eigen::Matrix<double, Eigen::Dynamic, 1>(S));
+            stan::math::initialize(deltaM, DUMMY_VAR__);
+            stan::math::fill(deltaM, DUMMY_VAR__);
+            current_statement_begin__ = 33;
             validate_non_negative_index("alpha", "C", C);
             validate_non_negative_index("alpha", "Q", Q);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> alpha(C, Q);
             stan::math::initialize(alpha, DUMMY_VAR__);
             stan::math::fill(alpha, DUMMY_VAR__);
-            current_statement_begin__ = 29;
+            current_statement_begin__ = 34;
             validate_non_negative_index("theta", "C", C);
             validate_non_negative_index("theta", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> theta(C, N);
             stan::math::initialize(theta, DUMMY_VAR__);
             stan::math::fill(theta, DUMMY_VAR__);
-            current_statement_begin__ = 30;
+            current_statement_begin__ = 35;
             validate_non_negative_index("beta", "K", K);
             validate_non_negative_index("beta", "S", S);
             validate_non_negative_index("beta", "Q", Q);
             std::vector<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> > beta(Q, Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>(K, S));
             stan::math::initialize(beta, DUMMY_VAR__);
             stan::math::fill(beta, DUMMY_VAR__);
-            current_statement_begin__ = 31;
-            validate_non_negative_index("X_acc", "C", C);
-            validate_non_negative_index("X_acc", "(K * logical_eq(deltaM_value, 9))", (K * logical_eq(deltaM_value, 9)));
-            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> X_acc(C, (K * logical_eq(deltaM_value, 9)));
-            stan::math::initialize(X_acc, DUMMY_VAR__);
-            stan::math::fill(X_acc, DUMMY_VAR__);
             // do transformed parameters statements
-            current_statement_begin__ = 33;
-            if (as_bool(logical_gt(K, 0))) {
-                current_statement_begin__ = 34;
+            current_statement_begin__ = 37;
+            if (as_bool(logical_eq(deltaM_value, 8))) {
+                current_statement_begin__ = 38;
                 for (int q = 1; q <= Q; ++q) {
-                    current_statement_begin__ = 35;
+                    current_statement_begin__ = 39;
+                    stan::model::assign(deltaM, 
+                                stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list()), 
+                                stan::math::exp(add(add(get_base1(deltaM_mu_raw, 1, "deltaM_mu_raw", 1), multiply(get_base1(deltaM_s_sd, 1, "deltaM_s_sd", 1), deltaM_s_raw)), (get_base1(deltaM_q_sd, 1, "deltaM_q_sd", 1) * get_base1(deltaM_q_raw, q, "deltaM_q_raw", 1)))), 
+                                "assigning variable deltaM");
+                }
+            }
+            current_statement_begin__ = 45;
+            if (as_bool(logical_gt(K, 0))) {
+                current_statement_begin__ = 46;
+                for (int q = 1; q <= Q; ++q) {
+                    current_statement_begin__ = 47;
                     stan::model::assign(beta, 
                                 stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list()), 
                                 add(add(rep_matrix(beta_mu, S), diag_pre_multiply(beta_s_sd, beta_s_raw)), rep_matrix(elt_multiply(beta_q_sd, stan::model::rvalue(beta_q_raw, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list())), "beta_q_raw")), S)), 
                                 "assigning variable beta");
                 }
             }
-            current_statement_begin__ = 41;
+            current_statement_begin__ = 53;
             stan::model::assign(alpha, 
                         stan::model::cons_list(stan::model::index_min_max(1, (C - 1)), stan::model::cons_list(stan::model::index_omni(), stan::model::nil_index_list())), 
                         divide(alpha_raw, 2), 
                         "assigning variable alpha");
-            current_statement_begin__ = 42;
+            current_statement_begin__ = 54;
             stan::model::assign(alpha, 
                         stan::model::cons_list(stan::model::index_uni(C), stan::model::cons_list(stan::model::index_omni(), stan::model::nil_index_list())), 
                         to_row_vector(rep_array(0, Q)), 
                         "assigning variable alpha");
-            current_statement_begin__ = 45;
-            if (as_bool((primitive_value(logical_gt(K, 0)) && primitive_value(logical_eq(deltaM_value, 9))))) {
-                current_statement_begin__ = 46;
+            current_statement_begin__ = 57;
+            if (as_bool((primitive_value(logical_gt(K, 0)) && primitive_value(logical_eq(deltaM_value, 8))))) {
+                {
+                current_statement_begin__ = 58;
+                validate_non_negative_index("X_acc", "C", C);
+                validate_non_negative_index("X_acc", "K", K);
+                Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> X_acc(C, K);
+                stan::math::initialize(X_acc, DUMMY_VAR__);
+                stan::math::fill(X_acc, DUMMY_VAR__);
+                current_statement_begin__ = 59;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 47;
+                    current_statement_begin__ = 60;
                     if (as_bool(logical_eq(get_base1(tNo, n, "tNo", 1), 1))) {
-                        current_statement_begin__ = 48;
+                        current_statement_begin__ = 61;
                         stan::math::assign(X_acc, to_matrix(rep_array(0, C, K)));
                     } else {
-                        current_statement_begin__ = 50;
-                        stan::math::assign(X_acc, multiply(X_acc, get_base1(deltaM, 1, "deltaM", 1)));
+                        current_statement_begin__ = 63;
+                        stan::math::assign(X_acc, multiply(X_acc, get_base1(get_base1(deltaM, get_base1(qID, n, "qID", 1), "deltaM", 1), get_base1(sID, n, "sID", 1), "deltaM", 2)));
                     }
-                    current_statement_begin__ = 52;
+                    current_statement_begin__ = 65;
                     stan::math::assign(X_acc, add(X_acc, get_base1(X, n, "X", 1)));
-                    current_statement_begin__ = 53;
+                    current_statement_begin__ = 66;
                     stan::model::assign(theta, 
                                 stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                 multiply(X_acc, stan::model::rvalue(beta, stan::model::cons_list(stan::model::index_uni(get_base1(qID, n, "qID", 1)), stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(get_base1(sID, n, "sID", 1)), stan::model::nil_index_list()))), "beta")), 
                                 "assigning variable theta");
                 }
-                current_statement_begin__ = 55;
+                current_statement_begin__ = 68;
                 stan::math::assign(theta, add(theta, stan::model::rvalue(alpha, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_multi(qID), stan::model::nil_index_list())), "alpha")));
+                }
             } else if (as_bool(logical_gt(K, 0))) {
-                current_statement_begin__ = 57;
+                current_statement_begin__ = 70;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 58;
+                    current_statement_begin__ = 71;
                     stan::model::assign(theta, 
                                 stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                 multiply(get_base1(X, n, "X", 1), stan::model::rvalue(beta, stan::model::cons_list(stan::model::index_uni(get_base1(qID, n, "qID", 1)), stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(get_base1(sID, n, "sID", 1)), stan::model::nil_index_list()))), "beta")), 
                                 "assigning variable theta");
                 }
-                current_statement_begin__ = 60;
+                current_statement_begin__ = 73;
                 stan::math::assign(theta, add(theta, stan::model::rvalue(alpha, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_multi(qID), stan::model::nil_index_list())), "alpha")));
             } else {
-                current_statement_begin__ = 62;
+                current_statement_begin__ = 75;
                 stan::math::assign(theta, stan::model::rvalue(alpha, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_multi(qID), stan::model::nil_index_list())), "alpha"));
             }
             if (!include_gqs__ && !include_tparams__) return;
@@ -891,6 +1117,13 @@ public:
             (void) function__;  // dummy to suppress unused var warning
             // write transformed parameters
             if (include_tparams__) {
+                size_t deltaM_j_1_max__ = S;
+                size_t deltaM_k_0_max__ = (Q * logical_eq(deltaM_value, 8));
+                for (size_t j_1__ = 0; j_1__ < deltaM_j_1_max__; ++j_1__) {
+                    for (size_t k_0__ = 0; k_0__ < deltaM_k_0_max__; ++k_0__) {
+                        vars__.push_back(deltaM[k_0__](j_1__));
+                    }
+                }
                 size_t alpha_j_2_max__ = Q;
                 size_t alpha_j_1_max__ = C;
                 for (size_t j_2__ = 0; j_2__ < alpha_j_2_max__; ++j_2__) {
@@ -915,106 +1148,153 @@ public:
                         }
                     }
                 }
-                size_t X_acc_j_2_max__ = (K * logical_eq(deltaM_value, 9));
-                size_t X_acc_j_1_max__ = C;
-                for (size_t j_2__ = 0; j_2__ < X_acc_j_2_max__; ++j_2__) {
-                    for (size_t j_1__ = 0; j_1__ < X_acc_j_1_max__; ++j_1__) {
-                        vars__.push_back(X_acc(j_1__, j_2__));
-                    }
-                }
             }
             if (!include_gqs__) return;
             // declare and define generated quantities
-            current_statement_begin__ = 84;
+            current_statement_begin__ = 101;
             validate_non_negative_index("log_lik", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> log_lik(N);
             stan::math::initialize(log_lik, DUMMY_VAR__);
             stan::math::fill(log_lik, DUMMY_VAR__);
-            current_statement_begin__ = 85;
+            current_statement_begin__ = 102;
             double dev_m;
             (void) dev_m;  // dummy to suppress unused var warning
             stan::math::initialize(dev_m, DUMMY_VAR__);
             stan::math::fill(dev_m, DUMMY_VAR__);
-            current_statement_begin__ = 86;
+            current_statement_begin__ = 103;
+            validate_non_negative_index("deltaM_mu", "logical_eq(deltaM_value, 8)", logical_eq(deltaM_value, 8));
+            std::vector<double> deltaM_mu(logical_eq(deltaM_value, 8), double(0));
+            stan::math::initialize(deltaM_mu, DUMMY_VAR__);
+            stan::math::fill(deltaM_mu, DUMMY_VAR__);
+            current_statement_begin__ = 104;
+            validate_non_negative_index("deltaM_smean", "(S * logical_eq(deltaM_value, 8))", (S * logical_eq(deltaM_value, 8)));
+            Eigen::Matrix<double, Eigen::Dynamic, 1> deltaM_smean((S * logical_eq(deltaM_value, 8)));
+            stan::math::initialize(deltaM_smean, DUMMY_VAR__);
+            stan::math::fill(deltaM_smean, DUMMY_VAR__);
+            current_statement_begin__ = 105;
+            validate_non_negative_index("deltaM_qmean", "(Q * logical_eq(deltaM_value, 8))", (Q * logical_eq(deltaM_value, 8)));
+            Eigen::Matrix<double, Eigen::Dynamic, 1> deltaM_qmean((Q * logical_eq(deltaM_value, 8)));
+            stan::math::initialize(deltaM_qmean, DUMMY_VAR__);
+            stan::math::fill(deltaM_qmean, DUMMY_VAR__);
+            current_statement_begin__ = 106;
             validate_non_negative_index("beta_qdev", "K", K);
             validate_non_negative_index("beta_qdev", "Q", Q);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> beta_qdev(K, Q);
             stan::math::initialize(beta_qdev, DUMMY_VAR__);
             stan::math::fill(beta_qdev, DUMMY_VAR__);
-            current_statement_begin__ = 87;
+            current_statement_begin__ = 107;
             validate_non_negative_index("beta_sdev", "K", K);
             validate_non_negative_index("beta_sdev", "S", S);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> beta_sdev(K, S);
             stan::math::initialize(beta_sdev, DUMMY_VAR__);
             stan::math::fill(beta_sdev, DUMMY_VAR__);
-            current_statement_begin__ = 88;
+            current_statement_begin__ = 108;
             validate_non_negative_index("beta_q_temp", "K", K);
             Eigen::Matrix<double, Eigen::Dynamic, 1> beta_q_temp(K);
             stan::math::initialize(beta_q_temp, DUMMY_VAR__);
             stan::math::fill(beta_q_temp, DUMMY_VAR__);
-            current_statement_begin__ = 89;
+            current_statement_begin__ = 109;
             validate_non_negative_index("beta_s_temp", "K", K);
             Eigen::Matrix<double, Eigen::Dynamic, 1> beta_s_temp(K);
             stan::math::initialize(beta_s_temp, DUMMY_VAR__);
             stan::math::fill(beta_s_temp, DUMMY_VAR__);
-            current_statement_begin__ = 90;
+            current_statement_begin__ = 110;
             validate_non_negative_index("beta_qmean", "K", K);
             validate_non_negative_index("beta_qmean", "Q", Q);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> beta_qmean(K, Q);
             stan::math::initialize(beta_qmean, DUMMY_VAR__);
             stan::math::fill(beta_qmean, DUMMY_VAR__);
-            current_statement_begin__ = 91;
+            current_statement_begin__ = 111;
             validate_non_negative_index("beta_smean", "K", K);
             validate_non_negative_index("beta_smean", "S", S);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> beta_smean(K, S);
             stan::math::initialize(beta_smean, DUMMY_VAR__);
             stan::math::fill(beta_smean, DUMMY_VAR__);
             // generated quantities statements
-            current_statement_begin__ = 92;
+            current_statement_begin__ = 112;
             stan::math::assign(dev_m, 0);
-            current_statement_begin__ = 93;
+            current_statement_begin__ = 113;
             for (int n = 1; n <= N; ++n) {
-                current_statement_begin__ = 94;
+                current_statement_begin__ = 114;
                 stan::model::assign(log_lik, 
                             stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                             categorical_logit_log(get_base1(cID, n, "cID", 1), stan::model::rvalue(theta, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), "theta")), 
                             "assigning variable log_lik");
-                current_statement_begin__ = 95;
+                current_statement_begin__ = 115;
                 stan::math::assign(dev_m, (dev_m + (-(2) * get_base1(log_lik, n, "log_lik", 1))));
             }
-            current_statement_begin__ = 97;
+            current_statement_begin__ = 117;
+            if (as_bool(logical_eq(deltaM_value, 8))) {
+                current_statement_begin__ = 118;
+                stan::model::assign(deltaM_mu, 
+                            stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list()), 
+                            stan::math::exp(((get_base1(deltaM_mu_raw, 1, "deltaM_mu_raw", 1) + (pow(get_base1(deltaM_q_sd, 1, "deltaM_q_sd", 1), 2) / 2)) + (pow(get_base1(deltaM_s_sd, 1, "deltaM_s_sd", 1), 2) / 2))), 
+                            "assigning variable deltaM_mu");
+                current_statement_begin__ = 119;
+                for (int s = 1; s <= S; ++s) {
+                    current_statement_begin__ = 120;
+                    stan::model::assign(deltaM_smean, 
+                                stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list()), 
+                                mean(to_array_1d(stan::model::rvalue(deltaM, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list())), "deltaM"))), 
+                                "assigning variable deltaM_smean");
+                }
+                current_statement_begin__ = 122;
+                for (int q = 1; q <= Q; ++q) {
+                    current_statement_begin__ = 123;
+                    stan::model::assign(deltaM_qmean, 
+                                stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list()), 
+                                mean(to_array_1d(get_base1(deltaM, q, "deltaM", 1))), 
+                                "assigning variable deltaM_qmean");
+                }
+            }
+            current_statement_begin__ = 127;
             stan::math::assign(beta_qdev, diag_pre_multiply(beta_q_sd, beta_q_raw));
-            current_statement_begin__ = 98;
+            current_statement_begin__ = 128;
             stan::math::assign(beta_sdev, diag_pre_multiply(beta_s_sd, beta_s_raw));
-            current_statement_begin__ = 99;
+            current_statement_begin__ = 129;
             if (as_bool(logical_gt(K, 0))) {
-                current_statement_begin__ = 100;
+                current_statement_begin__ = 130;
                 for (int k = 1; k <= K; ++k) {
-                    current_statement_begin__ = 101;
+                    current_statement_begin__ = 131;
                     stan::model::assign(beta_q_temp, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                 mean(to_array_1d(stan::model::rvalue(beta_qdev, stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_omni(), stan::model::nil_index_list())), "beta_qdev"))), 
                                 "assigning variable beta_q_temp");
-                    current_statement_begin__ = 102;
+                    current_statement_begin__ = 132;
                     stan::model::assign(beta_s_temp, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                 mean(to_array_1d(stan::model::rvalue(beta_sdev, stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_omni(), stan::model::nil_index_list())), "beta_sdev"))), 
                                 "assigning variable beta_s_temp");
                 }
-                current_statement_begin__ = 104;
+                current_statement_begin__ = 134;
                 stan::math::assign(beta_qmean, add(rep_matrix(add(beta_mu, beta_s_temp), Q), beta_qdev));
-                current_statement_begin__ = 105;
+                current_statement_begin__ = 135;
                 stan::math::assign(beta_smean, add(rep_matrix(add(beta_mu, beta_q_temp), S), beta_sdev));
             }
             // validate, write generated quantities
-            current_statement_begin__ = 84;
+            current_statement_begin__ = 101;
             size_t log_lik_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < log_lik_j_1_max__; ++j_1__) {
                 vars__.push_back(log_lik(j_1__));
             }
-            current_statement_begin__ = 85;
+            current_statement_begin__ = 102;
             vars__.push_back(dev_m);
-            current_statement_begin__ = 86;
+            current_statement_begin__ = 103;
+            size_t deltaM_mu_k_0_max__ = logical_eq(deltaM_value, 8);
+            for (size_t k_0__ = 0; k_0__ < deltaM_mu_k_0_max__; ++k_0__) {
+                vars__.push_back(deltaM_mu[k_0__]);
+            }
+            current_statement_begin__ = 104;
+            size_t deltaM_smean_j_1_max__ = (S * logical_eq(deltaM_value, 8));
+            for (size_t j_1__ = 0; j_1__ < deltaM_smean_j_1_max__; ++j_1__) {
+                vars__.push_back(deltaM_smean(j_1__));
+            }
+            current_statement_begin__ = 105;
+            size_t deltaM_qmean_j_1_max__ = (Q * logical_eq(deltaM_value, 8));
+            for (size_t j_1__ = 0; j_1__ < deltaM_qmean_j_1_max__; ++j_1__) {
+                vars__.push_back(deltaM_qmean(j_1__));
+            }
+            current_statement_begin__ = 106;
             size_t beta_qdev_j_2_max__ = Q;
             size_t beta_qdev_j_1_max__ = K;
             for (size_t j_2__ = 0; j_2__ < beta_qdev_j_2_max__; ++j_2__) {
@@ -1022,7 +1302,7 @@ public:
                     vars__.push_back(beta_qdev(j_1__, j_2__));
                 }
             }
-            current_statement_begin__ = 87;
+            current_statement_begin__ = 107;
             size_t beta_sdev_j_2_max__ = S;
             size_t beta_sdev_j_1_max__ = K;
             for (size_t j_2__ = 0; j_2__ < beta_sdev_j_2_max__; ++j_2__) {
@@ -1030,17 +1310,17 @@ public:
                     vars__.push_back(beta_sdev(j_1__, j_2__));
                 }
             }
-            current_statement_begin__ = 88;
+            current_statement_begin__ = 108;
             size_t beta_q_temp_j_1_max__ = K;
             for (size_t j_1__ = 0; j_1__ < beta_q_temp_j_1_max__; ++j_1__) {
                 vars__.push_back(beta_q_temp(j_1__));
             }
-            current_statement_begin__ = 89;
+            current_statement_begin__ = 109;
             size_t beta_s_temp_j_1_max__ = K;
             for (size_t j_1__ = 0; j_1__ < beta_s_temp_j_1_max__; ++j_1__) {
                 vars__.push_back(beta_s_temp(j_1__));
             }
-            current_statement_begin__ = 90;
+            current_statement_begin__ = 110;
             size_t beta_qmean_j_2_max__ = Q;
             size_t beta_qmean_j_1_max__ = K;
             for (size_t j_2__ = 0; j_2__ < beta_qmean_j_2_max__; ++j_2__) {
@@ -1048,7 +1328,7 @@ public:
                     vars__.push_back(beta_qmean(j_1__, j_2__));
                 }
             }
-            current_statement_begin__ = 91;
+            current_statement_begin__ = 111;
             size_t beta_smean_j_2_max__ = S;
             size_t beta_smean_j_1_max__ = K;
             for (size_t j_2__ = 0; j_2__ < beta_smean_j_2_max__; ++j_2__) {
@@ -1086,10 +1366,34 @@ public:
                                  bool include_tparams__ = true,
                                  bool include_gqs__ = true) const {
         std::stringstream param_name_stream__;
-        size_t deltaM_k_0_max__ = logical_eq(deltaM_value, 9);
-        for (size_t k_0__ = 0; k_0__ < deltaM_k_0_max__; ++k_0__) {
+        size_t deltaM_mu_raw_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_mu_raw_k_0_max__; ++k_0__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "deltaM" << '.' << k_0__ + 1;
+            param_name_stream__ << "deltaM_mu_raw" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_s_sd_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_s_sd_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_s_sd" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_q_sd_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_q_sd_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_q_sd" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_s_raw_j_1_max__ = (S * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_s_raw_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_s_raw" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_q_raw_j_1_max__ = (Q * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_q_raw_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_q_raw" << '.' << j_1__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
         size_t alpha_raw_j_2_max__ = Q;
@@ -1139,6 +1443,15 @@ public:
         }
         if (!include_gqs__ && !include_tparams__) return;
         if (include_tparams__) {
+            size_t deltaM_j_1_max__ = S;
+            size_t deltaM_k_0_max__ = (Q * logical_eq(deltaM_value, 8));
+            for (size_t j_1__ = 0; j_1__ < deltaM_j_1_max__; ++j_1__) {
+                for (size_t k_0__ = 0; k_0__ < deltaM_k_0_max__; ++k_0__) {
+                    param_name_stream__.str(std::string());
+                    param_name_stream__ << "deltaM" << '.' << k_0__ + 1 << '.' << j_1__ + 1;
+                    param_names__.push_back(param_name_stream__.str());
+                }
+            }
             size_t alpha_j_2_max__ = Q;
             size_t alpha_j_1_max__ = C;
             for (size_t j_2__ = 0; j_2__ < alpha_j_2_max__; ++j_2__) {
@@ -1169,15 +1482,6 @@ public:
                     }
                 }
             }
-            size_t X_acc_j_2_max__ = (K * logical_eq(deltaM_value, 9));
-            size_t X_acc_j_1_max__ = C;
-            for (size_t j_2__ = 0; j_2__ < X_acc_j_2_max__; ++j_2__) {
-                for (size_t j_1__ = 0; j_1__ < X_acc_j_1_max__; ++j_1__) {
-                    param_name_stream__.str(std::string());
-                    param_name_stream__ << "X_acc" << '.' << j_1__ + 1 << '.' << j_2__ + 1;
-                    param_names__.push_back(param_name_stream__.str());
-                }
-            }
         }
         if (!include_gqs__) return;
         size_t log_lik_j_1_max__ = N;
@@ -1189,6 +1493,24 @@ public:
         param_name_stream__.str(std::string());
         param_name_stream__ << "dev_m";
         param_names__.push_back(param_name_stream__.str());
+        size_t deltaM_mu_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_mu_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_mu" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_smean_j_1_max__ = (S * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_smean_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_smean" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_qmean_j_1_max__ = (Q * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_qmean_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_qmean" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
         size_t beta_qdev_j_2_max__ = Q;
         size_t beta_qdev_j_1_max__ = K;
         for (size_t j_2__ = 0; j_2__ < beta_qdev_j_2_max__; ++j_2__) {
@@ -1242,10 +1564,34 @@ public:
                                    bool include_tparams__ = true,
                                    bool include_gqs__ = true) const {
         std::stringstream param_name_stream__;
-        size_t deltaM_k_0_max__ = logical_eq(deltaM_value, 9);
-        for (size_t k_0__ = 0; k_0__ < deltaM_k_0_max__; ++k_0__) {
+        size_t deltaM_mu_raw_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_mu_raw_k_0_max__; ++k_0__) {
             param_name_stream__.str(std::string());
-            param_name_stream__ << "deltaM" << '.' << k_0__ + 1;
+            param_name_stream__ << "deltaM_mu_raw" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_s_sd_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_s_sd_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_s_sd" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_q_sd_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_q_sd_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_q_sd" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_s_raw_j_1_max__ = (S * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_s_raw_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_s_raw" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_q_raw_j_1_max__ = (Q * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_q_raw_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_q_raw" << '.' << j_1__ + 1;
             param_names__.push_back(param_name_stream__.str());
         }
         size_t alpha_raw_j_2_max__ = Q;
@@ -1295,6 +1641,15 @@ public:
         }
         if (!include_gqs__ && !include_tparams__) return;
         if (include_tparams__) {
+            size_t deltaM_j_1_max__ = S;
+            size_t deltaM_k_0_max__ = (Q * logical_eq(deltaM_value, 8));
+            for (size_t j_1__ = 0; j_1__ < deltaM_j_1_max__; ++j_1__) {
+                for (size_t k_0__ = 0; k_0__ < deltaM_k_0_max__; ++k_0__) {
+                    param_name_stream__.str(std::string());
+                    param_name_stream__ << "deltaM" << '.' << k_0__ + 1 << '.' << j_1__ + 1;
+                    param_names__.push_back(param_name_stream__.str());
+                }
+            }
             size_t alpha_j_2_max__ = Q;
             size_t alpha_j_1_max__ = C;
             for (size_t j_2__ = 0; j_2__ < alpha_j_2_max__; ++j_2__) {
@@ -1325,15 +1680,6 @@ public:
                     }
                 }
             }
-            size_t X_acc_j_2_max__ = (K * logical_eq(deltaM_value, 9));
-            size_t X_acc_j_1_max__ = C;
-            for (size_t j_2__ = 0; j_2__ < X_acc_j_2_max__; ++j_2__) {
-                for (size_t j_1__ = 0; j_1__ < X_acc_j_1_max__; ++j_1__) {
-                    param_name_stream__.str(std::string());
-                    param_name_stream__ << "X_acc" << '.' << j_1__ + 1 << '.' << j_2__ + 1;
-                    param_names__.push_back(param_name_stream__.str());
-                }
-            }
         }
         if (!include_gqs__) return;
         size_t log_lik_j_1_max__ = N;
@@ -1345,6 +1691,24 @@ public:
         param_name_stream__.str(std::string());
         param_name_stream__ << "dev_m";
         param_names__.push_back(param_name_stream__.str());
+        size_t deltaM_mu_k_0_max__ = logical_eq(deltaM_value, 8);
+        for (size_t k_0__ = 0; k_0__ < deltaM_mu_k_0_max__; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_mu" << '.' << k_0__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_smean_j_1_max__ = (S * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_smean_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_smean" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        size_t deltaM_qmean_j_1_max__ = (Q * logical_eq(deltaM_value, 8));
+        for (size_t j_1__ = 0; j_1__ < deltaM_qmean_j_1_max__; ++j_1__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "deltaM_qmean" << '.' << j_1__ + 1;
+            param_names__.push_back(param_name_stream__.str());
+        }
         size_t beta_qdev_j_2_max__ = Q;
         size_t beta_qdev_j_1_max__ = K;
         for (size_t j_2__ = 0; j_2__ < beta_qdev_j_2_max__; ++j_2__) {

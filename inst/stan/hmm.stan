@@ -15,7 +15,11 @@ data{
 }
 
 parameters{
-  real<lower=0> deltaM [deltaM_value==9]; // decay
+  real deltaM_mu_raw [deltaM_value==8];
+  real<lower=0> deltaM_s_sd [deltaM_value==8];
+  real<lower=0> deltaM_q_sd [deltaM_value==8];
+  vector[S*(deltaM_value==8)] deltaM_s_raw;
+  vector[Q*(deltaM_value==8)] deltaM_q_raw;
   matrix[C-1,Q] alpha_raw; // base rate
   vector[K] beta_mu; // group-level mean for beta
   vector<lower=0>[K] beta_s_sd; // sd for beta across individuals
@@ -25,10 +29,18 @@ parameters{
 }
 
 transformed parameters {
+  vector[S] deltaM[Q*(deltaM_value==8)];
   matrix[C,Q] alpha;
   matrix[C,N] theta;
   matrix[K,S] beta[Q];
-  matrix[C,K * (deltaM_value == 9)] X_acc;
+
+  if (deltaM_value == 8){
+    for (q in 1:Q){
+      deltaM[q] = exp(deltaM_mu_raw[1] +
+                      deltaM_s_sd[1] * deltaM_s_raw +
+                      deltaM_q_sd[1] * deltaM_q_raw[q]);
+    }
+  }
 
   if (K > 0){
     for (q in 1:Q){
@@ -42,31 +54,36 @@ transformed parameters {
   alpha[C,] = to_row_vector(rep_array(0,Q));
 
   {
-  if (K > 0 && deltaM_value == 9){
+    if (K > 0  && deltaM_value == 8){
+      matrix[C,K] X_acc;
       for (n in 1:N){
-          if (tNo[n] == 1){
-            X_acc = to_matrix(rep_array(0,C,K));
-          }else{
-            X_acc *= deltaM[1];
-          }
-          X_acc += X[n];
-          theta[,n] = X_acc * beta[qID[n],,sID[n]];
+        if (tNo[n] == 1){
+          X_acc = to_matrix(rep_array(0,C,K));
+        }else{
+          X_acc *= deltaM[qID[n], sID[n]];
+        }
+        X_acc += X[n];
+        theta[,n] = X_acc * beta[qID[n],,sID[n]];
       }
       theta += alpha[,qID];
-  }else if (K > 0){
+    }else if (K > 0){
       for (n in 1:N){
           theta[,n] = X[n] * beta[qID[n],,sID[n]];
       }
       theta += alpha[,qID];
-  }else{
+    }else{
       theta = alpha[,qID];
     }
   }
 }
 
 model{
-  if(deltaM_value == 9){
-    deltaM[1] ~ normal(0.5,0.8)T[0,];
+  if (deltaM_value == 8){
+    deltaM_mu_raw[1] ~ normal(-0.7, 0.1);
+    deltaM_s_sd[1] ~ normal(0, 0.1)T[0,];
+    deltaM_q_sd[1] ~ normal(0, 0.1)T[0,];
+    deltaM_s_raw ~ std_normal();
+    deltaM_q_raw ~ std_normal();
   }
   beta_mu ~ std_normal();
   beta_q_sd ~ std_normal();
@@ -83,6 +100,9 @@ model{
 generated quantities {
   vector[N] log_lik;
   real dev_m;
+  real deltaM_mu[deltaM_value==8];
+  vector[S*(deltaM_value==8)] deltaM_smean;
+  vector[Q*(deltaM_value==8)] deltaM_qmean;
   matrix[K,Q] beta_qdev;
   matrix[K,S] beta_sdev;
   vector[K] beta_q_temp;
@@ -94,6 +114,16 @@ generated quantities {
     log_lik[n] = categorical_logit_lpmf(cID[n]|theta[,n]);
     dev_m += - 2*log_lik[n];
   }
+  if(deltaM_value == 8){
+    deltaM_mu[1] = exp(deltaM_mu_raw[1] + deltaM_q_sd[1]^2/2 + deltaM_s_sd[1]^2/2);
+    for (s in 1:S){
+      deltaM_smean[s] = mean(to_array_1d(deltaM[,s]));
+    }
+    for (q in 1:Q){
+      deltaM_qmean[q] = mean(to_array_1d(deltaM[q]));
+    }
+  }
+
   beta_qdev = diag_pre_multiply(beta_q_sd, beta_q_raw);
   beta_sdev = diag_pre_multiply(beta_s_sd,beta_s_raw);
   if(K>0){

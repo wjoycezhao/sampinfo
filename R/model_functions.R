@@ -1,6 +1,8 @@
 
 
 
+
+
 #' Fit the model!
 #'
 #' \code{getStanFit} use RStan to fit your information sampling model.
@@ -98,15 +100,11 @@ getStanFit = function (beta,
 #' @inheritParams getStanFit
 #' @export
 #'
-getStanCode = function(deltaM_value, hier_value = 1) {
+getStanCode = function(deltaM_value = 9, hier_value = 1) {
   if (hier_value == 0) {
     stan_code = stanmodels$mm
-  } else if (hier_value == 1) {
-    if (deltaM_value == 8) {
-      stan_code = stanmodels$hmm_8
-    } else {
-      stan_code = stanmodels$hmm
-    }
+  } else {
+    stan_code = stanmodels$hmm
   }
   return(stan_code)
 }
@@ -306,22 +304,7 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
   beta = stan_data_fit$beta
   if (stan_data_fit$stan_data$hier_value == 0) {
     parameters0 = c('deltaM', 'beta', 'alpha')
-  } else if (stan_data_fit$stan_data$hier_value == 1 &
-             stan_data_fit$stan_data$deltaM_value != 8) {
-    parameters0 = c(
-      'deltaM',
-      'beta_mu',
-      'beta_q_sd',
-      'beta_s_sd',
-      'beta_qmean',
-      'beta_smean',
-      'beta_qdev',
-      'beta_sdev',
-      'alpha',
-      'beta'
-    )
-  } else if (stan_data_fit$stan_data$hier_value == 1 &
-             stan_data_fit$stan_data$deltaM_value == 8) {
+  } else {
     parameters0 = c(
       'deltaM_mu',
       'deltaM_mu_raw',
