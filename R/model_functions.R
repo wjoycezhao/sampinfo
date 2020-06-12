@@ -104,7 +104,7 @@ getStanCode = function(deltaM_value = 9, hier_value = 1) {
   if (hier_value == 0) {
     stan_code = stanmodels$mm
   } else {
-    stan_code = stanmodels$hmm
+    stan_code = stanmodels$mmh
   }
   return(stan_code)
 }
