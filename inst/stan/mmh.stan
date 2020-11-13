@@ -68,7 +68,7 @@ transformed parameters {
       theta += alpha[,qID];
     }else if (K > 0){
       for (n in 1:N){
-          theta[,n] = X[n] * beta[qID[n],,sID[n]];
+        theta[,n] = X[n] * beta[qID[n],,sID[n]];
       }
       theta += alpha[,qID];
     }else{

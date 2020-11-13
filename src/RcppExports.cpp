@@ -7,17 +7,21 @@
 using namespace Rcpp;
 
 
-RcppExport SEXP _rcpp_module_boot_stan_fit4hmm_deltas_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4dm_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4dm_threshold_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4dm_timelimit_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4dmh_threshold_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4dmh_timelimit_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4mm_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4mm10d01_mod();
-RcppExport SEXP _rcpp_module_boot_stan_fit4mm10d9_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4mmh_mod();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rcpp_module_boot_stan_fit4hmm_deltas_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4hmm_deltas_mod, 0},
+    {"_rcpp_module_boot_stan_fit4dm_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dm_mod, 0},
+    {"_rcpp_module_boot_stan_fit4dm_threshold_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dm_threshold_mod, 0},
+    {"_rcpp_module_boot_stan_fit4dm_timelimit_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dm_timelimit_mod, 0},
+    {"_rcpp_module_boot_stan_fit4dmh_threshold_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dmh_threshold_mod, 0},
+    {"_rcpp_module_boot_stan_fit4dmh_timelimit_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dmh_timelimit_mod, 0},
     {"_rcpp_module_boot_stan_fit4mm_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4mm_mod, 0},
-    {"_rcpp_module_boot_stan_fit4mm10d01_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4mm10d01_mod, 0},
-    {"_rcpp_module_boot_stan_fit4mm10d9_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4mm10d9_mod, 0},
     {"_rcpp_module_boot_stan_fit4mmh_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4mmh_mod, 0},
     {NULL, NULL, 0}
 };

@@ -11,20 +11,22 @@ data{
 }
 
 parameters{
-  real<lower=0> deltaM [deltaM_value == 9]; // decay
+  real<lower=0, upper=1> deltaM [deltaM_value == 8]; // decay
   vector[C-1] alpha_raw; // base rate
-  vector[K] beta; // group-level mean for beta
+  vector[K] beta_raw; // group-level mean for beta
 }
 
 transformed parameters {
   vector[C] alpha;
+  vector[K] beta; // group-level mean for beta
   matrix[C,N] theta;
-  matrix[C,K * (deltaM_value == 9)] X_acc;
+  matrix[C,K * (deltaM_value == 8)] X_acc;
 
-  alpha[1:(C-1)] = alpha_raw/2;
+  alpha[1:(C-1)] = alpha_raw * 2;
   alpha[C] = 0;
+  beta = beta_raw * 5;
 
-  if (K > 0 && deltaM_value == 9){
+  if (K > 0 && deltaM_value == 8){
       for (n in 1:N){
             if (tNo[n] == 1){
               X_acc = to_matrix(rep_array(0,C,K));
@@ -46,11 +48,11 @@ transformed parameters {
 }
 
 model{
-  if(deltaM_value==9){
-    deltaM[1] ~ normal(0.5,0.8)T[0,];
+  if(deltaM_value == 8){
+    deltaM[1] ~ uniform(0,1);
   }
-  beta ~ std_normal();
-  alpha_raw ~ std_normal();
+  alpha_raw ~ normal(0,1);
+  beta_raw ~ normal(0,5);
   for (n in 1:N){
     cID[n] ~ categorical_logit(theta[,n]);
   }

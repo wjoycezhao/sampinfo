@@ -60,7 +60,7 @@ getFormatData = function(data_all, dist_all, cluster_num = NULL) {
 #'
 #' @export
 #'
-getDataHier = function(cluster_num = NULL,
+getData = function(cluster_num = NULL,
                        exp_name,
                        data_folder = '') {
   ## thought listing data
@@ -125,7 +125,7 @@ getDataHier = function(cluster_num = NULL,
 #'
 #' Generate the decision congruence matrix.
 #'
-#' @inheritParams getDataHier
+#' @inheritParams getData
 #'
 #' @return A matrix. 1 for clusters supporting the same decision; 0 otherwise.
 #' @export

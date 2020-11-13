@@ -4,16 +4,11 @@
 \alias{getStanCode}
 \title{Retrieve stan code}
 \usage{
-getStanCode(deltaM_value = 9, hier_value = 1)
+getStanCode(hier_value = 1)
 }
 \arguments{
-\item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
-9 for estimating it as a free parameter; 99 for estimating participant-specific delta}
-
 \item{hier_value}{Whether use hiearchical model. Default is 1.}
 }
 \description{
-There are three Rstan code files. One for flexible delta (deltaM_value=9);
-one for fixed deltaa (deltaM_value = 0 or deltaM_value = 1)
-one for participant-specific decay (deltaM_value==99)
+Retrieve stan code
 }

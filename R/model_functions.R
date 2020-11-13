@@ -58,7 +58,7 @@ getStanFit = function (beta,
     hier_value = hier_value
   )
   ##fit model
-  stan_code = getStanCode(deltaM_value, hier_value)
+  stan_code = getStanCode(hier_value)
 
   if (init_values != 'random') {
     init_values = function() {
@@ -94,13 +94,10 @@ getStanFit = function (beta,
 
 #' Retrieve stan code
 #'
-#' There are three Rstan code files. One for flexible delta (deltaM_value=9);
-#' one for fixed deltaa (deltaM_value = 0 or deltaM_value = 1)
-#' one for participant-specific decay (deltaM_value==99)
 #' @inheritParams getStanFit
 #' @export
 #'
-getStanCode = function(deltaM_value = 9, hier_value = 1) {
+getStanCode = function(hier_value = 1) {
   if (hier_value == 0) {
     stan_code = stanmodels$mm
   } else {
@@ -163,7 +160,7 @@ getStanData = function(beta = character(0),
     Q = length(unique(format_data$qID)),
     # unique participant numbers
     sID =  as.numeric(as.character(format_data$sID)),
-    # qID = rep(1,each=nrow(format_data)),##!! to test for no question differences
+    # qID = rep(1,each=nrow(format_data)),##!! used fot testing no question differences
     qID =  as.numeric(as.character(format_data$qID)),
     tNo = as.numeric(as.character(format_data$tNo)),
     cID = as.numeric(as.character(format_data$cID)),
