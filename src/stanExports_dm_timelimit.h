@@ -36,15 +36,14 @@ stan::io::program_reader prog_reader__() {
     reader.add_event(105, 103, "end", "model_dm_timelimit");
     return reader;
 }
-template <typename T1__, typename T2__, typename T3__, typename T4__, typename T5__>
-std::vector<Eigen::Matrix<typename boost::math::tools::promote_args<T1__, T2__, T3__, T4__, typename boost::math::tools::promote_args<T5__>::type>::type, Eigen::Dynamic, 1> >
+template <typename T1__, typename T2__, typename T3__, typename T4__>
+std::vector<Eigen::Matrix<typename boost::math::tools::promote_args<T1__, T2__, T3__, T4__>::type, Eigen::Dynamic, 1> >
 decision_l(const int& N,
                const T1__& ar_value,
-               const Eigen::Matrix<T2__, Eigen::Dynamic, 1>& terminate,
-               const Eigen::Matrix<T3__, Eigen::Dynamic, 1>& p_n,
-               const Eigen::Matrix<T4__, Eigen::Dynamic, 1>& p_y,
-               const Eigen::Matrix<T5__, Eigen::Dynamic, 1>& p_end, std::ostream* pstream__) {
-    typedef typename boost::math::tools::promote_args<T1__, T2__, T3__, T4__, typename boost::math::tools::promote_args<T5__>::type>::type local_scalar_t__;
+               const Eigen::Matrix<T2__, Eigen::Dynamic, 1>& p_n,
+               const Eigen::Matrix<T3__, Eigen::Dynamic, 1>& p_y,
+               const Eigen::Matrix<T4__, Eigen::Dynamic, 1>& p_end, std::ostream* pstream__) {
+    typedef typename boost::math::tools::promote_args<T1__, T2__, T3__, T4__>::type local_scalar_t__;
     typedef local_scalar_t__ fun_return_scalar_t__;
     const static bool propto__ = true;
     (void) propto__;
@@ -84,15 +83,14 @@ decision_l(const int& N,
     }
 }
 struct decision_l_functor__ {
-    template <typename T1__, typename T2__, typename T3__, typename T4__, typename T5__>
-        std::vector<Eigen::Matrix<typename boost::math::tools::promote_args<T1__, T2__, T3__, T4__, typename boost::math::tools::promote_args<T5__>::type>::type, Eigen::Dynamic, 1> >
+    template <typename T1__, typename T2__, typename T3__, typename T4__>
+        std::vector<Eigen::Matrix<typename boost::math::tools::promote_args<T1__, T2__, T3__, T4__>::type, Eigen::Dynamic, 1> >
     operator()(const int& N,
                const T1__& ar_value,
-               const Eigen::Matrix<T2__, Eigen::Dynamic, 1>& terminate,
-               const Eigen::Matrix<T3__, Eigen::Dynamic, 1>& p_n,
-               const Eigen::Matrix<T4__, Eigen::Dynamic, 1>& p_y,
-               const Eigen::Matrix<T5__, Eigen::Dynamic, 1>& p_end, std::ostream* pstream__) const {
-        return decision_l(N, ar_value, terminate, p_n, p_y, p_end, pstream__);
+               const Eigen::Matrix<T2__, Eigen::Dynamic, 1>& p_n,
+               const Eigen::Matrix<T3__, Eigen::Dynamic, 1>& p_y,
+               const Eigen::Matrix<T4__, Eigen::Dynamic, 1>& p_end, std::ostream* pstream__) const {
+        return decision_l(N, ar_value, p_n, p_y, p_end, pstream__);
     }
 };
 #include <stan_meta_header.hpp>
@@ -442,7 +440,7 @@ public:
             if (sigma_raw < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
             else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
             current_statement_begin__ = 81;
-            stan::math::assign(decision_p, decision_l(N, ar_value, to_vector(terminate), p_n, p_y, to_vector(rep_array(p_end, N)), pstream__));
+            stan::math::assign(decision_p, decision_l(N, ar_value, p_n, p_y, to_vector(rep_array(p_end, N)), pstream__));
             current_statement_begin__ = 82;
             for (int n = 1; n <= N; ++n) {
                 current_statement_begin__ = 84;
@@ -686,7 +684,7 @@ public:
             current_statement_begin__ = 94;
             stan::math::assign(dev_d, 0);
             current_statement_begin__ = 95;
-            stan::math::assign(decision_p, decision_l(N, ar_value, to_vector(terminate), p_n, p_y, to_vector(rep_array(p_end, N)), pstream__));
+            stan::math::assign(decision_p, decision_l(N, ar_value, p_n, p_y, to_vector(rep_array(p_end, N)), pstream__));
             current_statement_begin__ = 96;
             stan::math::assign(decision_no, get_base1(decision_p, 1, "decision_p", 1));
             current_statement_begin__ = 97;

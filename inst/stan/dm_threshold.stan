@@ -5,7 +5,7 @@
 functions{
 //
       vector[] decision_l (int N, real ar_value,
-                          vector terminate, vector p_n, vector p_y){
+                          vector p_n, vector p_y){
             //variable to hold prob
           vector[N] prob_d[3];
           // to say no
@@ -83,7 +83,7 @@ model{
   }
   threshold_raw ~ normal(0,1)T[0,];
   sigma_mult ~ normal(0,0.5)T[0,];
-  decision_p = decision_l (N, ar_value, to_vector(terminate), p_n, p_y);
+  decision_p = decision_l (N, ar_value, p_n, p_y);
   for (n in 1:N){
       // decision
       target += log(decision_p[terminate[n]+2,n]);
@@ -98,7 +98,7 @@ generated quantities {
   vector[N] decision_yes;
   real dev_d;
   dev_d = 0;
-  decision_p = decision_l (N, ar_value, to_vector(terminate), p_n, p_y);
+  decision_p = decision_l (N, ar_value, p_n, p_y);
   decision_no =  decision_p[1];
   decision_0 = decision_p[2];
   decision_yes =  decision_p[3];

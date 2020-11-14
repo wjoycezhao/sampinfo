@@ -27,7 +27,8 @@ getStanFit(
   init_r = 0.5,
   hier_value = 1,
   X_sim = NULL,
-  cluster_rating_m = NULL
+  cluster_rating_m = NULL,
+  max_tNo_prd = NULL
 )
 }
 \arguments{

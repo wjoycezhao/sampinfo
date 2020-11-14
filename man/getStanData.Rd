@@ -14,7 +14,8 @@ getStanData(
   option_num = 3 * 2 + 1,
   format_data,
   X_sim = NULL,
-  cluster_rating_m = NULL
+  cluster_rating_m = NULL,
+  max_tNo_prd = NULL
 )
 }
 \arguments{

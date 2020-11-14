@@ -59,7 +59,8 @@ getStanFit = function (beta = NULL,
                        init_r = 0.5,
                        hier_value = 1,
                        X_sim = NULL,
-                       cluster_rating_m = NULL) {
+                       cluster_rating_m = NULL,
+                       max_tNo_prd = NULL) {
   ## prepare inputs for RStan; getHMRStanData in 'model_functions.R'
   stan_data = getStanData(
     beta = beta,
@@ -71,7 +72,8 @@ getStanFit = function (beta = NULL,
     option_num = option_num,
     format_data = format_data,
     X_sim = X_sim,
-    cluster_rating_m = cluster_rating_m
+    cluster_rating_m = cluster_rating_m,
+    max_tNo_prd = max_tNo_prd
   )
   ##fit model
   stan_code = getStanCode(deltaM_value, deltaD_value, hier_value, random_value)
@@ -137,6 +139,16 @@ getStanCode = function(deltaM_value = NULL,
         stan_code = stanmodels$dmh_timelimit
       }
     }
+  }else if(!is.null(deltaM_value) & !is.null(deltaD_value)){
+    if (random_value == 0) {
+      if (hier_value == 0){
+        stan_code = stanmodels$mmdm_threshold
+      }
+    } else if (random_value == 1){
+      if (hier_value == 0){
+        stan_code = stanmodels$mmdm_timelimit
+      }
+    }
   }
   return(stan_code)
 }
@@ -157,7 +169,8 @@ getStanData = function(beta = character(0),
                        option_num = 3 * 2 + 1,
                        format_data,
                        X_sim = NULL,
-                       cluster_rating_m = NULL) {
+                       cluster_rating_m = NULL,
+                       max_tNo_prd = NULL) {
   ## memory model
   if (min(format_data$sID) < 1 |
       length(unique(format_data$sID)) != max(format_data$sID)) {
@@ -190,6 +203,7 @@ getStanData = function(beta = character(0),
     X = replicate(nrow(format_data), matrix(0, option_num, 0), simplify = FALSE)
     X_sim_sel = vector("list", length = option_num)
   }
+  X_sim_sel = lapply(X_sim_sel, function(x) as.matrix(x))
   ## decision model
   rating = as.numeric(as.character(format_data$rating))
   rating_y = c()
@@ -209,7 +223,7 @@ getStanData = function(beta = character(0),
     if (deltaD_value == 1) {
       for (n in 1:length(rating)) {
         if (format_data$tNo[n] > 1) {
-          # rating[n] = rating[n-1] + rating[n]
+          rating[n] = rating[n-1] + rating[n]
           rating_n[n] = rating_n[n-1] + rating_n[n]
           rating_y[n] = rating_y[n-1] + rating_y[n]
         }
@@ -220,8 +234,8 @@ getStanData = function(beta = character(0),
   terminate = as.numeric(as.character(format_data$terminate))
 
   if(!is.null(cluster_rating_m)){
-    cluster_rating_m = t(as.matrix(cluster_rating_m))
-    if(nrow(cluster_rating_m) != 7){
+    cluster_rating_m = as.matrix(cluster_rating_m)
+    if(ncol(cluster_rating_m) != 7){
       stop('wrong cluster_rating_m matrix')
     }
   }
@@ -248,12 +262,13 @@ getStanData = function(beta = character(0),
     ar_value = ar_value,
     random_value = random_value,
     deltaD_value = deltaD_value,
-    # rating = rating,
+    rating = rating,
     rating_n = rating_n,
     rating_y = rating_y,
     terminate = terminate,
     X_sim = X_sim_sel,
-    cluster_rating_m = cluster_rating_m
+    cluster_rating_m = cluster_rating_m,
+    max_tNo_prd = max_tNo_prd
   )
   if (!is.null(format_data$terminate)) {
     stan_data$terminate = as.numeric(as.character(format_data$terminate))
@@ -427,6 +442,7 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
     rstan::extract(stan_fit, pars = parameters0)
   ), quantile1))
   rownames(df) = changeBetaNames(rownames(df), beta, stan_data$Q, stan_data$S)
+  rownames(df) = changeBetaNames(rownames(df), beta, stan_data$Q, stan_data$S)
   if (!is.null(csv_name)) {
     write.table(
       df,
@@ -449,6 +465,7 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
 #'
 #' @param dev_name string. name for dev in rstan codes
 #' @inheritParams getParaSummary
+#' @inheritParams getWAIC
 #'
 #' @return A dataframe indicating DIC, WAIC, model running time,
 #' maximum rhat, minimum effective sample size,
@@ -457,16 +474,20 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
 
 getModelDiag = function(stan_data_fit,
                         csv_name = NULL,
-                        dev_name = 'dev_m') {
+                        dev_name = 'dev_m',
+                        logName = 'log_lik') {
   stan_fit = stan_data_fit$stan_fit
   time = getTime(stan_fit)
+  rhat = getRhat(stan_fit)
+  ess = getESS(stan_fit)
+  ess = ess[!(names(ess) %in% c("X_acc"))]
   df = cbind.data.frame(
     getDIC(stan_fit, dev_name),
-    getWAIC(stan_fit),
+    getWAIC(stan_fit, logName = logName),
     elapsed_time_min = min(time),
     elapsed_time_max = max(time),
-    rhat_max = max(getRhat(stan_fit), na.rm = T),
-    ess_min = min(getESS(stan_fit), na.rm = T),
+    rhat_max = max(rhat, na.rm = T),
+    ess_min = min(ess, na.rm = T),
     divergent = rstan::get_num_divergent(stan_fit),
     max_tree = rstan::get_num_max_treedepth(stan_fit)
   )
