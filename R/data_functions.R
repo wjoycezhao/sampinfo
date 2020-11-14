@@ -112,14 +112,29 @@ getData = function(cluster_num = NULL,
   ## get base rates
   base_rates = data_all %>% dplyr::group_by(cID) %>% dplyr::tally()
   base_rates$p = base_rates$n / sum(base_rates$n)
+
+  ## matrix for simulation
+  X_sim = lapply(unique(dist_all$qID), function(qq) {
+    (lapply(1:(cluster_num * 2 + 1),
+            function(x)
+              data.frame(
+                sameC = diag(option_num)[, x],
+                sameA = getSameA(cluster_num)[, x],
+                dist = dist_all[dist_all$qID == qq, x + 1]
+              )))
+  })
+
   return(
     list(
       format_data = data_all,
       cluster_rating_m = cluster_rating_m,
-      base_rates = base_rates
+      base_rates = base_rates,
+      X_sim = X_sim
     )
   )
 }
+
+
 
 #' Generate decision congruence matrix
 #'

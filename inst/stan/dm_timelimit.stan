@@ -28,7 +28,6 @@ data{
   int deltaD_value;
   int<lower=1> N;
   int tNo[N];
-  int rating[N];
   int terminate[N];
   int rating_y[N];
   int rating_n[N];
@@ -37,13 +36,14 @@ parameters{
   // decision
   real<lower=0, upper=1> deltaD [deltaD_value == 8];
   real<lower=0,upper=1> p_end;
-  real<lower=0> sigma;
+  real<lower=0> sigma_raw;
 }
 transformed parameters {
   // decision
   vector[N] p_n;
   vector[N] p_y;
-
+  real<lower=0> sigma;
+  sigma = 35* sigma_raw;
 {
   real utility_n;
   real utility_y;
@@ -77,7 +77,7 @@ model{
   if(deltaD_value == 8){
     deltaD[1] ~ uniform(0,1);
   }
-  sigma ~ normal(0, 35)T[0,];
+  sigma_raw ~ normal(0, 1)T[0,];
   decision_p = decision_l (N, ar_value, to_vector(terminate), p_n, p_y, to_vector(rep_array(p_end,N)));
   for (n in 1:N){
       // decision

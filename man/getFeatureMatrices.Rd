@@ -20,8 +20,8 @@ Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'
 cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
 terminate: 0 if continue sampling (not necessary)}
 
-\item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
-9 for estimating it as a free parameter; 99 for estimating participant-specific delta}
+\item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
+8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
 
 \item{option_num}{Number of total options in each choice (C)}
 

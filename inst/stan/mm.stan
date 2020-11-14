@@ -2,12 +2,14 @@
 data{
   // memory
   int deltaM_value; // number of option categories
+  int condition_value; // number of option categories
   int<lower=2> C; // number of option categories
   int<lower=0> K; // number of features; if 0 then no betas
   int<lower=1> N; // number of time points
   int<lower=1> tNo[N]; // thought No.x; used to reset decay
   matrix[C,K] X[N]; // feature matrix, for different time points
   int<lower=1, upper=C> cID[N]; // response cluster ID, 1-7 for 3-cluster solution
+  int<lower=2> MC; // ID of the neutral category
 }
 
 parameters{
@@ -45,8 +47,19 @@ transformed parameters {
   }else{
       theta = rep_matrix(alpha,N);
   }
-}
 
+  if(condition_value == 1){
+      for (n in 1:N){
+          if (tNo[n] == 1){
+              if(cID[n] < MC){
+                  theta[(MC + 1):C, n] += to_vector(rep_array(-999999, MC - 1));
+              }else if (cID[n] > MC){
+                  theta[1:(MC - 1), n] += to_vector(rep_array(-999999, MC - 1));
+              }
+          }
+      }
+  }
+}
 model{
   if(deltaM_value == 8){
     deltaM[1] ~ uniform(0,1);

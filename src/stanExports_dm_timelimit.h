@@ -102,7 +102,6 @@ private:
         int deltaD_value;
         int N;
         std::vector<int> tNo;
-        std::vector<int> rating;
         std::vector<int> terminate;
         std::vector<int> rating_y;
         std::vector<int> rating_n;
@@ -166,16 +165,6 @@ public:
                 tNo[k_0__] = vals_i__[pos__++];
             }
             current_statement_begin__ = 31;
-            validate_non_negative_index("rating", "N", N);
-            context__.validate_dims("data initialization", "rating", "int", context__.to_vec(N));
-            rating = std::vector<int>(N, int(0));
-            vals_i__ = context__.vals_i("rating");
-            pos__ = 0;
-            size_t rating_k_0_max__ = N;
-            for (size_t k_0__ = 0; k_0__ < rating_k_0_max__; ++k_0__) {
-                rating[k_0__] = vals_i__[pos__++];
-            }
-            current_statement_begin__ = 32;
             validate_non_negative_index("terminate", "N", N);
             context__.validate_dims("data initialization", "terminate", "int", context__.to_vec(N));
             terminate = std::vector<int>(N, int(0));
@@ -185,7 +174,7 @@ public:
             for (size_t k_0__ = 0; k_0__ < terminate_k_0_max__; ++k_0__) {
                 terminate[k_0__] = vals_i__[pos__++];
             }
-            current_statement_begin__ = 33;
+            current_statement_begin__ = 32;
             validate_non_negative_index("rating_y", "N", N);
             context__.validate_dims("data initialization", "rating_y", "int", context__.to_vec(N));
             rating_y = std::vector<int>(N, int(0));
@@ -195,7 +184,7 @@ public:
             for (size_t k_0__ = 0; k_0__ < rating_y_k_0_max__; ++k_0__) {
                 rating_y[k_0__] = vals_i__[pos__++];
             }
-            current_statement_begin__ = 34;
+            current_statement_begin__ = 33;
             validate_non_negative_index("rating_n", "N", N);
             context__.validate_dims("data initialization", "rating_n", "int", context__.to_vec(N));
             rating_n = std::vector<int>(N, int(0));
@@ -211,12 +200,12 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 38;
+            current_statement_begin__ = 37;
             validate_non_negative_index("deltaD", "logical_eq(deltaD_value, 8)", logical_eq(deltaD_value, 8));
             num_params_r__ += (1 * logical_eq(deltaD_value, 8));
-            current_statement_begin__ = 39;
+            current_statement_begin__ = 38;
             num_params_r__ += 1;
-            current_statement_begin__ = 40;
+            current_statement_begin__ = 39;
             num_params_r__ += 1;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -235,7 +224,7 @@ public:
         (void) pos__; // dummy call to supress warning
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
-        current_statement_begin__ = 38;
+        current_statement_begin__ = 37;
         if (!(context__.contains_r("deltaD")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable deltaD missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("deltaD");
@@ -255,7 +244,7 @@ public:
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable deltaD: ") + e.what()), current_statement_begin__, prog_reader__());
             }
         }
-        current_statement_begin__ = 39;
+        current_statement_begin__ = 38;
         if (!(context__.contains_r("p_end")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable p_end missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("p_end");
@@ -268,18 +257,18 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable p_end: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 40;
-        if (!(context__.contains_r("sigma")))
-            stan::lang::rethrow_located(std::runtime_error(std::string("Variable sigma missing")), current_statement_begin__, prog_reader__());
-        vals_r__ = context__.vals_r("sigma");
+        current_statement_begin__ = 39;
+        if (!(context__.contains_r("sigma_raw")))
+            stan::lang::rethrow_located(std::runtime_error(std::string("Variable sigma_raw missing")), current_statement_begin__, prog_reader__());
+        vals_r__ = context__.vals_r("sigma_raw");
         pos__ = 0U;
-        context__.validate_dims("parameter initialization", "sigma", "double", context__.to_vec());
-        double sigma(0);
-        sigma = vals_r__[pos__++];
+        context__.validate_dims("parameter initialization", "sigma_raw", "double", context__.to_vec());
+        double sigma_raw(0);
+        sigma_raw = vals_r__[pos__++];
         try {
-            writer__.scalar_lb_unconstrain(0, sigma);
+            writer__.scalar_lb_unconstrain(0, sigma_raw);
         } catch (const std::exception& e) {
-            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable sigma: ") + e.what()), current_statement_begin__, prog_reader__());
+            stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable sigma_raw: ") + e.what()), current_statement_begin__, prog_reader__());
         }
         params_r__ = writer__.data_r();
         params_i__ = writer__.data_i();
@@ -306,7 +295,7 @@ public:
         try {
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
-            current_statement_begin__ = 38;
+            current_statement_begin__ = 37;
             std::vector<local_scalar_t__> deltaD;
             size_t deltaD_d_0_max__ = logical_eq(deltaD_value, 8);
             deltaD.reserve(deltaD_d_0_max__);
@@ -316,32 +305,39 @@ public:
                 else
                     deltaD.push_back(in__.scalar_lub_constrain(0, 1));
             }
-            current_statement_begin__ = 39;
+            current_statement_begin__ = 38;
             local_scalar_t__ p_end;
             (void) p_end;  // dummy to suppress unused var warning
             if (jacobian__)
                 p_end = in__.scalar_lub_constrain(0, 1, lp__);
             else
                 p_end = in__.scalar_lub_constrain(0, 1);
-            current_statement_begin__ = 40;
-            local_scalar_t__ sigma;
-            (void) sigma;  // dummy to suppress unused var warning
+            current_statement_begin__ = 39;
+            local_scalar_t__ sigma_raw;
+            (void) sigma_raw;  // dummy to suppress unused var warning
             if (jacobian__)
-                sigma = in__.scalar_lb_constrain(0, lp__);
+                sigma_raw = in__.scalar_lb_constrain(0, lp__);
             else
-                sigma = in__.scalar_lb_constrain(0);
+                sigma_raw = in__.scalar_lb_constrain(0);
             // transformed parameters
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 43;
             validate_non_negative_index("p_n", "N", N);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> p_n(N);
             stan::math::initialize(p_n, DUMMY_VAR__);
             stan::math::fill(p_n, DUMMY_VAR__);
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 44;
             validate_non_negative_index("p_y", "N", N);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> p_y(N);
             stan::math::initialize(p_y, DUMMY_VAR__);
             stan::math::fill(p_y, DUMMY_VAR__);
+            current_statement_begin__ = 45;
+            local_scalar_t__ sigma;
+            (void) sigma;  // dummy to suppress unused var warning
+            stan::math::initialize(sigma, DUMMY_VAR__);
+            stan::math::fill(sigma, DUMMY_VAR__);
             // transformed parameters block statements
+            current_statement_begin__ = 46;
+            stan::math::assign(sigma, (35 * sigma_raw));
             {
             current_statement_begin__ = 48;
             local_scalar_t__ utility_n(DUMMY_VAR__);
@@ -403,7 +399,7 @@ public:
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 43;
             size_t p_n_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < p_n_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(p_n(j_1__))) {
@@ -412,7 +408,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_n: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 44;
             size_t p_y_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < p_y_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(p_y(j_1__))) {
@@ -421,6 +417,13 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_y: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
+            current_statement_begin__ = 45;
+            if (stan::math::is_uninitialized(sigma)) {
+                std::stringstream msg__;
+                msg__ << "Undefined transformed parameter: sigma";
+                stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable sigma: ") + msg__.str()), current_statement_begin__, prog_reader__());
+            }
+            check_greater_or_equal(function__, "sigma", sigma, 0);
             // model body
             {
             current_statement_begin__ = 76;
@@ -435,9 +438,9 @@ public:
                 lp_accum__.add(uniform_log<propto__>(get_base1(deltaD, 1, "deltaD", 1), 0, 1));
             }
             current_statement_begin__ = 80;
-            lp_accum__.add(normal_log<propto__>(sigma, 0, 5));
-            if (sigma < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-            else lp_accum__.add(-normal_ccdf_log(0, 0, 5));
+            lp_accum__.add(normal_log<propto__>(sigma_raw, 0, 1));
+            if (sigma_raw < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
+            else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
             current_statement_begin__ = 81;
             stan::math::assign(decision_p, decision_l(N, ar_value, to_vector(terminate), p_n, p_y, to_vector(rep_array(p_end, N)), pstream__));
             current_statement_begin__ = 82;
@@ -468,9 +471,10 @@ public:
         names__.resize(0);
         names__.push_back("deltaD");
         names__.push_back("p_end");
-        names__.push_back("sigma");
+        names__.push_back("sigma_raw");
         names__.push_back("p_n");
         names__.push_back("p_y");
+        names__.push_back("sigma");
         names__.push_back("log_lik");
         names__.push_back("decision_p");
         names__.push_back("decision_0");
@@ -493,6 +497,8 @@ public:
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(N);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(N);
@@ -539,8 +545,8 @@ public:
         }
         double p_end = in__.scalar_lub_constrain(0, 1);
         vars__.push_back(p_end);
-        double sigma = in__.scalar_lb_constrain(0);
-        vars__.push_back(sigma);
+        double sigma_raw = in__.scalar_lb_constrain(0);
+        vars__.push_back(sigma_raw);
         double lp__ = 0.0;
         (void) lp__;  // dummy to suppress unused var warning
         stan::math::accumulator<double> lp_accum__;
@@ -549,17 +555,24 @@ public:
         if (!include_tparams__ && !include_gqs__) return;
         try {
             // declare and define transformed parameters
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 43;
             validate_non_negative_index("p_n", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> p_n(N);
             stan::math::initialize(p_n, DUMMY_VAR__);
             stan::math::fill(p_n, DUMMY_VAR__);
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 44;
             validate_non_negative_index("p_y", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> p_y(N);
             stan::math::initialize(p_y, DUMMY_VAR__);
             stan::math::fill(p_y, DUMMY_VAR__);
+            current_statement_begin__ = 45;
+            double sigma;
+            (void) sigma;  // dummy to suppress unused var warning
+            stan::math::initialize(sigma, DUMMY_VAR__);
+            stan::math::fill(sigma, DUMMY_VAR__);
             // do transformed parameters statements
+            current_statement_begin__ = 46;
+            stan::math::assign(sigma, (35 * sigma_raw));
             {
             current_statement_begin__ = 48;
             local_scalar_t__ utility_n(DUMMY_VAR__);
@@ -622,6 +635,8 @@ public:
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
+            current_statement_begin__ = 45;
+            check_greater_or_equal(function__, "sigma", sigma, 0);
             // write transformed parameters
             if (include_tparams__) {
                 size_t p_n_j_1_max__ = N;
@@ -632,6 +647,7 @@ public:
                 for (size_t j_1__ = 0; j_1__ < p_y_j_1_max__; ++j_1__) {
                     vars__.push_back(p_y(j_1__));
                 }
+                vars__.push_back(sigma);
             }
             if (!include_gqs__) return;
             // declare and define generated quantities
@@ -758,7 +774,7 @@ public:
         param_name_stream__ << "p_end";
         param_names__.push_back(param_name_stream__.str());
         param_name_stream__.str(std::string());
-        param_name_stream__ << "sigma";
+        param_name_stream__ << "sigma_raw";
         param_names__.push_back(param_name_stream__.str());
         if (!include_gqs__ && !include_tparams__) return;
         if (include_tparams__) {
@@ -774,6 +790,9 @@ public:
                 param_name_stream__ << "p_y" << '.' << j_1__ + 1;
                 param_names__.push_back(param_name_stream__.str());
             }
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "sigma";
+            param_names__.push_back(param_name_stream__.str());
         }
         if (!include_gqs__) return;
         size_t log_lik_j_1_max__ = N;
@@ -827,7 +846,7 @@ public:
         param_name_stream__ << "p_end";
         param_names__.push_back(param_name_stream__.str());
         param_name_stream__.str(std::string());
-        param_name_stream__ << "sigma";
+        param_name_stream__ << "sigma_raw";
         param_names__.push_back(param_name_stream__.str());
         if (!include_gqs__ && !include_tparams__) return;
         if (include_tparams__) {
@@ -843,6 +862,9 @@ public:
                 param_name_stream__ << "p_y" << '.' << j_1__ + 1;
                 param_names__.push_back(param_name_stream__.str());
             }
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "sigma";
+            param_names__.push_back(param_name_stream__.str());
         }
         if (!include_gqs__) return;
         size_t log_lik_j_1_max__ = N;

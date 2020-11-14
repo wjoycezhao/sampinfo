@@ -24,11 +24,10 @@ functions{
 
 data{
   // decision
-  real ar_value;
+  int ar_value;
   int deltaD_value;
   int<lower=1> N;
   int tNo[N];
-  int rating[N];
   int terminate[N];
   int rating_y[N];
   int rating_n[N];
@@ -36,14 +35,16 @@ data{
 parameters{
   // decision
   real<lower=0, upper=1> deltaD [deltaD_value == 8];
-  real threshold;
+  real<lower=0> threshold_raw;
   real<lower=0> sigma_mult;
 }
 transformed parameters {
   // decision
   vector[N] p_n;
   vector[N] p_y;
+  real threshold;
   real sigma;
+  threshold = 35 * threshold_raw;
   sigma = sigma_mult * threshold;
 
   // print(sigma,threshold);
@@ -80,7 +81,7 @@ model{
   if(deltaD_value == 8){
     deltaD[1] ~ uniform(0,1);
   }
-  threshold ~ normal(0,35)T[0,];
+  threshold_raw ~ normal(0,1)T[0,];
   sigma_mult ~ normal(0,0.5)T[0,];
   decision_p = decision_l (N, ar_value, to_vector(terminate), p_n, p_y);
   for (n in 1:N){

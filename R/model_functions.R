@@ -10,8 +10,13 @@
 #'
 #' @param beta Variable names to be included in the model, e.g., c('beta','gamma').
 #' Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified
-#' @param deltaM_value 0 for full decay (marcov property); 1 for no decay;
-#'  9 for estimating it as a free parameter; 99 for estimating participant-specific delta
+#' @param deltaM_value 1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
+#'  8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta
+#' @param binary_value 0 for continuous; 1 for discrete inputs
+#' @param ar_value, 0 for absolute accumulation; 1 for relative accumulation
+#' @param random_value, 0 for time limit; 1 for threhold-based
+#' @param deltaD_value, 1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
+#'  8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta
 #' @param option_num Number of total options in each choice (C)
 #' @param format_data This should be a formated data.frame. sID: participant IDs. qID: question ID.
 #' cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
@@ -32,8 +37,12 @@
 #' Use $stan_data to see the input data of the Stan model
 #' @export
 
-getStanFit = function (beta,
-                       deltaM_value,
+getStanFit = function (beta = NULL,
+                       deltaM_value = NULL,
+                       binary_value = NULL,
+                       ar_value = NULL,
+                       random_value = NULL,
+                       deltaD_value = NULL,
                        option_num,
                        format_data,
                        save_model_file,
@@ -48,23 +57,30 @@ getStanFit = function (beta,
                        save_warmup = FALSE,
                        refresh = 500,
                        init_r = 0.5,
-                       hier_value = 1) {
+                       hier_value = 1,
+                       X_sim = NULL,
+                       cluster_rating_m = NULL) {
   ## prepare inputs for RStan; getHMRStanData in 'model_functions.R'
   stan_data = getStanData(
     beta = beta,
     deltaM_value = deltaM_value,
+    binary_value = binary_value,
+    ar_value = ar_value,
+    random_value = random_value,
+    deltaD_value = deltaD_value,
     option_num = option_num,
     format_data = format_data,
-    hier_value = hier_value
+    X_sim = X_sim,
+    cluster_rating_m = cluster_rating_m
   )
   ##fit model
-  stan_code = getStanCode(hier_value)
+  stan_code = getStanCode(deltaM_value, deltaD_value, hier_value, random_value)
+  # if (init_values != 'random') {
+  #   init_values = function() {
+  #     list(deltaM = 0.5)
+  #   }
+  # }
 
-  if (init_values != 'random') {
-    init_values = function() {
-      list(deltaM = 0.5)
-    }
-  }
   stan_fit = rstan::sampling(
     stan_code,
     data = stan_data,
@@ -97,11 +113,30 @@ getStanFit = function (beta,
 #' @inheritParams getStanFit
 #' @export
 #'
-getStanCode = function(hier_value = 1) {
-  if (hier_value == 0) {
-    stan_code = stanmodels$mm
-  } else {
-    stan_code = stanmodels$mmh
+getStanCode = function(deltaM_value = NULL,
+                       deltaD_value = NULL,
+                       hier_value = NULL,
+                       random_value = NULL) {
+  if(!is.null(deltaM_value) & is.null(deltaD_value)){
+    if (hier_value == 0){
+      stan_code = stanmodels$mm
+    }else if (hier_value == 1){
+      stan_code = stanmodels$mmh
+    }
+  }else if(is.null(deltaM_value) & !is.null(deltaD_value)){
+    if (random_value == 0) {
+      if (hier_value == 0){
+        stan_code = stanmodels$dm_threshold
+      }else if (hier_value == 1){
+        stan_code = stanmodels$dmh_threshold
+      }
+    } else if (random_value == 1){
+      if (hier_value == 0){
+        stan_code = stanmodels$dm_timelimit
+      }else if (hier_value == 1){
+        stan_code = stanmodels$dmh_timelimit
+      }
+    }
   }
   return(stan_code)
 }
@@ -115,9 +150,15 @@ getStanCode = function(hier_value = 1) {
 
 getStanData = function(beta = character(0),
                        deltaM_value = NULL,
+                       binary_value = NULL,
+                       ar_value = NULL,
+                       random_value = NULL,
+                       deltaD_value = NULL,
                        option_num = 3 * 2 + 1,
                        format_data,
-                       hier_value = 1) {
+                       X_sim = NULL,
+                       cluster_rating_m = NULL) {
+  ## memory model
   if (min(format_data$sID) < 1 |
       length(unique(format_data$sID)) != max(format_data$sID)) {
     stop(
@@ -141,17 +182,55 @@ getStanData = function(beta = character(0),
   }
 
   # feature matrix
-  if (length(beta > 0)) {
+  if (length(beta) > 0) {
     X = getFeatureMatrices(beta, format_data, deltaM_value,
                            option_num, print_names = F)
+    X_sim_sel = lapply(X_sim, function(x) x[,beta])
   } else{
     X = replicate(nrow(format_data), matrix(0, option_num, 0), simplify = FALSE)
+    X_sim_sel = vector("list", length = option_num)
+  }
+  ## decision model
+  rating = as.numeric(as.character(format_data$rating))
+  rating_y = c()
+  rating_n = c()
+  if (!is.null(binary_value)){
+    if(binary_value == 1){
+      # make ratings binary for binary_value = 1
+      rating = sign(rating)
+    }
+    if (ar_value == 0){
+      rating_n = pmin(0, rating);
+      rating_y = pmax(0, rating);
+    } else{
+      rating_y = rating;
+      rating_n = rating;
+    }
+    if (deltaD_value == 1) {
+      for (n in 1:length(rating)) {
+        if (format_data$tNo[n] > 1) {
+          # rating[n] = rating[n-1] + rating[n]
+          rating_n[n] = rating_n[n-1] + rating_n[n]
+          rating_y[n] = rating_y[n-1] + rating_y[n]
+        }
+      }
+    }
+  }
+
+  terminate = as.numeric(as.character(format_data$terminate))
+
+  if(!is.null(cluster_rating_m)){
+    cluster_rating_m = t(as.matrix(cluster_rating_m))
+    if(nrow(cluster_rating_m) != 7){
+      stop('wrong cluster_rating_m matrix')
+    }
   }
 
   stan_data <- list(
     deltaM_value = deltaM_value,
-    hier_value = hier_value,
+    condition_value = ifelse(is.null(format_data$condition), 0, 1),
     C = option_num,
+    MC = (option_num + 1)/2,
     # cluster numberss for one of the options
     N = nrow(format_data),
     K = length(beta),
@@ -164,7 +243,17 @@ getStanData = function(beta = character(0),
     qID =  as.numeric(as.character(format_data$qID)),
     tNo = as.numeric(as.character(format_data$tNo)),
     cID = as.numeric(as.character(format_data$cID)),
-    X = X
+    X = X,
+    binary_value = binary_value,
+    ar_value = ar_value,
+    random_value = random_value,
+    deltaD_value = deltaD_value,
+    # rating = rating,
+    rating_n = rating_n,
+    rating_y = rating_y,
+    terminate = terminate,
+    X_sim = X_sim_sel,
+    cluster_rating_m = cluster_rating_m
   )
   if (!is.null(format_data$terminate)) {
     stan_data$terminate = as.numeric(as.character(format_data$terminate))
@@ -223,21 +312,27 @@ changeBetaNames = function(names, beta, Q, S) {
       names,
       warn_missing = FALSE,
       from = c(
-        paste0('beta_mu.', x),
-        paste0('beta.', x),
+        'deltaM.1.',
+        'deltaD.1.',
+        paste0('alpha.',1:9,'.'),
+        paste0('beta_mu.', x,'.'),
+        paste0('beta.', x,'.'),
         'beta_mu',
-        paste0('beta_q_sd.', x),
-        paste0('beta_s_sd.', x),
-        paste0('beta_qmean.', x, '.', 1:Q),
-        paste0('beta_smean.', x, '.', 1:S),
-        paste0('beta_qdev.', x, '.', 1:Q),
-        paste0('beta_sdev.', x, '.', 1:S),
+        paste0('beta_q_sd.', x,'.'),
+        paste0('beta_s_sd.', x,'.'),
+        paste0('beta_qmean.', x, '.', 1:Q,'.'),
+        paste0('beta_smean.', x, '.', 1:S,'.'),
+        paste0('beta_qdev.', x, '.', 1:Q,'.'),
+        paste0('beta_sdev.', x, '.', 1:S,'.'),
         'beta_q_sd',
         'beta_s_sd',
         unlist(lapply(1:Q, function(y)
           paste0('beta.', y, '.', x, '.', 1:S)))
       ),
       to = c(
+        'deltaM',
+        'deltaD',
+        paste0('alpha.',1:9),
         paste0('beta_', beta[x], '_mu'),
         paste0('beta_', beta[x]),
         paste0('beta_', beta[1], '_mu'),
@@ -298,29 +393,35 @@ changeBetaNames = function(names, beta, Q, S) {
 getParaSummary = function(stan_data_fit, csv_name = NULL) {
   stan_data = stan_data_fit$stan_data
   stan_fit = stan_data_fit$stan_fit
+  para_name = colnames(as.data.frame(stan_data_fit$stan_fit))
   beta = stan_data_fit$beta
-  if (stan_data_fit$stan_data$hier_value == 0) {
-    parameters0 = c('deltaM', 'beta', 'alpha')
-  } else {
-    parameters0 = c(
-      'deltaM_mu',
-      'deltaM_mu_raw',
-      'deltaM_q_sd',
-      'deltaM_s_sd',
-      'beta_mu',
-      'beta_q_sd',
-      'beta_s_sd',
-      'deltaM_qmean',
-      'deltaM_smean',
-      'beta_qmean',
-      'beta_smean',
-      'beta_qdev',
-      'beta_sdev',
-      'alpha',
-      'beta'
-    )
-  }
-
+  parameters0 = para_name[stringr::str_detect(para_name,
+                          'delta|beta|alpha|p_end|sigma|threshold')]
+  parameters0 = parameters0[!stringr::str_detect(parameters0,
+                          'raw')]
+  parameters0 = c(parameters0, para_name[stringr::str_detect(para_name,
+                                        'threshold_mu_raw|sigma_mult_mu_raw')])
+  # if (stan_data_fit$stan_data$hier_value == 0) {
+  #   parameters0 = c('deltaM', 'beta', 'alpha')
+  # } else {
+  #   parameters0 = c(
+  #     'deltaM_mu',
+  #     'deltaM_mu_raw',
+  #     'deltaM_q_sd',
+  #     'deltaM_s_sd',
+  #     'beta_mu',
+  #     'beta_q_sd',
+  #     'beta_s_sd',
+  #     'deltaM_qmean',
+  #     'deltaM_smean',
+  #     'beta_qmean',
+  #     'beta_smean',
+  #     'beta_qdev',
+  #     'beta_sdev',
+  #     'alpha',
+  #     'beta'
+  #   )
+  # }
 
   df = t(sapply(as.data.frame(
     rstan::extract(stan_fit, pars = parameters0)
@@ -381,4 +482,38 @@ getModelDiag = function(stan_data_fit,
     )
   }
   return(df)
+}
+
+#' Parameter summaries
+#'
+#' \code{getPara} Parameter mean, quantiles and sd
+#' and save the results to a .csv file when \code{csv_name} is specified
+#'
+#' @param para_name parameter to extract
+#' @param quantiles quantiles to extract
+#' @inheritParams getParaSummary
+#'
+#' @return A dataframe with parameter mean, quantiles and sd, can be saved to a csv file
+#' @export
+
+getPara = function(para_name, stan_data_fit, csv_name = NULL,
+                   quantiles = c(0.025,0.05,0.1,0.2,0.25,0.5,0.75,0.8,0.9,0.95,0.975)){
+  pp_all = as.data.frame(rstan::extract(stan_data_fit$stan_fit,pars=para_name))
+  temp = lapply(1:ncol(pp_all),function(x){quantile(pp_all[,x],quantiles)})
+  pp_all1 = rbind(colMeans(pp_all),do.call(cbind,temp),sapply(pp_all,sd))
+  colnames(pp_all1) = colnames(pp_all)
+  rownames(pp_all1)[1] = 'mean'
+  rownames(pp_all1)[2 + length(quantiles)] = 'sd'
+  if (!is.null(csv_name)) {
+    write.table(
+      pp_all1,
+      csv_name,
+      sep = ",",
+      append = FALSE,
+      quote = FALSE,
+      col.names = NA,
+      row.names = TRUE
+    )
+  }
+  return(pp_all1)
 }

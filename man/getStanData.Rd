@@ -7,25 +7,37 @@
 getStanData(
   beta = character(0),
   deltaM_value = NULL,
+  binary_value = NULL,
+  ar_value = NULL,
+  random_value = NULL,
+  deltaD_value = NULL,
   option_num = 3 * 2 + 1,
   format_data,
-  hier_value = 1
+  X_sim = NULL,
+  cluster_rating_m = NULL
 )
 }
 \arguments{
 \item{beta}{Variable names to be included in the model, e.g., c('beta','gamma').
 Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
 
-\item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
-9 for estimating it as a free parameter; 99 for estimating participant-specific delta}
+\item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
+8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
+
+\item{binary_value}{0 for continuous; 1 for discrete inputs}
+
+\item{ar_value}{0 for absolute accumulation; 1 for relative accumulation}
+
+\item{random_value}{0 for time limit; 1 for threhold-based}
+
+\item{deltaD_value}{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
+8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
 
 \item{option_num}{Number of total options in each choice (C)}
 
 \item{format_data}{This should be a formated data.frame. sID: participant IDs. qID: question ID.
 cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
 terminate: 0 if continue sampling (not necessary)}
-
-\item{hier_value}{Whether use hiearchical model. Default is 1.}
 }
 \description{
 Format data for Stan

@@ -5,8 +5,12 @@
 \title{Fit the model!}
 \usage{
 getStanFit(
-  beta,
-  deltaM_value,
+  beta = NULL,
+  deltaM_value = NULL,
+  binary_value = NULL,
+  ar_value = NULL,
+  random_value = NULL,
+  deltaD_value = NULL,
   option_num,
   format_data,
   save_model_file,
@@ -21,15 +25,26 @@ getStanFit(
   save_warmup = FALSE,
   refresh = 500,
   init_r = 0.5,
-  hier_value = 1
+  hier_value = 1,
+  X_sim = NULL,
+  cluster_rating_m = NULL
 )
 }
 \arguments{
 \item{beta}{Variable names to be included in the model, e.g., c('beta','gamma').
 Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
 
-\item{deltaM_value}{0 for full decay (marcov property); 1 for no decay;
-9 for estimating it as a free parameter; 99 for estimating participant-specific delta}
+\item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
+8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
+
+\item{binary_value}{0 for continuous; 1 for discrete inputs}
+
+\item{ar_value, }{0 for absolute accumulation; 1 for relative accumulation}
+
+\item{random_value, }{0 for time limit; 1 for threhold-based}
+
+\item{deltaD_value, }{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
+8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
 
 \item{option_num}{Number of total options in each choice (C)}
 
