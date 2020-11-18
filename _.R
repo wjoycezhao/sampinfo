@@ -69,36 +69,37 @@ temp_cp2 = subset(getData(2,'exp2','')$format_data,tNo==1)%>%
   summarize(cp = mean(final_choice == 1),n=n())
 
 
-qq=5
-temp = getData(4,'exp1','')
+qq=3
+temp = getData(3,'exp1','')
 format_data = subset(temp$format_data, qID == qq)
 format_data$qID = 1
-X_sim = temp$X_sim[[qq]]
+X_sim = format_data$X_sim[[qq]]
 cluster_rating_m = subset(temp$cluster_rating_m, qID == qq)[,-c(1:2)]
 stan_data = getStanData(
-  beta = c('sameC','sameA', 'dist'),
+  # beta = character(0),
+  beta = c('sameA','dist'),
   deltaM_value = 8,
   binary_value = 0,
   ar_value = 0,
   random_value = 0,
   deltaD_value = 8,
-  option_num = 9,
-  format_data = format_data,
+  option_num = 7,
+  format_data = format_data
   X_sim = X_sim,
   cluster_rating_m = cluster_rating_m,
   max_tNo_prd = 30
 )
 stan_fit = rstan::stan(
   # file = 'mmdm_threshold.stan',
-  file = 'mmdm_timelimit.stan',
+  file = 'mmdm_threshold.stan',
   data = stan_data,
   seed = 1,
   # sample_file = save_model_file,
   # init = init_values,
-  iter = 20,
-  chains = 2,
-  warmup = 2,
-  cores = 2
+  iter = 3000,
+  chains = 4,
+  warmup = 500,
+  cores = 4
   # refresh = 100,
   # save_warmup = F,
   # init_r = 1
@@ -107,17 +108,16 @@ stan_data_fit = list(
   stan_data = stan_data,
   stan_fit = stan_fit
 )
-rbind(getModelDiag(stan_data_fit,dev_name = 'dev_d',logName = 'log_lik_d'),
-      getModelDiag(stan_data_fit,dev_name = 'dev_m',logName = 'log_lik_m'))
-
-getParaSummary(stan_data_fit = stan_data_fit)
-as.data.frame(
-  rstan::extract(stan_data_fit$stan_fit, pars = c('terminate_prd','cID_prd'))
-)
+temp = as.data.frame(rstan::extract(stan_data_fit$stan_fit,
+                                    pars = c('terminate_prd','cID_prd')))
+sel = (c(1:nrow(temp))%%1==0)
+temp = temp[sel, ]
+write.csv(temp,  paste0(save_folder, 'exp', exp_no, '_', model_name, '_simulate.csv'))
 
 temp = getPara(para_name = 'theta', stan_data_fit)
 temp[1:10,1:100]
 getData(3,'exp1','')
+
 
 qq=1
 temp = getData(4,'exp1','')
@@ -128,7 +128,7 @@ stan_data_fit = getStanFit(beta = c('sameA', 'dist'), deltaM_value = 8,
                            iter_num = 20,chain_num = 1,warmup_num = 5, core_num=8,
                            adapt_delta=0.9, stepsize = 0.1, max_treedepth = 10,
                            refresh=1000, save_warmup = TRUE,
-                           hier_value = 0)
+                           hier_value = 1)
 getParaSummary(stan_data_fit = stan_data_fit)
 stan_fit = stan_data_fit$stan_fit
 r = getRhat(stan_fit)
@@ -153,3 +153,132 @@ parameters1 = c('decision_0','decision_no','decision_yes')
 postPred = cbind.data.frame(#model_name = model_name,
                             # binary_value=binary_value[i],ar_value=ar_value[i],random_value=random_value[i],deltaD_value=deltaD_value[i],
                             pp_all1)
+
+
+require(sampinfo)
+require(readr)
+require(plyr)
+dist_all = (subset(read.csv('exp1_dist_C3.csv'),qID==3))
+data_all = read.csv('exp3_m3_0118_d_1008_simulate.csv')[1:500,] %>%
+  gather(tNo, cID,cID_prd.1:cID_prd.30) %>%
+  mutate(tNo = parse_number(tNo, locale = locale(
+    grouping_mark = ". ", decimal_mark = ","))) %>%
+  filter(cID != 99) %>%
+  mutate(rating = sign(cID - 4),sID = X, qID = 3) %>%
+  mutate(sID = mapvalues(sID, from = unique(sID), to = 1:length(unique(sID)))) %>%
+  arrange(X)
+option_num = 2 * cluster_num + 1
+## add cluster resampling feature for predicting the next trial
+data_all = addFeatureMatrix(diag(option_num),
+                            data_all, option_num, 'sameC', 'cID')
+data_all = addFeatureMatrix(getSameA(cluster_num),
+                            data_all, option_num, 'sameA', 'cID')
+## add semantic distance for predicting the next trial
+# dist_all = read.csv(paste0(data_folder, exp_name, '_dist_c', cluster_num, '.csv'),
+#                     row.names = 1)
+qq = 3
+data_all = addFeatureMatrix(dist_all[dist_all$qID == qq, -c(1:2)],
+                   data_all[data_all$qID == qq, ],
+                   option_num, 'dist', 'cID')
+data_all$qID = 1
+stan_data = getStanData(
+  # beta = character(0),
+  beta = c('sameA','dist'),
+  deltaM_value = 8,
+  binary_value = 1,
+  ar_value = 0,
+  random_value = 0,
+  deltaD_value = 8,
+  option_num = 7,
+  format_data = data_all
+  # X_sim = X_sim,
+  # cluster_rating_m = cluster_rating_m,
+  # max_tNo_prd = 30
+)
+stan_fit = rstan::stan(
+  # file = 'mmdm_threshold.stan',
+  # file = 'dm_threshold.stan',
+  file = 'mm.stan',
+  data = stan_data,
+  seed = 1,
+  # sample_file = save_model_file,
+  # init = init_values,
+  iter = 2000,
+  chains = 4,
+  warmup = 500,
+  cores = 4
+  # refresh = 100,
+  # save_warmup = F,
+  # init_r = 1
+)
+stan_data_fit = list(
+  stan_data = stan_data,
+  stan_fit = stan_fit
+)
+getParaSummary(stan_data_fit = stan_data_fit)
+
+
+
+dist_all = (subset(read.csv('exp1_dist_C3.csv'),qID==3))
+temp = read.csv('happy_3_pp.csv')[1:500,]
+data_all =  temp%>%
+  subset(b_sameC_value = 0, b_sameA_value = 1,
+         b_dist_value = 1, ar_value = 0, random_value = 0, deltaD_value = 9)
+data_all = data_all[,-c(1:12)] %>%
+  mutate(sID = 1:500) %>%
+  gather(tNo, cID, cID_prd.1:cID_prd.100) %>%
+  mutate(terminate = decision_prd, tNo = parse_number(tNo, locale = locale(
+    grouping_mark = ". ", decimal_mark = ","))) %>%
+  filter(cID != 100) %>%
+  mutate(rating = sign(cID - 4),qID = 3) %>%
+  mutate(sID = mapvalues(sID, from = unique(sID), to = 1:length(unique(sID)))) %>%
+  arrange(sID)
+option_num = 2 * cluster_num + 1
+## add cluster resampling feature for predicting the next trial
+data_all = addFeatureMatrix(diag(option_num),
+                            data_all, option_num, 'sameC', 'cID')
+data_all = addFeatureMatrix(getSameA(cluster_num),
+                            data_all, option_num, 'sameA', 'cID')
+## add semantic distance for predicting the next trial
+# dist_all = read.csv(paste0(data_folder, exp_name, '_dist_c', cluster_num, '.csv'),
+#                     row.names = 1)
+qq = 3
+data_all = addFeatureMatrix(dist_all[dist_all$qID == qq, -c(1:2)],
+                            data_all[data_all$qID == qq, ],
+                            option_num, 'dist', 'cID')
+data_all$qID = 1
+stan_data = getStanData(
+  # beta = character(0),
+  beta = c('sameA','dist'),
+  deltaM_value = 8,
+  binary_value = 1,
+  ar_value = 0,
+  random_value = 0,
+  deltaD_value = 8,
+  option_num = 7,
+  format_data = data_all
+  # X_sim = X_sim,
+  # cluster_rating_m = cluster_rating_m,
+  # max_tNo_prd = 30
+)
+stan_fit = rstan::stan(
+  # file = 'mmdm_threshold.stan',
+  file = 'dm_threshold.stan',
+  # file = 'mm.stan',
+  data = stan_data,
+  seed = 1,
+  # sample_file = save_model_file,
+  # init = init_values,
+  iter = 2000,
+  chains = 4,
+  warmup = 500,
+  cores = 4
+  # refresh = 100,
+  # save_warmup = F,
+  # init_r = 1
+)
+stan_data_fit = list(
+  stan_data = stan_data,
+  stan_fit = stan_fit
+)
+getParaSummary(stan_data_fit = stan_data_fit)

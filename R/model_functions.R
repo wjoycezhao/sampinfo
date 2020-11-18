@@ -199,11 +199,11 @@ getStanData = function(beta = character(0),
     X = getFeatureMatrices(beta, format_data, deltaM_value,
                            option_num, print_names = F)
     X_sim_sel = lapply(X_sim, function(x) x[,beta])
+    X_sim_sel = lapply(X_sim_sel, function(x) as.matrix(x))
   } else{
     X = replicate(nrow(format_data), matrix(0, option_num, 0), simplify = FALSE)
-    X_sim_sel = vector("list", length = option_num)
+    X_sim_sel = lapply(1:option_num, function(x) matrix(0,nrow=option_num,ncol=0))
   }
-  X_sim_sel = lapply(X_sim_sel, function(x) as.matrix(x))
   ## decision model
   rating = as.numeric(as.character(format_data$rating))
   rating_y = c()
@@ -480,7 +480,7 @@ getModelDiag = function(stan_data_fit,
   time = getTime(stan_fit)
   rhat = getRhat(stan_fit)
   ess = getESS(stan_fit)
-  ess = ess[!(names(ess) %in% c("X_acc"))]
+  ess = ess[!grepl('X_acc', names(ess))]
   df = cbind.data.frame(
     getDIC(stan_fit, dev_name),
     getWAIC(stan_fit, logName = logName),

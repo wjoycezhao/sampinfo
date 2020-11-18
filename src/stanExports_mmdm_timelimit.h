@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_mmdm_timelimit");
-    reader.add_event(288, 286, "end", "model_mmdm_timelimit");
+    reader.add_event(289, 287, "end", "model_mmdm_timelimit");
     return reader;
 }
 template <typename T1__, typename T2__, typename T3__, typename T4__>
@@ -1526,6 +1526,8 @@ public:
                 }
                 current_statement_begin__ = 283;
                 stan::math::assign(terminate_prd, (categorical_rng(decision_p_prd1, base_rng__) - 2));
+                current_statement_begin__ = 284;
+                stan::math::assign(tNo_prd, (tNo_prd + 1));
             }
             }
             // validate, write generated quantities
