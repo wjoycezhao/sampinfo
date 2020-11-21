@@ -11,7 +11,7 @@ functions{
           // to say no
           prob_d[1]=  p_end .* (ar_value * (p_n +  .5 * (1-p_n-p_y)) +
                               (1-ar_value)*(p_n .* (1-p_y) + .5*p_y .* p_n + .5*(1-p_n) .* (1-p_y)));
-          // to continue
+          // to continue;
           prob_d[2] =  (1 - p_end);
 
           // to say yes

@@ -33,7 +33,7 @@ getFormatData = function(data_all, dist_all, cluster_num = NULL) {
     paste0(x, '_', 1:option_num)))
   data_all[-1, col_temp] = data_all[-nrow(data_all), col_temp]
 
-  ## feature value should be 0 for the first thoughts
+  ## feature value should be 0 for the first thoughts.
   data_all[data_all$tNo == 1, col_temp] = 0
 
   ## check thought index

@@ -1,7 +1,7 @@
 
 data{
   // memory
-  int deltaM_value; // number of option categories
+  int deltaM_value; //  number of option categories
   int condition_value; // number of option categories
   int<lower=2> C; // number of option categories
   int<lower=0> K; // number of features; if 0 then no betas

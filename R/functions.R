@@ -27,6 +27,7 @@ softmax <- function(row_probs) {
 }
 
 
+
 #' Get WAIC
 #'
 #' @param stan_fit Output of stan

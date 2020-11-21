@@ -47,7 +47,7 @@ transformed parameters {
   threshold = 35 * threshold_raw;
   sigma = sigma_mult * threshold;
 
-  // print(sigma,threshold);
+  // print(sigma,threshold)
 {
   real utility_n;
   real utility_y;

@@ -194,6 +194,7 @@ getStanData = function(beta = character(0),
     }
   }
 
+
   # feature matrix
   if (length(beta) > 0) {
     X = getFeatureMatrices(beta, format_data, deltaM_value,
