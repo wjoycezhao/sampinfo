@@ -12,16 +12,16 @@ getStanCode(
 )
 }
 \arguments{
-\item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
+\item{deltaM_value}{1 minus memory decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}
 
-\item{deltaD_value}{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
+\item{deltaD_value}{1 minus decision decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}
 
-\item{hier_value}{Whether to use a hiearchical model. Default is 1.
-Note that the hierachical version only work for decision or memory models seperately.}
+\item{hier_value}{0 for fitting a non-hierarchical model; 1 for fitting a hierarchical model. Default is 1.
+Note that the hierachical version only works for decision or memory models seperately.}
 
-\item{random_value}{0 for time limit; 1 for threhold-based}
+\item{random_value}{0 for threhold-based;  1 for time limit;}
 }
 \description{
 Retrieve stan code

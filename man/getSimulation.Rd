@@ -27,21 +27,27 @@ getSimulation(
 )
 }
 \arguments{
-\item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
+\item{X_sim}{Feature matrix, for different clusters. Needed for simulation.}
+
+\item{deltaM_value}{1 minus memory decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}
 
-\item{deltaD_value}{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
+\item{deltaD_value}{1 minus decision decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}
 
 \item{ar_value}{0 for absolute accumulation; 1 for relative accumulation}
 
-\item{deltaM_true}{1-decay for memory}
+\item{max_tNo_prd}{Maximum length of a simulated trial}
 
-\item{alpha_true}{baserate for memory}
+\item{seed_no}{Seed number}
 
-\item{beta_true}{length 3; for cluster resampling, decision congruence and semantic congruence respectively}
+\item{deltaM_true}{1 minus decay for memory}
 
-\item{deltaD_true}{1-decay for decision}
+\item{alpha_true}{baseline activations for memory}
+
+\item{beta_true}{feature coefficients}
+
+\item{deltaD_true}{1 minus decay for decision}
 
 \item{threshold_true}{threshold for decision}
 
@@ -53,10 +59,10 @@ getSimulation(
 
 \item{warmup_num}{Warm-up or burn-in number}
 
-\item{core_num}{Number of cores to be used. equal or less to chain_num}
+\item{core_num}{Number of cores to be used}
 
 \item{refresh}{Default 500}
 }
 \description{
-Simulate data and fit memory and decision model
+\code{getSimulation} simulates data and fit memory and decision model to the simulated dataset.
 }

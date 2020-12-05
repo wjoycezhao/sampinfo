@@ -20,27 +20,38 @@ getStanData(
 }
 \arguments{
 \item{beta}{Variable names to be included in the memory model, e.g., c('sameC','sameA','dist').
-Note that in that case, columns 'sameC_1'...'sameC_C' and 'sameA_1',...,'sameA_C'  and 'dist_1',...,'dist_C' should be specified.
+Note that you have to include the associated columns in the data.
+For example, to fit sameC, you have to include columns with names of 'sameC_1'...'sameC_C'.
+To fit sameA, you have to include 'sameA_1',...,'sameA_C'.
 In the memory model, we could include sameC (cluster resampling; sameC_value== 1), sameA (decision congruence; sameA_value== 1),
 and dist (semantic congruence; dist_value == 1)}
 
-\item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
+\item{deltaM_value}{1 minus memory decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}
 
-\item{binary_value}{0 for continuous; 1 for discrete inputs}
+\item{binary_value}{0 for continuous inputs; 1 for discrete inputs}
 
 \item{ar_value}{0 for absolute accumulation; 1 for relative accumulation}
 
-\item{random_value}{0 for time limit; 1 for threhold-based}
+\item{random_value}{0 for threhold-based;  1 for time limit;}
 
-\item{deltaD_value}{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
+\item{deltaD_value}{1 minus decision decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}
 
-\item{option_num}{Number of total options in each choice (C)}
+\item{option_num}{Number of total clusters in each choice (C)}
 
-\item{format_data}{This should be a formated data.frame. sID: participant IDs. qID: question ID.
-cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
+\item{format_data}{This should be a formated data.frame.
+sID: participant IDs.
+qID: question ID.
+cID: option ID being sampled (can take 1 to C).
+tNo: thought number in that trial (from 1 to T).
 terminate: 0 if continue sampling (not necessary)}
+
+\item{X_sim}{Feature matrix, for different clusters. Needed for simulation.}
+
+\item{cluster_rating_m}{Base rates of different ratings (-3 to 3) for each cluster. Needed for simulation.}
+
+\item{max_tNo_prd}{Maximum length of a simulated trial}
 }
 \description{
 Format data for Stan

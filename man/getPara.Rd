@@ -24,6 +24,6 @@ getPara(
 A dataframe with parameter mean, quantiles and sd, can be saved to a csv file
 }
 \description{
-\code{getPara} Parameter mean, quantiles and sd
+\code{getPara} returns parameter mean, quantiles and sd
 and save the results to a .csv file when \code{csv_name} is specified
 }

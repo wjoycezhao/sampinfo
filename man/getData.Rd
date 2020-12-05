@@ -14,7 +14,7 @@ getData(cluster_num = NULL, data = NULL, dist = NULL)
 \item{dist}{semantic distance data read from .csv}
 }
 \description{
-Add feature matrix
+\code{getData} adds feature matrix
 (decision congruence, semantic congruence and cluster resmapling matrix)
 to the thought listing data.
 }

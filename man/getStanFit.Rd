@@ -33,29 +33,35 @@ getStanFit(
 }
 \arguments{
 \item{beta}{Variable names to be included in the memory model, e.g., c('sameC','sameA','dist').
-Note that in that case, columns 'sameC_1'...'sameC_C' and 'sameA_1',...,'sameA_C'  and 'dist_1',...,'dist_C' should be specified.
+Note that you have to include the associated columns in the data.
+For example, to fit sameC, you have to include columns with names of 'sameC_1'...'sameC_C'.
+To fit sameA, you have to include 'sameA_1',...,'sameA_C'.
 In the memory model, we could include sameC (cluster resampling; sameC_value== 1), sameA (decision congruence; sameA_value== 1),
 and dist (semantic congruence; dist_value == 1)}
 
-\item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
+\item{deltaM_value}{1 minus memory decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}
 
-\item{binary_value}{0 for continuous; 1 for discrete inputs}
+\item{binary_value}{0 for continuous inputs; 1 for discrete inputs}
 
 \item{ar_value, }{0 for absolute accumulation; 1 for relative accumulation}
 
-\item{random_value, }{0 for time limit; 1 for threhold-based}
+\item{random_value, }{0 for threhold-based;  1 for time limit;}
 
-\item{deltaD_value, }{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
+\item{deltaD_value, }{1 minus decision decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}
 
-\item{option_num}{Number of total options in each choice (C)}
+\item{option_num}{Number of total clusters in each choice (C)}
 
-\item{format_data}{This should be a formated data.frame. sID: participant IDs. qID: question ID.
-cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
+\item{format_data}{This should be a formated data.frame.
+sID: participant IDs.
+qID: question ID.
+cID: option ID being sampled (can take 1 to C).
+tNo: thought number in that trial (from 1 to T).
 terminate: 0 if continue sampling (not necessary)}
 
-\item{save_model_file}{Specify a name if you want to save the RStan samples and diagnostics to a csv file}
+\item{save_model_file}{Specify a name if you want to save the RStan samples and diagnostics to a csv file.
+This is sample_file for rstan::sampling}
 
 \item{init_values}{Default is 'random'; can be specified using a function or a list}
 
@@ -65,7 +71,7 @@ terminate: 0 if continue sampling (not necessary)}
 
 \item{warmup_num}{Warm-up or burn-in number}
 
-\item{core_num}{Number of cores to be used. equal or less to chain_num}
+\item{core_num}{Number of cores to be used}
 
 \item{adapt_delta}{Default 0.999}
 
@@ -75,17 +81,25 @@ terminate: 0 if continue sampling (not necessary)}
 
 \item{refresh}{Default 500}
 
-\item{hier_value}{Whether to use a hiearchical model. Default is 1.
-Note that the hierachical version only work for decision or memory models seperately.}
+\item{hier_value}{0 for fitting a non-hierarchical model; 1 for fitting a hierarchical model. Default is 1.
+Note that the hierachical version only works for decision or memory models seperately.}
+
+\item{X_sim}{Feature matrix, for different clusters. Needed for simulation.}
+
+\item{cluster_rating_m}{Base rates of different ratings (-3 to 3) for each cluster. Needed for simulation.}
+
+\item{max_tNo_prd}{Maximum length of a simulated trial}
+
+\item{seed_no}{Seed number}
 }
 \value{
 Use $stan_fit to access the returned object from Stan;
 Use $stan_data to see the input data of the Stan model
 }
 \description{
-\code{getStanFit} use RStan to fit a memory model or a decision model.
-A memory model will be fit if deltaM_value is specified;
-A decision model will be fit if deltaD_value is specified;
-If both specified then the two models will be fit simultaneously, and PPC will be run
+\code{getStanFit} uses RStan to fit a memory model or a decision model.
+A memory model will be fit if deltaM_value is specified.
+A decision model will be fit if deltaD_value is specified.
+If both specified then the two models will be fit simultaneously, and posterior predictions will be simulated
 Note that for memory models the option number (C) should be the same across all questions.
 }

@@ -12,7 +12,7 @@ getParaSummary(stan_data_fit, csv_name = NULL)
 \item{csv_name}{if specified then outputs will be saved in a .csv file starting with this name}
 }
 \description{
-\code{getParaSummary} return parameter summaries for group and individual level parameters,
+\code{getParaSummary} returns parameter summaries for group and individual level parameters,
 including means, percentiles, and sd.
 It also saves the results to a .csv file when \code{csv_name} is specified
 }

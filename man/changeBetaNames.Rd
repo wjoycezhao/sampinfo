@@ -10,7 +10,9 @@ changeBetaNames(names, beta, Q, S)
 \item{names}{A vector of characters. Variables taken from rstan outputs.}
 
 \item{beta}{Variable names to be included in the memory model, e.g., c('sameC','sameA','dist').
-Note that in that case, columns 'sameC_1'...'sameC_C' and 'sameA_1',...,'sameA_C'  and 'dist_1',...,'dist_C' should be specified.
+Note that you have to include the associated columns in the data.
+For example, to fit sameC, you have to include columns with names of 'sameC_1'...'sameC_C'.
+To fit sameA, you have to include 'sameA_1',...,'sameA_C'.
 In the memory model, we could include sameC (cluster resampling; sameC_value== 1), sameA (decision congruence; sameA_value== 1),
 and dist (semantic congruence; dist_value == 1)}
 

@@ -14,5 +14,5 @@ A decision congruence matrix.
 1 for clusters supporting the same decision; 0 otherwise.
 }
 \description{
-Generate the decision congruence matrix.
+\code{getSameA} generate the decision congruence matrix.
 }
