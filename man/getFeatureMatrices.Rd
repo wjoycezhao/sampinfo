@@ -25,7 +25,7 @@ sID: participant IDs.
 qID: question ID.
 cID: option ID being sampled (can take 1 to C).
 tNo: thought number in that trial (from 1 to T).
-terminate: 0 if continue sampling (not necessary)}
+terminate: 0 if continue sampling; 1 if yes; 0 if no (only needed for decision models)}
 
 \item{deltaM_value}{1 minus memory decay; 0 for full decay (marcov property); 1 for no decay;
 8 for estimating it as a free parameter}

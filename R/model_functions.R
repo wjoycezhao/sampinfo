@@ -30,7 +30,7 @@
 #' qID: question ID.
 #' cID: option ID being sampled (can take 1 to C).
 #' tNo: thought number in that trial (from 1 to T).
-#' terminate: 0 if continue sampling (not necessary)
+#' terminate: 0 if continue sampling; 1 if yes; 0 if no (only needed for decision models)
 #' @param save_model_file Specify a name if you want to save the RStan samples and diagnostics to a csv file.
 #' This is sample_file for rstan::sampling
 #' @param init_values Default is 'random'; can be specified using a function or a list

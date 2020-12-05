@@ -45,7 +45,7 @@ sID: participant IDs.
 qID: question ID.
 cID: option ID being sampled (can take 1 to C).
 tNo: thought number in that trial (from 1 to T).
-terminate: 0 if continue sampling (not necessary)}
+terminate: 0 if continue sampling; 1 if yes; 0 if no (only needed for decision models)}
 
 \item{X_sim}{Feature matrix, for different clusters. Needed for simulation.}
 
