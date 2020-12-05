@@ -1,31 +1,31 @@
 
 data{
   // memory
-  int deltaM_value; //  number of option categories
-  int condition_value; // number of option categories
-  int<lower=2> C; // number of option categories
+  int deltaM_value; //  8 for flexible decay parameter
+  int condition_value; // 1 for priming experiments; 0 for others
+  int<lower=2> C; // number of clusters
   int<lower=0> K; // number of features; if 0 then no betas
   int<lower=1> N; // number of time points
-  int<lower=1> tNo[N]; // thought No.x; used to reset decay
-  matrix[C,K] X[N]; // feature matrix, for different time points
+  int<lower=1> tNo[N]; // thought No.x; used to reset representations
+  matrix[C,K] X[N]; // feature matrix, for N different time points
   int<lower=1, upper=C> cID[N]; // response cluster ID, 1-7 for 3-cluster solution
-  int<lower=2> MC; // ID of the neutral category
+  int<lower=2> MC; // cID of the neutral 3-cluster
 }
 
 parameters{
   real<lower=0, upper=1> deltaM [deltaM_value == 8]; // decay
-  vector[C-1] alpha_raw; // base rate
-  vector[K] beta_raw; // group-level mean for beta
+  vector[C-1] alpha_raw; // baseline activations
+  vector[K] beta_raw; // feature coefficients
 }
 
 transformed parameters {
   vector[C] alpha;
-  vector[K] beta; // group-level mean for beta
-  matrix[C,N] theta;
-  matrix[C,K * (deltaM_value == 8)] X_acc;
+  vector[K] beta;
+  matrix[C,N] theta; //Xb
+  matrix[C,K * (deltaM_value == 8)] X_acc; //accumulated feature matrix
 
   alpha[1:(C-1)] = alpha_raw * 2;
-  alpha[C] = 0;
+  alpha[C] = 0; // the last cluster; for identifiability
   beta = beta_raw * 5;
 
   if (K > 0 && deltaM_value == 8){
@@ -65,7 +65,7 @@ model{
     deltaM[1] ~ uniform(0,1);
   }
   alpha_raw ~ normal(0,1);
-  beta_raw ~ normal(0,5);
+  beta_raw ~ normal(0,1);
   for (n in 1:N){
     cID[n] ~ categorical_logit(theta[,n]);
   }

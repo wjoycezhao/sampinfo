@@ -13,7 +13,7 @@ getStanFit(
   deltaD_value = NULL,
   option_num,
   format_data,
-  save_model_file,
+  save_model_file = NULL,
   init_values = "random",
   iter_num,
   chain_num,
@@ -32,11 +32,13 @@ getStanFit(
 )
 }
 \arguments{
-\item{beta}{Variable names to be included in the model, e.g., c('beta','gamma').
-Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
+\item{beta}{Variable names to be included in the memory model, e.g., c('sameC','sameA','dist').
+Note that in that case, columns 'sameC_1'...'sameC_C' and 'sameA_1',...,'sameA_C'  and 'dist_1',...,'dist_C' should be specified.
+In the memory model, we could include sameC (cluster resampling; sameC_value== 1), sameA (decision congruence; sameA_value== 1),
+and dist (semantic congruence; dist_value == 1)}
 
 \item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
-8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
+8 for estimating it as a free parameter}
 
 \item{binary_value}{0 for continuous; 1 for discrete inputs}
 
@@ -45,7 +47,7 @@ Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'
 \item{random_value, }{0 for time limit; 1 for threhold-based}
 
 \item{deltaD_value, }{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
-8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
+8 for estimating it as a free parameter}
 
 \item{option_num}{Number of total options in each choice (C)}
 
@@ -73,13 +75,17 @@ terminate: 0 if continue sampling (not necessary)}
 
 \item{refresh}{Default 500}
 
-\item{hier_value}{Whether use hiearchical model. Default is 1.}
+\item{hier_value}{Whether to use a hiearchical model. Default is 1.
+Note that the hierachical version only work for decision or memory models seperately.}
 }
 \value{
 Use $stan_fit to access the returned object from Stan;
 Use $stan_data to see the input data of the Stan model
 }
 \description{
-\code{getStanFit} use RStan to fit your information sampling model.
-Note that the option number (C) should be the same across all questions.
+\code{getStanFit} use RStan to fit a memory model or a decision model.
+A memory model will be fit if deltaM_value is specified;
+A decision model will be fit if deltaD_value is specified;
+If both specified then the two models will be fit simultaneously, and PPC will be run
+Note that for memory models the option number (C) should be the same across all questions.
 }

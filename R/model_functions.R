@@ -5,33 +5,49 @@
 
 #' Fit the model!
 #'
-#' \code{getStanFit} use RStan to fit your information sampling model.
-#' Note that the option number (C) should be the same across all questions.
+#' \code{getStanFit} uses RStan to fit a memory model or a decision model.
+#' A memory model will be fit if deltaM_value is specified.
+#' A decision model will be fit if deltaD_value is specified.
+#' If both specified then the two models will be fit simultaneously, and posterior predictions will be simulated
+#' Note that for memory models the option number (C) should be the same across all questions.
 #'
-#' @param beta Variable names to be included in the model, e.g., c('beta','gamma').
-#' Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified
-#' @param deltaM_value 1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
-#'  8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta
-#' @param binary_value 0 for continuous; 1 for discrete inputs
+#' @param beta Variable names to be included in the memory model, e.g., c('sameC','sameA','dist').
+#' Note that you have to include the associated columns in the data.
+#' For example, to fit sameC, you have to include columns with names of 'sameC_1'...'sameC_C'.
+#' To fit sameA, you have to include 'sameA_1',...,'sameA_C'.
+#' In the memory model, we could include sameC (cluster resampling; sameC_value== 1), sameA (decision congruence; sameA_value== 1),
+#' and dist (semantic congruence; dist_value == 1)
+#' @param deltaM_value 1 minus memory decay; 0 for full decay (marcov property); 1 for no decay;
+#'  8 for estimating it as a free parameter
+#' @param binary_value 0 for continuous inputs; 1 for discrete inputs
 #' @param ar_value, 0 for absolute accumulation; 1 for relative accumulation
-#' @param random_value, 0 for time limit; 1 for threhold-based
-#' @param deltaD_value, 1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
-#'  8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta
-#' @param option_num Number of total options in each choice (C)
-#' @param format_data This should be a formated data.frame. sID: participant IDs. qID: question ID.
-#' cID: option ID being sampled (can take 1 to C). tNo: thought number in that question.
+#' @param random_value, 0 for threhold-based;  1 for time limit;
+#' @param deltaD_value, 1 minus decision decay; 0 for full decay (marcov property); 1 for no decay;
+#'  8 for estimating it as a free parameter
+#' @param option_num Number of total clusters in each choice (C)
+#' @param format_data This should be a formated data.frame.
+#' sID: participant IDs.
+#' qID: question ID.
+#' cID: option ID being sampled (can take 1 to C).
+#' tNo: thought number in that trial (from 1 to T).
 #' terminate: 0 if continue sampling (not necessary)
-#' @param save_model_file Specify a name if you want to save the RStan samples and diagnostics to a csv file
+#' @param save_model_file Specify a name if you want to save the RStan samples and diagnostics to a csv file.
+#' This is sample_file for rstan::sampling
 #' @param init_values Default is 'random'; can be specified using a function or a list
 #' @param iter_num Iteration number
 #' @param chain_num Chain number
 #' @param warmup_num Warm-up or burn-in number
-#' @param core_num Number of cores to be used. equal or less to chain_num
+#' @param core_num Number of cores to be used
+#' @param seed_no Seed number
 #' @param adapt_delta Default 0.999
 #' @param stepsize Default 0.01
 #' @param max_treedepth Default 20
 #' @param refresh Default 500
-#' @param hier_value Whether use hiearchical model. Default is 1.
+#' @param hier_value 0 for fitting a non-hierarchical model; 1 for fitting a hierarchical model. Default is 1.
+#' Note that the hierachical version only works for decision or memory models seperately.
+#' @param X_sim Feature matrix, for different clusters. Needed for simulation.
+#' @param cluster_rating_m Base rates of different ratings (-3 to 3) for each cluster. Needed for simulation.
+#' @param max_tNo_prd Maximum length of a simulated trial
 #'
 #' @return Use $stan_fit to access the returned object from Stan;
 #' Use $stan_data to see the input data of the Stan model
@@ -45,7 +61,7 @@ getStanFit = function (beta = NULL,
                        deltaD_value = NULL,
                        option_num,
                        format_data,
-                       save_model_file,
+                       save_model_file =NULL,
                        init_values = "random",
                        iter_num,
                        chain_num,
@@ -61,7 +77,7 @@ getStanFit = function (beta = NULL,
                        X_sim = NULL,
                        cluster_rating_m = NULL,
                        max_tNo_prd = NULL) {
-  ## prepare inputs for RStan; getHMRStanData in 'model_functions.R'
+  ## prepare data for RStan
   stan_data = getStanData(
     beta = beta,
     deltaM_value = deltaM_value,
@@ -75,18 +91,15 @@ getStanFit = function (beta = NULL,
     cluster_rating_m = cluster_rating_m,
     max_tNo_prd = max_tNo_prd
   )
-  ##fit model
-  stan_code = getStanCode(deltaM_value, deltaD_value, hier_value, random_value)
-  # if (init_values != 'random') {
-  #   init_values = function() {
-  #     list(deltaM = 0.5)
-  #   }
-  # }
 
+  ## get the appropriate rstan code
+  stan_code = getStanCode(deltaM_value, deltaD_value, hier_value, random_value)
+
+  ## fit model
   stan_fit = rstan::sampling(
     stan_code,
     data = stan_data,
-    seed = 1,
+    seed = seed_no,
     sample_file = save_model_file,
     init = init_values,
     iter = iter_num,
@@ -149,6 +162,8 @@ getStanCode = function(deltaM_value = NULL,
         stan_code = stanmodels$mmdm_timelimit
       }
     }
+  } else{
+    stop('Cannot fit this model. Please check deltaM_value, deltaD_value, random_value, and hier_value.')
   }
   return(stan_code)
 }
@@ -175,7 +190,7 @@ getStanData = function(beta = character(0),
   if (min(format_data$sID) < 1 |
       length(unique(format_data$sID)) != max(format_data$sID)) {
     stop(
-      'Participant ID should start from 1, and be consecutive; otherwise it will cause error when sampling'
+      'Participant ID should start from 1, and be consecutive; otherwise it will cause error when sampling.'
     )
   }
   if (min(format_data$qID) < 1 |
@@ -190,12 +205,13 @@ getStanData = function(beta = character(0),
          format_data$tNo[i] != format_data$tNo[i - 1] + 1) |
         (format_data$sID[i] != format_data$sID[i - 1] &
          format_data$tNo[i] != 1)) {
-      stop('wrong thought index')
+      stop('Thought index should start from 1 and be consecutive in each trial; otherwise it will cause error when sampling')
     }
   }
 
 
-  # feature matrix
+  # feature matrix for fitting models and for simulations
+
   if (length(beta) > 0) {
     X = getFeatureMatrices(beta, format_data, deltaM_value,
                            option_num, print_names = F)
@@ -205,22 +221,30 @@ getStanData = function(beta = character(0),
     X = replicate(nrow(format_data), matrix(0, option_num, 0), simplify = FALSE)
     X_sim_sel = lapply(1:option_num, function(x) matrix(0,nrow=option_num,ncol=0))
   }
-  ## decision model
+
+  # variables used for fitting decision model
+
   rating = as.numeric(as.character(format_data$rating))
   rating_y = c()
   rating_n = c()
   if (!is.null(binary_value)){
+    # make ratings binary for binary_value = 1
     if(binary_value == 1){
-      # make ratings binary for binary_value = 1
       rating = sign(rating)
     }
+    # get ratings for yes and no accumulators
     if (ar_value == 0){
+      # absolute accumulation
       rating_n = pmin(0, rating);
       rating_y = pmax(0, rating);
     } else{
+      # relative accumulation
       rating_y = rating;
       rating_n = rating;
     }
+
+  # accumulte the ratings if the model has no decay
+
     if (deltaD_value == 1) {
       for (n in 1:length(rating)) {
         if (format_data$tNo[n] > 1) {
@@ -232,33 +256,33 @@ getStanData = function(beta = character(0),
     }
   }
 
+  # indicate whether participants keep sampling (0) or respond with yes (1) or no (-1)
+
   terminate = as.numeric(as.character(format_data$terminate))
 
   if(!is.null(cluster_rating_m)){
     cluster_rating_m = as.matrix(cluster_rating_m)
     if(ncol(cluster_rating_m) != 7){
-      stop('wrong cluster_rating_m matrix')
+      stop('Wrong cluster_rating_m matrix. Should have 7 columns to indicate ratings from -3 to 3.')
     }
   }
 
   stan_data <- list(
+    ## specifications for memory model
     deltaM_value = deltaM_value,
-    condition_value = ifelse(is.null(format_data$condition), 0, 1),
+    condition_value = ifelse(is.null(format_data$condition), 0, 1), # 1 for priming experiments
     C = option_num,
-    MC = (option_num + 1)/2,
-    # cluster numberss for one of the options
+    MC = (option_num + 1)/2, # the neutral cluster
     N = nrow(format_data),
     K = length(beta),
     S = length(unique(format_data$sID)),
-    # unique participant numbers
     Q = length(unique(format_data$qID)),
-    # unique participant numbers
     sID =  as.numeric(as.character(format_data$sID)),
-    # qID = rep(1,each=nrow(format_data)),##!! used fot testing no question differences
     qID =  as.numeric(as.character(format_data$qID)),
     tNo = as.numeric(as.character(format_data$tNo)),
     cID = as.numeric(as.character(format_data$cID)),
     X = X,
+    ## specifications for decision model
     binary_value = binary_value,
     ar_value = ar_value,
     random_value = random_value,
@@ -267,18 +291,17 @@ getStanData = function(beta = character(0),
     rating_n = rating_n,
     rating_y = rating_y,
     terminate = terminate,
+    ## used for simulations
     X_sim = X_sim_sel,
     cluster_rating_m = cluster_rating_m,
     max_tNo_prd = max_tNo_prd
   )
-  if (!is.null(format_data$terminate)) {
-    stan_data$terminate = as.numeric(as.character(format_data$terminate))
-  }
+
   return(stan_data)
 }
 
 
-#' Title
+#' Extract features from formatted data
 #'
 #' @param print_names whether to include column and row namaes; default FALSE
 #' @inheritParams getStanFit
@@ -296,6 +319,9 @@ getFeatureMatrices = function(beta,
     sapply(temp, function(y)
       as.numeric(y[x,]))
   })
+
+  # accumulte the features if the model has no decay
+
   if (deltaM_value == 1) {
     for (i in 1:length(X)) {
       if (format_data$tNo[i] > 1) {
@@ -398,7 +424,7 @@ changeBetaNames = function(names, beta, Q, S) {
 
 #' Parameter summary.
 #'
-#' \code{getParaSummary} return parameter summaries for group and individual level parameters,
+#' \code{getParaSummary} returns parameter summaries for group and individual level parameters,
 #' including means, percentiles, and sd.
 #' It also saves the results to a .csv file when \code{csv_name} is specified
 #'
@@ -417,27 +443,6 @@ getParaSummary = function(stan_data_fit, csv_name = NULL) {
                           'raw')]
   parameters0 = c(parameters0, para_name[stringr::str_detect(para_name,
                                         'threshold_mu_raw|sigma_mult_mu_raw')])
-  # if (stan_data_fit$stan_data$hier_value == 0) {
-  #   parameters0 = c('deltaM', 'beta', 'alpha')
-  # } else {
-  #   parameters0 = c(
-  #     'deltaM_mu',
-  #     'deltaM_mu_raw',
-  #     'deltaM_q_sd',
-  #     'deltaM_s_sd',
-  #     'beta_mu',
-  #     'beta_q_sd',
-  #     'beta_s_sd',
-  #     'deltaM_qmean',
-  #     'deltaM_smean',
-  #     'beta_qmean',
-  #     'beta_smean',
-  #     'beta_qdev',
-  #     'beta_sdev',
-  #     'alpha',
-  #     'beta'
-  #   )
-  # }
 
   df = t(sapply(as.data.frame(
     rstan::extract(stan_fit, pars = parameters0)
@@ -508,7 +513,7 @@ getModelDiag = function(stan_data_fit,
 
 #' Parameter summaries
 #'
-#' \code{getPara} Parameter mean, quantiles and sd
+#' \code{getPara} returns parameter mean, quantiles and sd
 #' and save the results to a .csv file when \code{csv_name} is specified
 #'
 #' @param para_name parameter to extract

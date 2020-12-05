@@ -4,14 +4,14 @@
 \alias{getData}
 \title{Format data for the thoughtListing project}
 \usage{
-getData(cluster_num = NULL, exp_name, data_folder = "")
+getData(cluster_num = NULL, data = NULL, dist = NULL)
 }
 \arguments{
 \item{cluster_num}{number of thought cluster for one option. If 3 then option number is 2 * 3 + 1 = 7.}
 
-\item{exp_name}{name of the experiment (used in the file name)}
+\item{data}{thought listing data read from .csv}
 
-\item{data_folder}{the folder in which .csv is saved}
+\item{dist}{semantic distance data read from .csv}
 }
 \description{
 Add feature matrix

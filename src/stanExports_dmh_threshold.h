@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dmh_threshold");
-    reader.add_event(227, 225, "end", "model_dmh_threshold");
+    reader.add_event(231, 229, "end", "model_dmh_threshold");
     return reader;
 }
 template <typename T0__, typename T2__, typename T3__>
@@ -160,12 +160,14 @@ public:
             vals_i__ = context__.vals_i("S");
             pos__ = 0;
             S = vals_i__[pos__++];
+            check_greater_or_equal(function__, "S", S, 1);
             current_statement_begin__ = 32;
             context__.validate_dims("data initialization", "Q", "int", context__.to_vec());
             Q = int(0);
             vals_i__ = context__.vals_i("Q");
             pos__ = 0;
             Q = vals_i__[pos__++];
+            check_greater_or_equal(function__, "Q", Q, 1);
             current_statement_begin__ = 33;
             validate_non_negative_index("sID", "N", N);
             context__.validate_dims("data initialization", "sID", "int", context__.to_vec(N));
@@ -175,6 +177,10 @@ public:
             size_t sID_k_0_max__ = N;
             for (size_t k_0__ = 0; k_0__ < sID_k_0_max__; ++k_0__) {
                 sID[k_0__] = vals_i__[pos__++];
+            }
+            size_t sID_i_0_max__ = N;
+            for (size_t i_0__ = 0; i_0__ < sID_i_0_max__; ++i_0__) {
+                check_greater_or_equal(function__, "sID[i_0__]", sID[i_0__], 0);
             }
             current_statement_begin__ = 34;
             validate_non_negative_index("qID", "N", N);
@@ -186,6 +192,10 @@ public:
             for (size_t k_0__ = 0; k_0__ < qID_k_0_max__; ++k_0__) {
                 qID[k_0__] = vals_i__[pos__++];
             }
+            size_t qID_i_0_max__ = N;
+            for (size_t i_0__ = 0; i_0__ < qID_i_0_max__; ++i_0__) {
+                check_greater_or_equal(function__, "qID[i_0__]", qID[i_0__], 0);
+            }
             current_statement_begin__ = 35;
             validate_non_negative_index("tNo", "N", N);
             context__.validate_dims("data initialization", "tNo", "int", context__.to_vec(N));
@@ -195,6 +205,10 @@ public:
             size_t tNo_k_0_max__ = N;
             for (size_t k_0__ = 0; k_0__ < tNo_k_0_max__; ++k_0__) {
                 tNo[k_0__] = vals_i__[pos__++];
+            }
+            size_t tNo_i_0_max__ = N;
+            for (size_t i_0__ = 0; i_0__ < tNo_i_0_max__; ++i_0__) {
+                check_greater_or_equal(function__, "tNo[i_0__]", tNo[i_0__], 1);
             }
             current_statement_begin__ = 36;
             validate_non_negative_index("rating_n", "N", N);
@@ -804,7 +818,7 @@ public:
             current_statement_begin__ = 95;
             if (as_bool(logical_eq(deltaD_value, 8))) {
                 current_statement_begin__ = 96;
-                lp_accum__.add(normal_log<propto__>(get_base1(deltaD_mu_raw, 1, "deltaD_mu_raw", 1), 0, 2));
+                lp_accum__.add(normal_log<propto__>(get_base1(deltaD_mu_raw, 1, "deltaD_mu_raw", 1), 0, 1));
                 current_statement_begin__ = 97;
                 lp_accum__.add(normal_log<propto__>(get_base1(deltaD_s_sd, 1, "deltaD_s_sd", 1), 0, 1));
                 if (get_base1(deltaD_s_sd, 1, "deltaD_s_sd", 1) < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
@@ -819,29 +833,29 @@ public:
                 lp_accum__.add(std_normal_log<propto__>(deltaD_q_raw));
             }
             current_statement_begin__ = 103;
-            lp_accum__.add(normal_log<propto__>(threshold_mu_raw, 1, 2));
+            lp_accum__.add(normal_log<propto__>(threshold_mu_raw, 0, 1));
             current_statement_begin__ = 104;
-            lp_accum__.add(normal_log<propto__>(threshold_s_sd, 0, 2));
+            lp_accum__.add(normal_log<propto__>(threshold_s_sd, 0, 1));
             if (threshold_s_sd < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-            else lp_accum__.add(-normal_ccdf_log(0, 0, 2));
+            else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
             current_statement_begin__ = 105;
-            lp_accum__.add(normal_log<propto__>(threshold_q_sd, 0, 2));
+            lp_accum__.add(normal_log<propto__>(threshold_q_sd, 0, 1));
             if (threshold_q_sd < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-            else lp_accum__.add(-normal_ccdf_log(0, 0, 2));
+            else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
             current_statement_begin__ = 106;
             lp_accum__.add(std_normal_log<propto__>(threshold_s_raw));
             current_statement_begin__ = 107;
             lp_accum__.add(std_normal_log<propto__>(threshold_q_raw));
             current_statement_begin__ = 109;
-            lp_accum__.add(normal_log<propto__>(sigma_mult_mu_raw, -(0.7), 0.7));
+            lp_accum__.add(normal_log<propto__>(sigma_mult_mu_raw, 0, 1));
             current_statement_begin__ = 110;
-            lp_accum__.add(normal_log<propto__>(sigma_mult_s_sd, 0, 0.7));
+            lp_accum__.add(normal_log<propto__>(sigma_mult_s_sd, 0, 1));
             if (sigma_mult_s_sd < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-            else lp_accum__.add(-normal_ccdf_log(0, 0, 0.7));
+            else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
             current_statement_begin__ = 111;
-            lp_accum__.add(normal_log<propto__>(sigma_mult_q_sd, 0, 0.7));
+            lp_accum__.add(normal_log<propto__>(sigma_mult_q_sd, 0, 1));
             if (sigma_mult_q_sd < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-            else lp_accum__.add(-normal_ccdf_log(0, 0, 0.7));
+            else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
             current_statement_begin__ = 112;
             lp_accum__.add(normal_log<propto__>(sigma_mult_s_raw, sigma_mult_mu_raw, sigma_mult_s_sd));
             current_statement_begin__ = 113;
@@ -1380,110 +1394,110 @@ public:
                             mean(to_array_1d(deltaD_smean)), 
                             "assigning variable deltaD_mu");
             }
-            current_statement_begin__ = 179;
-            stan::math::assign(threshold_mu, stan::math::exp(((threshold_mu_raw + (pow(threshold_q_sd, 2) / 2)) + (pow(threshold_s_sd, 2) / 2))));
             current_statement_begin__ = 180;
-            stan::math::assign(sigma_mult_mu, stan::math::exp(((sigma_mult_mu_raw + (pow(sigma_mult_q_sd, 2) / 2)) + (pow(sigma_mult_s_sd, 2) / 2))));
-            current_statement_begin__ = 181;
-            stan::math::assign(sigma_mu, (sigma_mult_mu * threshold_mu));
-            current_statement_begin__ = 184;
             for (int s = 1; s <= S; ++s) {
-                current_statement_begin__ = 185;
+                current_statement_begin__ = 181;
                 stan::model::assign(threshold_smean, 
                             stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list()), 
                             mean(to_array_1d(stan::model::rvalue(threshold, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list())), "threshold"))), 
                             "assigning variable threshold_smean");
-                current_statement_begin__ = 186;
+                current_statement_begin__ = 182;
                 stan::model::assign(sigma_mult_smean, 
                             stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list()), 
                             mean(to_array_1d(stan::model::rvalue(sigma_mult, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list())), "sigma_mult"))), 
                             "assigning variable sigma_mult_smean");
-                current_statement_begin__ = 187;
+                current_statement_begin__ = 183;
                 stan::model::assign(sigma_smean, 
                             stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list()), 
                             mean(to_array_1d(elt_multiply(to_vector(stan::model::rvalue(threshold, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list())), "threshold")), to_vector(stan::model::rvalue(sigma_mult, stan::model::cons_list(stan::model::index_omni(), stan::model::cons_list(stan::model::index_uni(s), stan::model::nil_index_list())), "sigma_mult"))))), 
                             "assigning variable sigma_smean");
             }
-            current_statement_begin__ = 189;
+            current_statement_begin__ = 185;
             for (int q = 1; q <= Q; ++q) {
-                current_statement_begin__ = 190;
+                current_statement_begin__ = 186;
                 stan::model::assign(threshold_qmean, 
                             stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list()), 
                             mean(to_array_1d(get_base1(threshold, q, "threshold", 1))), 
                             "assigning variable threshold_qmean");
-                current_statement_begin__ = 191;
+                current_statement_begin__ = 187;
                 stan::model::assign(sigma_mult_qmean, 
                             stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list()), 
                             mean(to_array_1d(get_base1(sigma_mult, q, "sigma_mult", 1))), 
                             "assigning variable sigma_mult_qmean");
-                current_statement_begin__ = 192;
+                current_statement_begin__ = 188;
                 stan::model::assign(sigma_qmean, 
                             stan::model::cons_list(stan::model::index_uni(q), stan::model::nil_index_list()), 
                             mean(to_array_1d(elt_multiply(get_base1(threshold, q, "threshold", 1), get_base1(sigma_mult, q, "sigma_mult", 1)))), 
                             "assigning variable sigma_qmean");
             }
+            current_statement_begin__ = 194;
+            stan::math::assign(threshold_mu, mean(to_array_1d(threshold_smean)));
             current_statement_begin__ = 195;
+            stan::math::assign(sigma_mult_mu, mean(to_array_1d(sigma_mult_smean)));
+            current_statement_begin__ = 196;
+            stan::math::assign(sigma_mu, mean(to_array_1d(sigma_smean)));
+            current_statement_begin__ = 199;
             if (as_bool(logical_eq(deltaD_value, 8))) {
-                current_statement_begin__ = 196;
+                current_statement_begin__ = 200;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 197;
+                    current_statement_begin__ = 201;
                     if (as_bool(logical_eq(get_base1(tNo, n, "tNo", 1), 1))) {
-                        current_statement_begin__ = 198;
+                        current_statement_begin__ = 202;
                         stan::math::assign(utility_n, get_base1(rating_n, n, "rating_n", 1));
-                        current_statement_begin__ = 199;
+                        current_statement_begin__ = 203;
                         stan::math::assign(utility_y, get_base1(rating_y, n, "rating_y", 1));
                     } else {
-                        current_statement_begin__ = 201;
+                        current_statement_begin__ = 205;
                         stan::math::assign(utility_n, (utility_n * get_base1(get_base1(deltaD, get_base1(qID, n, "qID", 1), "deltaD", 1), get_base1(sID, n, "sID", 1), "deltaD", 2)));
-                        current_statement_begin__ = 202;
+                        current_statement_begin__ = 206;
                         stan::math::assign(utility_n, (utility_n + get_base1(rating_n, n, "rating_n", 1)));
-                        current_statement_begin__ = 203;
+                        current_statement_begin__ = 207;
                         stan::math::assign(utility_y, (utility_y * get_base1(get_base1(deltaD, get_base1(qID, n, "qID", 1), "deltaD", 1), get_base1(sID, n, "sID", 1), "deltaD", 2)));
-                        current_statement_begin__ = 204;
+                        current_statement_begin__ = 208;
                         stan::math::assign(utility_y, (utility_y + get_base1(rating_y, n, "rating_y", 1)));
                     }
-                    current_statement_begin__ = 206;
+                    current_statement_begin__ = 210;
                     stan::model::assign(p_n, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 (1 - normal_cdf(utility_n, -(get_base1(get_base1(threshold, get_base1(qID, n, "qID", 1), "threshold", 1), get_base1(sID, n, "sID", 1), "threshold", 2)), get_base1(get_base1(sigma, get_base1(qID, n, "qID", 1), "sigma", 1), get_base1(sID, n, "sID", 1), "sigma", 2))), 
                                 "assigning variable p_n");
-                    current_statement_begin__ = 207;
+                    current_statement_begin__ = 211;
                     stan::model::assign(p_y, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 normal_cdf(utility_y, get_base1(get_base1(threshold, get_base1(qID, n, "qID", 1), "threshold", 1), get_base1(sID, n, "sID", 1), "threshold", 2), get_base1(get_base1(sigma, get_base1(qID, n, "qID", 1), "sigma", 1), get_base1(sID, n, "sID", 1), "sigma", 2)), 
                                 "assigning variable p_y");
                 }
             } else {
-                current_statement_begin__ = 210;
+                current_statement_begin__ = 214;
                 stan::math::assign(utility_n, 0);
-                current_statement_begin__ = 211;
+                current_statement_begin__ = 215;
                 stan::math::assign(utility_y, 0);
-                current_statement_begin__ = 212;
+                current_statement_begin__ = 216;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 213;
+                    current_statement_begin__ = 217;
                     stan::model::assign(p_n, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 (1 - normal_cdf(get_base1(rating_n, n, "rating_n", 1), -(get_base1(get_base1(threshold, get_base1(qID, n, "qID", 1), "threshold", 1), get_base1(sID, n, "sID", 1), "threshold", 2)), get_base1(get_base1(sigma, get_base1(qID, n, "qID", 1), "sigma", 1), get_base1(sID, n, "sID", 1), "sigma", 2))), 
                                 "assigning variable p_n");
-                    current_statement_begin__ = 214;
+                    current_statement_begin__ = 218;
                     stan::model::assign(p_y, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 normal_cdf(get_base1(rating_y, n, "rating_y", 1), get_base1(get_base1(threshold, get_base1(qID, n, "qID", 1), "threshold", 1), get_base1(sID, n, "sID", 1), "threshold", 2), get_base1(get_base1(sigma, get_base1(qID, n, "qID", 1), "sigma", 1), get_base1(sID, n, "sID", 1), "sigma", 2)), 
                                 "assigning variable p_y");
                 }
             }
-            current_statement_begin__ = 219;
+            current_statement_begin__ = 223;
             stan::math::assign(dev_d, 0);
-            current_statement_begin__ = 220;
+            current_statement_begin__ = 224;
             stan::math::assign(decision_p, decision_l(ar_value, N, p_n, p_y, pstream__));
-            current_statement_begin__ = 221;
+            current_statement_begin__ = 225;
             for (int n = 1; n <= N; ++n) {
-                current_statement_begin__ = 222;
+                current_statement_begin__ = 226;
                 stan::model::assign(log_lik, 
                             stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                             stan::math::log(get_base1(get_base1(decision_p, (get_base1(terminate, n, "terminate", 1) + 2), "decision_p", 1), n, "decision_p", 2)), 
                             "assigning variable log_lik");
-                current_statement_begin__ = 223;
+                current_statement_begin__ = 227;
                 stan::math::assign(dev_d, (dev_d + (-(2) * get_base1(log_lik, n, "log_lik", 1))));
             }
             // validate, write generated quantities

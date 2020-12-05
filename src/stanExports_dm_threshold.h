@@ -33,7 +33,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dm_threshold");
-    reader.add_event(112, 110, "end", "model_dm_threshold");
+    reader.add_event(113, 111, "end", "model_dm_threshold");
     return reader;
 }
 template <typename T1__, typename T2__, typename T3__>
@@ -94,11 +94,12 @@ struct decision_l_functor__ {
 #include <stan_meta_header.hpp>
 class model_dm_threshold : public prob_grad {
 private:
-        int ar_value;
+        double ar_value;
         int deltaD_value;
         int N;
         std::vector<int> tNo;
         std::vector<int> terminate;
+        std::vector<int> rating;
         std::vector<int> rating_y;
         std::vector<int> rating_n;
 public:
@@ -132,11 +133,11 @@ public:
         try {
             // initialize data block variables from context__
             current_statement_begin__ = 27;
-            context__.validate_dims("data initialization", "ar_value", "int", context__.to_vec());
-            ar_value = int(0);
-            vals_i__ = context__.vals_i("ar_value");
+            context__.validate_dims("data initialization", "ar_value", "double", context__.to_vec());
+            ar_value = double(0);
+            vals_r__ = context__.vals_r("ar_value");
             pos__ = 0;
-            ar_value = vals_i__[pos__++];
+            ar_value = vals_r__[pos__++];
             current_statement_begin__ = 28;
             context__.validate_dims("data initialization", "deltaD_value", "int", context__.to_vec());
             deltaD_value = int(0);
@@ -171,6 +172,16 @@ public:
                 terminate[k_0__] = vals_i__[pos__++];
             }
             current_statement_begin__ = 32;
+            validate_non_negative_index("rating", "N", N);
+            context__.validate_dims("data initialization", "rating", "int", context__.to_vec(N));
+            rating = std::vector<int>(N, int(0));
+            vals_i__ = context__.vals_i("rating");
+            pos__ = 0;
+            size_t rating_k_0_max__ = N;
+            for (size_t k_0__ = 0; k_0__ < rating_k_0_max__; ++k_0__) {
+                rating[k_0__] = vals_i__[pos__++];
+            }
+            current_statement_begin__ = 33;
             validate_non_negative_index("rating_y", "N", N);
             context__.validate_dims("data initialization", "rating_y", "int", context__.to_vec(N));
             rating_y = std::vector<int>(N, int(0));
@@ -180,7 +191,7 @@ public:
             for (size_t k_0__ = 0; k_0__ < rating_y_k_0_max__; ++k_0__) {
                 rating_y[k_0__] = vals_i__[pos__++];
             }
-            current_statement_begin__ = 33;
+            current_statement_begin__ = 34;
             validate_non_negative_index("rating_n", "N", N);
             context__.validate_dims("data initialization", "rating_n", "int", context__.to_vec(N));
             rating_n = std::vector<int>(N, int(0));
@@ -196,12 +207,12 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-            current_statement_begin__ = 37;
+            current_statement_begin__ = 38;
             validate_non_negative_index("deltaD", "logical_eq(deltaD_value, 8)", logical_eq(deltaD_value, 8));
             num_params_r__ += (1 * logical_eq(deltaD_value, 8));
-            current_statement_begin__ = 38;
-            num_params_r__ += 1;
             current_statement_begin__ = 39;
+            num_params_r__ += 1;
+            current_statement_begin__ = 40;
             num_params_r__ += 1;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -220,7 +231,7 @@ public:
         (void) pos__; // dummy call to supress warning
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
-        current_statement_begin__ = 37;
+        current_statement_begin__ = 38;
         if (!(context__.contains_r("deltaD")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable deltaD missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("deltaD");
@@ -240,7 +251,7 @@ public:
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable deltaD: ") + e.what()), current_statement_begin__, prog_reader__());
             }
         }
-        current_statement_begin__ = 38;
+        current_statement_begin__ = 39;
         if (!(context__.contains_r("threshold_raw")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable threshold_raw missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("threshold_raw");
@@ -253,7 +264,7 @@ public:
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable threshold_raw: ") + e.what()), current_statement_begin__, prog_reader__());
         }
-        current_statement_begin__ = 39;
+        current_statement_begin__ = 40;
         if (!(context__.contains_r("sigma_mult")))
             stan::lang::rethrow_located(std::runtime_error(std::string("Variable sigma_mult missing")), current_statement_begin__, prog_reader__());
         vals_r__ = context__.vals_r("sigma_mult");
@@ -291,7 +302,7 @@ public:
         try {
             stan::io::reader<local_scalar_t__> in__(params_r__, params_i__);
             // model parameters
-            current_statement_begin__ = 37;
+            current_statement_begin__ = 38;
             std::vector<local_scalar_t__> deltaD;
             size_t deltaD_d_0_max__ = logical_eq(deltaD_value, 8);
             deltaD.reserve(deltaD_d_0_max__);
@@ -301,14 +312,14 @@ public:
                 else
                     deltaD.push_back(in__.scalar_lub_constrain(0, 1));
             }
-            current_statement_begin__ = 38;
+            current_statement_begin__ = 39;
             local_scalar_t__ threshold_raw;
             (void) threshold_raw;  // dummy to suppress unused var warning
             if (jacobian__)
                 threshold_raw = in__.scalar_lb_constrain(0, lp__);
             else
                 threshold_raw = in__.scalar_lb_constrain(0);
-            current_statement_begin__ = 39;
+            current_statement_begin__ = 40;
             local_scalar_t__ sigma_mult;
             (void) sigma_mult;  // dummy to suppress unused var warning
             if (jacobian__)
@@ -316,82 +327,82 @@ public:
             else
                 sigma_mult = in__.scalar_lb_constrain(0);
             // transformed parameters
-            current_statement_begin__ = 43;
+            current_statement_begin__ = 44;
             validate_non_negative_index("p_n", "N", N);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> p_n(N);
             stan::math::initialize(p_n, DUMMY_VAR__);
             stan::math::fill(p_n, DUMMY_VAR__);
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 45;
             validate_non_negative_index("p_y", "N", N);
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> p_y(N);
             stan::math::initialize(p_y, DUMMY_VAR__);
             stan::math::fill(p_y, DUMMY_VAR__);
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 46;
             local_scalar_t__ threshold;
             (void) threshold;  // dummy to suppress unused var warning
             stan::math::initialize(threshold, DUMMY_VAR__);
             stan::math::fill(threshold, DUMMY_VAR__);
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 47;
             local_scalar_t__ sigma;
             (void) sigma;  // dummy to suppress unused var warning
             stan::math::initialize(sigma, DUMMY_VAR__);
             stan::math::fill(sigma, DUMMY_VAR__);
             // transformed parameters block statements
-            current_statement_begin__ = 47;
-            stan::math::assign(threshold, (35 * threshold_raw));
             current_statement_begin__ = 48;
+            stan::math::assign(threshold, (35 * threshold_raw));
+            current_statement_begin__ = 49;
             stan::math::assign(sigma, (sigma_mult * threshold));
             {
-            current_statement_begin__ = 52;
+            current_statement_begin__ = 53;
             local_scalar_t__ utility_n(DUMMY_VAR__);
             (void) utility_n;  // dummy to suppress unused var warning
             stan::math::initialize(utility_n, DUMMY_VAR__);
             stan::math::fill(utility_n, DUMMY_VAR__);
-            current_statement_begin__ = 53;
+            current_statement_begin__ = 54;
             local_scalar_t__ utility_y(DUMMY_VAR__);
             (void) utility_y;  // dummy to suppress unused var warning
             stan::math::initialize(utility_y, DUMMY_VAR__);
             stan::math::fill(utility_y, DUMMY_VAR__);
-            current_statement_begin__ = 54;
+            current_statement_begin__ = 55;
             if (as_bool(logical_eq(deltaD_value, 8))) {
-                current_statement_begin__ = 55;
+                current_statement_begin__ = 56;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 56;
+                    current_statement_begin__ = 57;
                     if (as_bool(logical_eq(get_base1(tNo, n, "tNo", 1), 1))) {
-                        current_statement_begin__ = 57;
-                        stan::math::assign(utility_n, get_base1(rating_n, n, "rating_n", 1));
                         current_statement_begin__ = 58;
+                        stan::math::assign(utility_n, get_base1(rating_n, n, "rating_n", 1));
+                        current_statement_begin__ = 59;
                         stan::math::assign(utility_y, get_base1(rating_y, n, "rating_y", 1));
                     } else {
-                        current_statement_begin__ = 60;
-                        stan::math::assign(utility_n, (utility_n * get_base1(deltaD, 1, "deltaD", 1)));
                         current_statement_begin__ = 61;
-                        stan::math::assign(utility_n, (utility_n + get_base1(rating_n, n, "rating_n", 1)));
+                        stan::math::assign(utility_n, (utility_n * get_base1(deltaD, 1, "deltaD", 1)));
                         current_statement_begin__ = 62;
-                        stan::math::assign(utility_y, (utility_y * get_base1(deltaD, 1, "deltaD", 1)));
+                        stan::math::assign(utility_n, (utility_n + get_base1(rating_n, n, "rating_n", 1)));
                         current_statement_begin__ = 63;
+                        stan::math::assign(utility_y, (utility_y * get_base1(deltaD, 1, "deltaD", 1)));
+                        current_statement_begin__ = 64;
                         stan::math::assign(utility_y, (utility_y + get_base1(rating_y, n, "rating_y", 1)));
                     }
-                    current_statement_begin__ = 65;
+                    current_statement_begin__ = 66;
                     stan::model::assign(p_n, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 (1 - normal_cdf(utility_n, -(threshold), sigma)), 
                                 "assigning variable p_n");
-                    current_statement_begin__ = 66;
+                    current_statement_begin__ = 67;
                     stan::model::assign(p_y, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 normal_cdf(utility_y, threshold, sigma), 
                                 "assigning variable p_y");
                 }
             } else {
-                current_statement_begin__ = 69;
+                current_statement_begin__ = 70;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 70;
+                    current_statement_begin__ = 71;
                     stan::model::assign(p_n, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 (1 - normal_cdf(get_base1(rating_n, n, "rating_n", 1), -(threshold), sigma)), 
                                 "assigning variable p_n");
-                    current_statement_begin__ = 71;
+                    current_statement_begin__ = 72;
                     stan::model::assign(p_y, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 normal_cdf(get_base1(rating_y, n, "rating_y", 1), threshold, sigma), 
@@ -402,7 +413,7 @@ public:
             // validate transformed parameters
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
-            current_statement_begin__ = 43;
+            current_statement_begin__ = 44;
             size_t p_n_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < p_n_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(p_n(j_1__))) {
@@ -411,7 +422,7 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_n: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 45;
             size_t p_y_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < p_y_j_1_max__; ++j_1__) {
                 if (stan::math::is_uninitialized(p_y(j_1__))) {
@@ -420,13 +431,13 @@ public:
                     stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable p_y: ") + msg__.str()), current_statement_begin__, prog_reader__());
                 }
             }
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 46;
             if (stan::math::is_uninitialized(threshold)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: threshold";
                 stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable threshold: ") + msg__.str()), current_statement_begin__, prog_reader__());
             }
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 47;
             if (stan::math::is_uninitialized(sigma)) {
                 std::stringstream msg__;
                 msg__ << "Undefined transformed parameter: sigma";
@@ -434,30 +445,30 @@ public:
             }
             // model body
             {
-            current_statement_begin__ = 80;
+            current_statement_begin__ = 81;
             validate_non_negative_index("decision_p", "N", N);
             validate_non_negative_index("decision_p", "3", 3);
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1>  > decision_p(3, Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1>(N));
             stan::math::initialize(decision_p, DUMMY_VAR__);
             stan::math::fill(decision_p, DUMMY_VAR__);
-            current_statement_begin__ = 81;
+            current_statement_begin__ = 82;
             if (as_bool(logical_eq(deltaD_value, 8))) {
-                current_statement_begin__ = 82;
+                current_statement_begin__ = 83;
                 lp_accum__.add(uniform_log<propto__>(get_base1(deltaD, 1, "deltaD", 1), 0, 1));
             }
-            current_statement_begin__ = 84;
+            current_statement_begin__ = 85;
             lp_accum__.add(normal_log<propto__>(threshold_raw, 0, 1));
             if (threshold_raw < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
             else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
-            current_statement_begin__ = 85;
+            current_statement_begin__ = 86;
             lp_accum__.add(normal_log<propto__>(sigma_mult, 0, 0.5));
             if (sigma_mult < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
             else lp_accum__.add(-normal_ccdf_log(0, 0, 0.5));
-            current_statement_begin__ = 86;
-            stan::math::assign(decision_p, decision_l(N, ar_value, p_n, p_y, pstream__));
             current_statement_begin__ = 87;
+            stan::math::assign(decision_p, decision_l(N, ar_value, p_n, p_y, pstream__));
+            current_statement_begin__ = 88;
             for (int n = 1; n <= N; ++n) {
-                current_statement_begin__ = 89;
+                current_statement_begin__ = 90;
                 lp_accum__.add(stan::math::log(get_base1(get_base1(decision_p, (get_base1(terminate, n, "terminate", 1) + 2), "decision_p", 1), n, "decision_p", 2)));
             }
             }
@@ -570,82 +581,82 @@ public:
         if (!include_tparams__ && !include_gqs__) return;
         try {
             // declare and define transformed parameters
-            current_statement_begin__ = 43;
+            current_statement_begin__ = 44;
             validate_non_negative_index("p_n", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> p_n(N);
             stan::math::initialize(p_n, DUMMY_VAR__);
             stan::math::fill(p_n, DUMMY_VAR__);
-            current_statement_begin__ = 44;
+            current_statement_begin__ = 45;
             validate_non_negative_index("p_y", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> p_y(N);
             stan::math::initialize(p_y, DUMMY_VAR__);
             stan::math::fill(p_y, DUMMY_VAR__);
-            current_statement_begin__ = 45;
+            current_statement_begin__ = 46;
             double threshold;
             (void) threshold;  // dummy to suppress unused var warning
             stan::math::initialize(threshold, DUMMY_VAR__);
             stan::math::fill(threshold, DUMMY_VAR__);
-            current_statement_begin__ = 46;
+            current_statement_begin__ = 47;
             double sigma;
             (void) sigma;  // dummy to suppress unused var warning
             stan::math::initialize(sigma, DUMMY_VAR__);
             stan::math::fill(sigma, DUMMY_VAR__);
             // do transformed parameters statements
-            current_statement_begin__ = 47;
-            stan::math::assign(threshold, (35 * threshold_raw));
             current_statement_begin__ = 48;
+            stan::math::assign(threshold, (35 * threshold_raw));
+            current_statement_begin__ = 49;
             stan::math::assign(sigma, (sigma_mult * threshold));
             {
-            current_statement_begin__ = 52;
+            current_statement_begin__ = 53;
             local_scalar_t__ utility_n(DUMMY_VAR__);
             (void) utility_n;  // dummy to suppress unused var warning
             stan::math::initialize(utility_n, DUMMY_VAR__);
             stan::math::fill(utility_n, DUMMY_VAR__);
-            current_statement_begin__ = 53;
+            current_statement_begin__ = 54;
             local_scalar_t__ utility_y(DUMMY_VAR__);
             (void) utility_y;  // dummy to suppress unused var warning
             stan::math::initialize(utility_y, DUMMY_VAR__);
             stan::math::fill(utility_y, DUMMY_VAR__);
-            current_statement_begin__ = 54;
+            current_statement_begin__ = 55;
             if (as_bool(logical_eq(deltaD_value, 8))) {
-                current_statement_begin__ = 55;
+                current_statement_begin__ = 56;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 56;
+                    current_statement_begin__ = 57;
                     if (as_bool(logical_eq(get_base1(tNo, n, "tNo", 1), 1))) {
-                        current_statement_begin__ = 57;
-                        stan::math::assign(utility_n, get_base1(rating_n, n, "rating_n", 1));
                         current_statement_begin__ = 58;
+                        stan::math::assign(utility_n, get_base1(rating_n, n, "rating_n", 1));
+                        current_statement_begin__ = 59;
                         stan::math::assign(utility_y, get_base1(rating_y, n, "rating_y", 1));
                     } else {
-                        current_statement_begin__ = 60;
-                        stan::math::assign(utility_n, (utility_n * get_base1(deltaD, 1, "deltaD", 1)));
                         current_statement_begin__ = 61;
-                        stan::math::assign(utility_n, (utility_n + get_base1(rating_n, n, "rating_n", 1)));
+                        stan::math::assign(utility_n, (utility_n * get_base1(deltaD, 1, "deltaD", 1)));
                         current_statement_begin__ = 62;
-                        stan::math::assign(utility_y, (utility_y * get_base1(deltaD, 1, "deltaD", 1)));
+                        stan::math::assign(utility_n, (utility_n + get_base1(rating_n, n, "rating_n", 1)));
                         current_statement_begin__ = 63;
+                        stan::math::assign(utility_y, (utility_y * get_base1(deltaD, 1, "deltaD", 1)));
+                        current_statement_begin__ = 64;
                         stan::math::assign(utility_y, (utility_y + get_base1(rating_y, n, "rating_y", 1)));
                     }
-                    current_statement_begin__ = 65;
+                    current_statement_begin__ = 66;
                     stan::model::assign(p_n, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 (1 - normal_cdf(utility_n, -(threshold), sigma)), 
                                 "assigning variable p_n");
-                    current_statement_begin__ = 66;
+                    current_statement_begin__ = 67;
                     stan::model::assign(p_y, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 normal_cdf(utility_y, threshold, sigma), 
                                 "assigning variable p_y");
                 }
             } else {
-                current_statement_begin__ = 69;
+                current_statement_begin__ = 70;
                 for (int n = 1; n <= N; ++n) {
-                    current_statement_begin__ = 70;
+                    current_statement_begin__ = 71;
                     stan::model::assign(p_n, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 (1 - normal_cdf(get_base1(rating_n, n, "rating_n", 1), -(threshold), sigma)), 
                                 "assigning variable p_n");
-                    current_statement_begin__ = 71;
+                    current_statement_begin__ = 72;
                     stan::model::assign(p_y, 
                                 stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                                 normal_cdf(get_base1(rating_y, n, "rating_y", 1), threshold, sigma), 
@@ -672,65 +683,65 @@ public:
             }
             if (!include_gqs__) return;
             // declare and define generated quantities
-            current_statement_begin__ = 94;
+            current_statement_begin__ = 95;
             validate_non_negative_index("log_lik", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> log_lik(N);
             stan::math::initialize(log_lik, DUMMY_VAR__);
             stan::math::fill(log_lik, DUMMY_VAR__);
-            current_statement_begin__ = 95;
+            current_statement_begin__ = 96;
             validate_non_negative_index("decision_p", "N", N);
             validate_non_negative_index("decision_p", "3", 3);
             std::vector<Eigen::Matrix<double, Eigen::Dynamic, 1> > decision_p(3, Eigen::Matrix<double, Eigen::Dynamic, 1>(N));
             stan::math::initialize(decision_p, DUMMY_VAR__);
             stan::math::fill(decision_p, DUMMY_VAR__);
-            current_statement_begin__ = 96;
+            current_statement_begin__ = 97;
             validate_non_negative_index("decision_no", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> decision_no(N);
             stan::math::initialize(decision_no, DUMMY_VAR__);
             stan::math::fill(decision_no, DUMMY_VAR__);
-            current_statement_begin__ = 97;
+            current_statement_begin__ = 98;
             validate_non_negative_index("decision_0", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> decision_0(N);
             stan::math::initialize(decision_0, DUMMY_VAR__);
             stan::math::fill(decision_0, DUMMY_VAR__);
-            current_statement_begin__ = 98;
+            current_statement_begin__ = 99;
             validate_non_negative_index("decision_yes", "N", N);
             Eigen::Matrix<double, Eigen::Dynamic, 1> decision_yes(N);
             stan::math::initialize(decision_yes, DUMMY_VAR__);
             stan::math::fill(decision_yes, DUMMY_VAR__);
-            current_statement_begin__ = 99;
+            current_statement_begin__ = 100;
             double dev_d;
             (void) dev_d;  // dummy to suppress unused var warning
             stan::math::initialize(dev_d, DUMMY_VAR__);
             stan::math::fill(dev_d, DUMMY_VAR__);
             // generated quantities statements
-            current_statement_begin__ = 100;
-            stan::math::assign(dev_d, 0);
             current_statement_begin__ = 101;
-            stan::math::assign(decision_p, decision_l(N, ar_value, p_n, p_y, pstream__));
+            stan::math::assign(dev_d, 0);
             current_statement_begin__ = 102;
-            stan::math::assign(decision_no, get_base1(decision_p, 1, "decision_p", 1));
+            stan::math::assign(decision_p, decision_l(N, ar_value, p_n, p_y, pstream__));
             current_statement_begin__ = 103;
-            stan::math::assign(decision_0, get_base1(decision_p, 2, "decision_p", 1));
+            stan::math::assign(decision_no, get_base1(decision_p, 1, "decision_p", 1));
             current_statement_begin__ = 104;
-            stan::math::assign(decision_yes, get_base1(decision_p, 3, "decision_p", 1));
+            stan::math::assign(decision_0, get_base1(decision_p, 2, "decision_p", 1));
             current_statement_begin__ = 105;
+            stan::math::assign(decision_yes, get_base1(decision_p, 3, "decision_p", 1));
+            current_statement_begin__ = 106;
             for (int n = 1; n <= N; ++n) {
-                current_statement_begin__ = 107;
+                current_statement_begin__ = 108;
                 stan::model::assign(log_lik, 
                             stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list()), 
                             stan::math::log(get_base1(get_base1(decision_p, (get_base1(terminate, n, "terminate", 1) + 2), "decision_p", 1), n, "decision_p", 2)), 
                             "assigning variable log_lik");
-                current_statement_begin__ = 108;
+                current_statement_begin__ = 109;
                 stan::math::assign(dev_d, (dev_d + (-(2) * get_base1(log_lik, n, "log_lik", 1))));
             }
             // validate, write generated quantities
-            current_statement_begin__ = 94;
+            current_statement_begin__ = 95;
             size_t log_lik_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < log_lik_j_1_max__; ++j_1__) {
                 vars__.push_back(log_lik(j_1__));
             }
-            current_statement_begin__ = 95;
+            current_statement_begin__ = 96;
             size_t decision_p_j_1_max__ = N;
             size_t decision_p_k_0_max__ = 3;
             for (size_t j_1__ = 0; j_1__ < decision_p_j_1_max__; ++j_1__) {
@@ -738,22 +749,22 @@ public:
                     vars__.push_back(decision_p[k_0__](j_1__));
                 }
             }
-            current_statement_begin__ = 96;
+            current_statement_begin__ = 97;
             size_t decision_no_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < decision_no_j_1_max__; ++j_1__) {
                 vars__.push_back(decision_no(j_1__));
             }
-            current_statement_begin__ = 97;
+            current_statement_begin__ = 98;
             size_t decision_0_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < decision_0_j_1_max__; ++j_1__) {
                 vars__.push_back(decision_0(j_1__));
             }
-            current_statement_begin__ = 98;
+            current_statement_begin__ = 99;
             size_t decision_yes_j_1_max__ = N;
             for (size_t j_1__ = 0; j_1__ < decision_yes_j_1_max__; ++j_1__) {
                 vars__.push_back(decision_yes(j_1__));
             }
-            current_statement_begin__ = 99;
+            current_statement_begin__ = 100;
             vars__.push_back(dev_d);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());

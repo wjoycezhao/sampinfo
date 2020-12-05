@@ -4,12 +4,12 @@
 \alias{addFeatureMatrix}
 \title{Add feature matrix}
 \usage{
-addFeatureMatrix(feature_mv, data_df, option_num, feature_name, id = NULL)
+addFeatureMatrix(feature_m, data_raw, option_num, feature_name, id = NULL)
 }
 \arguments{
-\item{feature_mv}{The features to be added}
+\item{feature_m}{The features to be added}
 
-\item{data_df}{The raw data.frame}
+\item{data_raw}{The raw data.frame}
 
 \item{option_num}{Number of options, should be the same as the column number of the  feaature matrix}
 

@@ -24,13 +24,14 @@ functions{
 
 data{
   // decision
-  int ar_value;
-  int deltaD_value;
-  int<lower=1> N;
-  int tNo[N];
-  int terminate[N];
-  int rating_y[N];
-  int rating_n[N];
+  real ar_value; //0 if absolute accumulation; 1 if relative accumulation
+  int deltaD_value; //8 for flexible decay parameter
+  int<lower=1> N; //number of time points
+  int tNo[N]; // thought No.x; used to reset representations
+  int terminate[N]; // 0 for continue; 1 for yes; -1 for no
+  int rating[N];
+  int rating_y[N]; // supports for yes (accumulatied supports if deltaD_value!=8)
+  int rating_n[N]; // supports for no (accumulatied supports if deltaD_value!=8)
 }
 parameters{
   // decision

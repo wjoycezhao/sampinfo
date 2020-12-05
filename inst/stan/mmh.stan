@@ -2,14 +2,14 @@
 data{
   // memory:
   real deltaM_value;
-  int<lower=2> C; // number of option categories
+  int<lower=2> C; // number of clusters
   int<lower=0> K; // number of features; if 0 then no betas
   int<lower=1> N; // number of time points
   int<lower=1> S; // number of participants
   int<lower=1> Q; // number of questions
   int<lower=0> sID[N]; // participant ID variable
   int<lower=0> qID[N]; // question ID variable
-  int<lower=1> tNo[N]; // thought No.x; used to reset decay
+  int<lower=1> tNo[N]; // thought No.x; used to reset representations
   matrix[C,K] X[N]; // feature matrix, for different time points
   int<lower=1, upper=C> cID[N]; // response cluster ID, 1-7 for 3-cluster solution
 }
@@ -20,7 +20,7 @@ parameters{
   real<lower=0> deltaM_q_sd [deltaM_value==8];
   vector[S*(deltaM_value==8)] deltaM_s_raw;
   vector[Q*(deltaM_value==8)] deltaM_q_raw;
-  matrix[C-1,Q] alpha_raw; // base rate
+  matrix[C-1,Q] alpha_raw; // baseline activations
   vector[K] beta_mu; // group-level mean for beta
   vector<lower=0>[K] beta_s_sd; // sd for beta across individuals
   vector<lower=0>[K] beta_q_sd; // sd for beta across questions

@@ -9,8 +9,10 @@ changeBetaNames(names, beta, Q, S)
 \arguments{
 \item{names}{A vector of characters. Variables taken from rstan outputs.}
 
-\item{beta}{Variable names to be included in the model, e.g., c('beta','gamma').
-Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
+\item{beta}{Variable names to be included in the memory model, e.g., c('sameC','sameA','dist').
+Note that in that case, columns 'sameC_1'...'sameC_C' and 'sameA_1',...,'sameA_C'  and 'dist_1',...,'dist_C' should be specified.
+In the memory model, we could include sameC (cluster resampling; sameC_value== 1), sameA (decision congruence; sameA_value== 1),
+and dist (semantic congruence; dist_value == 1)}
 
 \item{Q}{Number of questions}
 

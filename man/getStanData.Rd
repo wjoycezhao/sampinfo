@@ -19,11 +19,13 @@ getStanData(
 )
 }
 \arguments{
-\item{beta}{Variable names to be included in the model, e.g., c('beta','gamma').
-Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'gamma_C' should be specified}
+\item{beta}{Variable names to be included in the memory model, e.g., c('sameC','sameA','dist').
+Note that in that case, columns 'sameC_1'...'sameC_C' and 'sameA_1',...,'sameA_C'  and 'dist_1',...,'dist_C' should be specified.
+In the memory model, we could include sameC (cluster resampling; sameC_value== 1), sameA (decision congruence; sameA_value== 1),
+and dist (semantic congruence; dist_value == 1)}
 
 \item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
-8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
+8 for estimating it as a free parameter}
 
 \item{binary_value}{0 for continuous; 1 for discrete inputs}
 
@@ -32,7 +34,7 @@ Note that in the formatted data, columns 'beta_1'...'beta_C' and 'gamma_1',...,'
 \item{random_value}{0 for time limit; 1 for threhold-based}
 
 \item{deltaD_value}{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
-8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
+8 for estimating it as a free parameter}
 
 \item{option_num}{Number of total options in each choice (C)}
 

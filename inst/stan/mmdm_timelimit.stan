@@ -27,9 +27,9 @@ functions{
 
 data{
   // memory
-  int deltaM_value; // number of option categories
-  int condition_value; // number of option categories
-  int<lower=2> C; // number of option categories
+  int deltaM_value; //  8 for flexible memory decay parameter
+  int condition_value; // 1 for priming experiments; 0 for others
+  int<lower=2> C; // number of clusters
   int<lower=0> K; // number of features; if 0 then no betas
   int<lower=1> N; // number of time points
   int<lower=1> tNo[N]; // thought No.x; used to reset decay
@@ -37,24 +37,24 @@ data{
   int<lower=1, upper=C> cID[N]; // response cluster ID, 1-7 for 3-cluster solution
   int<lower=2> MC; // ID of the neutral category
   // decision
-  int ar_value;
-  int binary_value;
-  int deltaD_value;
-  int terminate[N];
+  int ar_value; //0 if absolute accumulation; 1 if relative accumulation
+  int binary_value; // 1 if binary inputs; 0 if continuous inputs
+  int deltaD_value; //  8 for flexible decision decay parameter
+  int terminate[N]; // 0 for continue; 1 for yes; -1 for no
   int rating[N];
-  int rating_y[N];
-  int rating_n[N];
+  int rating_y[N]; // supports for yes (accumulatied supports if deltaD_value!=8)
+  int rating_n[N]; // supports for no (accumulatied supports if deltaD_value!=8)
   // simulations
   matrix[C,K] X_sim[C]; // feature matrix, for categoreis
-  vector[7] cluster_rating_m[C];
-  int max_tNo_prd;
+  vector[7] cluster_rating_m[C]; // base rates of different ratings (-3 to 3) for each cluster
+  int max_tNo_prd; // maximum length of a simulated trial
 }
 
 parameters{
   // memory
-  real<lower=0, upper=1> deltaM [deltaM_value == 8]; // decay
-  vector[C-1] alpha_raw; // base rate
-  vector[K] beta_raw; // group-level mean for beta
+  real<lower=0, upper=1> deltaM [deltaM_value == 8];
+  vector[C-1] alpha_raw;
+  vector[K] beta_raw;
   // decision
   real<lower=0, upper=1> deltaD [deltaD_value == 8];
   real<lower=0,upper=1> p_end;
@@ -144,7 +144,7 @@ model{
     deltaM[1] ~ uniform(0,1);
   }
   alpha_raw ~ normal(0,1);
-  beta_raw ~ normal(0,5);
+  beta_raw ~ normal(0,1);
   for (n in 1:N){
     cID[n] ~ categorical_logit(theta[,n]);
   }

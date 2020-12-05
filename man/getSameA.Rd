@@ -10,7 +10,8 @@ getSameA(cluster_num = NULL)
 \item{cluster_num}{number of thought cluster for one option. If 3 then option number is 2 * 3 + 1 = 7.}
 }
 \value{
-A matrix. 1 for clusters supporting the same decision; 0 otherwise.
+A decision congruence matrix.
+1 for clusters supporting the same decision; 0 otherwise.
 }
 \description{
 Generate the decision congruence matrix.

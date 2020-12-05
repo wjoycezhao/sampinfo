@@ -13,12 +13,13 @@ getStanCode(
 }
 \arguments{
 \item{deltaM_value}{1-memory_decay; 0 for full decay (marcov property); 1 for no decay;
-8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
+8 for estimating it as a free parameter}
 
 \item{deltaD_value}{1-decision_decay; 0 for full decay (marcov property); 1 for no decay;
-8 for estimating it as a free parameter; (?)99 for estimating participant-specific delta}
+8 for estimating it as a free parameter}
 
-\item{hier_value}{Whether use hiearchical model. Default is 1.}
+\item{hier_value}{Whether to use a hiearchical model. Default is 1.
+Note that the hierachical version only work for decision or memory models seperately.}
 
 \item{random_value}{0 for time limit; 1 for threhold-based}
 }

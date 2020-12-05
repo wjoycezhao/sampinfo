@@ -842,7 +842,7 @@ public:
             current_statement_begin__ = 146;
             lp_accum__.add(normal_log<propto__>(alpha_raw, 0, 1));
             current_statement_begin__ = 147;
-            lp_accum__.add(normal_log<propto__>(beta_raw, 0, 5));
+            lp_accum__.add(normal_log<propto__>(beta_raw, 0, 1));
             current_statement_begin__ = 148;
             for (int n = 1; n <= N; ++n) {
                 current_statement_begin__ = 149;
