@@ -22,6 +22,7 @@ getStanFit(
   adapt_delta = 0.999,
   stepsize = 0.01,
   max_treedepth = 20,
+  seed_no = 1,
   save_warmup = FALSE,
   refresh = 500,
   init_r = 0.5,
@@ -79,6 +80,8 @@ This is sample_file for rstan::sampling}
 
 \item{max_treedepth}{Default 20}
 
+\item{seed_no}{Seed number}
+
 \item{refresh}{Default 500}
 
 \item{hier_value}{0 for fitting a non-hierarchical model; 1 for fitting a hierarchical model. Default is 1.
@@ -89,8 +92,6 @@ Note that the hierachical version only works for decision or memory models seper
 \item{cluster_rating_m}{Base rates of different ratings (-3 to 3) for each cluster. Needed for simulation.}
 
 \item{max_tNo_prd}{Maximum length of a simulated trial}
-
-\item{seed_no}{Seed number}
 }
 \value{
 Use $stan_fit to access the returned object from Stan;
